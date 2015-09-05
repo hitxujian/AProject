@@ -20,7 +20,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.*;
 
-public class RvTransformer implements Runnable {
+public class RelTranserMT implements Runnable {
 
 	public static HashSet<String> modalSet = null;
 	public static boolean verbose = false;
@@ -224,7 +224,7 @@ public class RvTransformer implements Runnable {
 		retArr = new String[end];
 		
 		int threads = 4;
-		RvTransformer workThread = new RvTransformer();
+		RelTranserMT workThread = new RelTranserMT();
 		MultiThread multi = new MultiThread(threads, workThread);
 		LogInfo.begin_track("Now %d threads running ... ", threads);
 		multi.runMultiThread();
@@ -244,7 +244,7 @@ public class RvTransformer implements Runnable {
 	public static void batchWork(String rvFile, String outFile) throws Exception {
 		HashMap<String, String> cache = new HashMap<String, String>();
 		//getNounPhrase.verbose = true;
-		RvTransformer worker = new RvTransformer();
+		RelTranserMT worker = new RelTranserMT();
 		verbose = true;
 		LogInfo.begin_track("Reading ReVerb ... ");
 		String str = "";
