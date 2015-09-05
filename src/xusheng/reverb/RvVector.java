@@ -334,7 +334,7 @@ public class RvVector {
             String[] spt = line.split("\t");
             instanceMap.put(spt[0], new ArrayList<String>());
             for (int i=1; i<spt.length; i++)
-                instanceMap.get(spt[0]).add(HubsIndex.getIdx(spt[i]));
+                instanceMap.get(spt[0]).add(HopsIndex.getIdx(spt[i]));
         }
         br.close();
         br = new BufferedReader(new FileReader(_2hubFile));
@@ -342,7 +342,7 @@ public class RvVector {
             String[] spt = line.split("\t");
             if (!instanceMap.containsKey(spt[0])) instanceMap.put(spt[0], new ArrayList<String>());
             for (int i=1; i<spt.length; i++)
-                instanceMap.get(spt[0]).add(HubsIndex.getIdx(spt[i]));
+                instanceMap.get(spt[0]).add(HopsIndex.getIdx(spt[i]));
         }
         br.close();
         LogInfo.logs("ReVerb instances map read into memory!");
@@ -372,7 +372,7 @@ public class RvVector {
 
 
             bl.write(String.valueOf(i));
-            double[] vec = new double[HubsIndex.size+1];
+            double[] vec = new double[HopsIndex.size+1];
             for (Map.Entry<String, Integer> entry: cnt.entrySet()) {
                 int idx = Integer.parseInt(entry.getKey());
                 vec[idx] = (double) entry.getValue() / sum;
@@ -381,7 +381,7 @@ public class RvVector {
             bl.write("\n");
 
             bw.write(String.valueOf(i));
-            for (int idx=1; idx<=HubsIndex.size; idx++)
+            for (int idx=1; idx<= HopsIndex.size; idx++)
                 bw.write("\t" + vec[idx]);
             bw.write("\n");
         }
@@ -412,7 +412,7 @@ public class RvVector {
         //FbTuples.initialize(args[7]);
         //vectorize(args[8]);
         //showNamesForVec(args[9], args[10]);
-        HubsIndex.initialize(args[11]);
+        HopsIndex.initialize(args[11]);
         newVectorize(args[12], args[13], args[14], args[15]);
 
         //step 3: calculate similarities according to vectors

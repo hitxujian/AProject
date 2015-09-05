@@ -1,4 +1,4 @@
-package xusheng.webquestion.viasyntactic;
+package xusheng.webquestion.relextract.viasyntactic;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

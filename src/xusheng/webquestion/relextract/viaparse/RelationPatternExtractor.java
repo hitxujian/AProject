@@ -1,15 +1,12 @@
-package xusheng.webquestion.viaparse;
+package xusheng.webquestion.relextract.viaparse;
 
 //Author: Kangqi Luo
 //Goal: Given a question, and starting entity position, return the relation pattern
 //Some syntactic rules will be applied.
 
-import edu.stanford.nlp.parser.lexparser.*;
-import edu.stanford.nlp.process.*;
 import edu.stanford.nlp.trees.*;
 import fig.basic.LogInfo;
 import kangqi.util.grammar.Lemmatizer;
-import kangqi.util.struct.*;
 import xusheng.webquestion.qapair.*;
 
 import java.io.BufferedReader;

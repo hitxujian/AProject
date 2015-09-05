@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * Created by Administrator on 2015/5/13.
  */
-public class HubsIndex {
+public class HopsIndex {
     public static HashMap<String, String> idxToHub = new HashMap<>();
     public static HashMap<String, String> hubToIdx = new HashMap<>();
     public static HashMap<Integer, String> index = new HashMap<>();

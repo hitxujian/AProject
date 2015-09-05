@@ -1,4 +1,4 @@
-package xusheng.webquestion.viasyntactic;
+package xusheng.webquestion.relextract.viasyntactic;
 
 //Author: Kangqi Luo
 //Goal: Use lexical based method to extract relation pattern

@@ -1,4 +1,4 @@
-package xusheng.webquestion.viaparse;
+package xusheng.webquestion.relextract.viaparse;
 
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.parser.lexparser.*;

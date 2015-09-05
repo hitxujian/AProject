@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-
 public class RelTransformer {
 
 	private HashSet<String> modalSet = null;

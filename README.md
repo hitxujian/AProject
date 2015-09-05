@@ -1,2 +1,2 @@
 # AProject
-Containning codes from TypeInference, Paraphrasing, B.S. project, etc.;
+Containing codes from TypeInference, Paraphrasing, B.S. project, etc.;
