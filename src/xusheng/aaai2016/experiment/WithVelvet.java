@@ -50,21 +50,22 @@ public class WithVelvet {
         BufferedWriter bw_t = new BufferedWriter(new FileWriter(typeFile));
         HashMap<String, ArrayList<Belief>> contents = new HashMap<>();
         HashMap<String, Integer> count = new HashMap<>();
-        HashSet<String> set = new HashSet<>();
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
             Belief belief = new Belief(line);
             if (belief.isType) bw_t.write(belief.toString() + "\n");
-            if (! set.contains(belief.relation)) contents.put(belief.relation, new ArrayList<>());
+            if (! contents.containsKey(belief.relation)) contents.put(belief.relation, new ArrayList<>());
             contents.get(belief.relation).add(belief);
             cnt ++;
             if (cnt % 10000 == 0) LogUpgrader.showLine(cnt, 10000);
         }
+        LogInfo.logs("Total Size: %d", contents.size());
         br.close();
         bw_t.close();
         for (Map.Entry<String, ArrayList<Belief>> entry : contents.entrySet())
             count.put(entry.getKey(), entry.getValue().size());
         ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(count);
+        LogInfo.logs("Sorted size: %d", sorted.size());
         for (int i=0; i<sorted.size(); i++) {
             String rel = sorted.get(i).getKey();
             ArrayList<Belief> list = contents.get(rel);
