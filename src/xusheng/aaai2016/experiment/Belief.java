@@ -15,4 +15,8 @@ public class Belief {
         value = spt[3];
         if (relation.equals("generalization")) isType = true;
     }
+
+    public String toString() {
+        return entity + "\t" + relation + "\t" + value;
+    }
 }
