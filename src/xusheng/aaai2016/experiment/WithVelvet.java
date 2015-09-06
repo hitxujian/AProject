@@ -49,12 +49,14 @@ public class WithVelvet {
         BufferedWriter bw_o = new BufferedWriter(new FileWriter(outFile));
         BufferedWriter bw_t = new BufferedWriter(new FileWriter(typeFile));
         HashMap<String, ArrayList<Belief>> contents = new HashMap<>();
-
-        String line = "";
+        HashMap<String, Integer> count = new HashMap<>();
+        HashSet<String> set = new HashSet<>();
+        String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
-            String[] spt = line.split("\t");
-            String rel = spt[2];
-
+            Belief belief = new Belief(line);
+            if (! set.contains(belief.relation)) contents.put(belief.relation, new ArrayList<>());
+            contents.get(belief.relation).add(belief);
         }
+
     }
 }

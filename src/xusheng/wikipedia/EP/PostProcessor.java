@@ -81,7 +81,10 @@ public class PostProcessor {
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
-            if (line.startsWith("###")) bw.write(line + "\n");
+            if (line.startsWith("###")) {
+                bw.write(line + "\n");
+                continue;
+            }
             String[] spt = line.split("\t");
             String subj = EntityIndex.getIdx(spt[3]);
             String obj = EntityIndex.getIdx(spt[4]);
