@@ -57,6 +57,8 @@ public class WithVelvet {
             if (belief.isType) bw_t.write(belief.toString() + "\n");
             if (! set.contains(belief.relation)) contents.put(belief.relation, new ArrayList<>());
             contents.get(belief.relation).add(belief);
+            cnt ++;
+            if (cnt % 10000 == 0) LogUpgrader.showLine(cnt, 10000);
         }
         br.close();
         bw_t.close();
