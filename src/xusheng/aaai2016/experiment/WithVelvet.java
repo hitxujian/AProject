@@ -34,6 +34,8 @@ public class WithVelvet {
             cnt ++;
             if (cnt % 10000 == 0) LogUpgrader.showLine(cnt, 10000);
         }
+        br.close();
+        bw.close();
         LogInfo.logs("Total rel for %s: %d", inFile, set.size());
     }
 }
