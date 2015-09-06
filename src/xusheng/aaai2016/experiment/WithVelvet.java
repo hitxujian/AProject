@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -15,7 +17,8 @@ import java.util.HashSet;
 public class WithVelvet {
 
     public static void main(String[] args) throws Exception {
-        countRel(args[0], args[1]);
+        //countRel(args[0], args[1]);
+        process(args[0], args[2], args[3]);
     }
 
     public static void countRel(String inFile, String outFile) throws Exception {
@@ -37,5 +40,21 @@ public class WithVelvet {
         br.close();
         bw.close();
         LogInfo.logs("Total rel for %s: %d", inFile, set.size());
+    }
+
+    /*process the belief file,
+    * output a result file consisting 52 smallest instances relations*/
+    public static void process(String inFile, String outFile, String typeFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw_o = new BufferedWriter(new FileWriter(outFile));
+        BufferedWriter bw_t = new BufferedWriter(new FileWriter(typeFile));
+        HashMap<String, ArrayList<Belief>> contents = new HashMap<>();
+
+        String line = "";
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            String rel = spt[2];
+
+        }
     }
 }

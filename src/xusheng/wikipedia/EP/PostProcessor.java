@@ -1,6 +1,7 @@
 package xusheng.wikipedia.EP;
 
 import fig.basic.LogInfo;
+import xusheng.freebase.EntityIndex;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
 
@@ -75,9 +76,33 @@ public class PostProcessor {
         bw.close();
     }
 
+    public static void ChangeToIndex(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("###")) bw.write(line + "\n");
+            String[] spt = line.split("\t");
+            String subj = EntityIndex.getIdx(spt[3]);
+            String obj = EntityIndex.getIdx(spt[4]);
+            if (subj != null && obj != null)
+                bw.write(subj + "\t" + obj + "\n");
+            cnt ++;
+            if (cnt % 100 == 0) LogUpgrader.showLine(cnt, 100);
+        }
+        br.close();
+        bw.close();
+    }
+
     public static void main(String[] args) throws Exception {
         //EntityTitle.initialize(args[0]);
         //changeForm(args[1], args[2]);
-        groupRel(args[3], args[4], args[5]);
+
+        // group relation-tuples by increasing order
+        // groupRel(args[3], args[4], args[5]);
+
+        // change mid to new-index
+        EntityIndex.initialize(args[7]);
+        ChangeToIndex(args[5], args[6]);
     }
 }
