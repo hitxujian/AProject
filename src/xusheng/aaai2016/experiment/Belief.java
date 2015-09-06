@@ -13,7 +13,7 @@ public class Belief {
         entity = spt[0];
         relation = spt[2];
         value = spt[3];
-        if (relation.equals("generalization")) isType = true;
+        if (relation.equals("generalizations")) isType = true;
         else isType = false;
     }
 

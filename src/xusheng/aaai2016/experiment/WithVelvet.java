@@ -64,8 +64,8 @@ public class WithVelvet {
         bw_t.close();
         for (Map.Entry<String, ArrayList<Belief>> entry : contents.entrySet())
             count.put(entry.getKey(), entry.getValue().size());
-        ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(count, true);
-        for (int i=0; i<52; i++) {
+        ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(count);
+        for (int i=0; i<sorted.size(); i++) {
             String rel = sorted.get(i).getKey();
             ArrayList<Belief> list = contents.get(rel);
             pw.format("###\t%s\t%d\t:\n", rel, list.size());
