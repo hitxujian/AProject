@@ -41,8 +41,9 @@ public class WithVelvet {
         LogInfo.logs("Total rel for %s: %d", inFile, set.size());
     }
 
-    /*process the belief file,
-    * output a result file consisting 52 smallest instances relations*/
+    /**process the belief file,
+     * output a result file consisting 52 smallest instances relations
+     */
     public static void process(String inFile, String outFile, String typeFile) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw_o = new BufferedWriter(new FileWriter(outFile));
