@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 /**
- * Created by Administrator on 2015/9/7.
+ * Created by Xusheng on 2015/9/7.
  */
 public class FileProcessor {
 
