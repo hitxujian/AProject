@@ -83,11 +83,13 @@ public class TypeIndex {
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            bw.write(EntityIndex.getIdx(spt[0]).toString());
+            try {
+                bw.write(EntityIndex.getIdx(spt[0]));
+            } catch (Exception ex) { ex.printStackTrace();}
             for (int i=1; i<spt.length; i++) bw.write("\t" + spt[i]);
             bw.write("\n");
             cnt ++;
-            if (cnt % 1000000 ==0) LogUpgrader.showLine(cnt, 1000000);
+            if (cnt % 10000000 ==0) LogUpgrader.showLine(cnt, 10000000);
         }
         br.close();
         bw.close();
