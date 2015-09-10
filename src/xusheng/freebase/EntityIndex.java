@@ -58,7 +58,7 @@ public class EntityIndex {
         if (verbose) LogInfo.begin_track("Start to read Fb Entity-Index");
         while ((line=br.readLine()) != null) {
             idx ++;
-            if (idx % 100000 == 0) LogInfo.logs("%d lines read into memory...", idx);
+            if (idx % 10000000 == 0) LogInfo.logs("%d lines read into memory...", idx);
             String[] spt = line.split("\t");
             midToIdx.put(spt[0], spt[1]);
             idxToMid.put(spt[1], spt[0]);
@@ -74,7 +74,7 @@ public class EntityIndex {
         if (verbose) LogInfo.begin_track("Start to read Fb Entity-Index");
         while ((line=br.readLine()) != null) {
             idx ++;
-            if (idx % 100000 == 0) LogInfo.logs("%d lines read into memory...", idx);
+            if (idx % 10000000 == 0) LogInfo.logs("%d lines read into memory...", idx);
             String[] spt = line.split("\t");
             midToIdx.put(spt[0], spt[1]);
         }
@@ -89,7 +89,7 @@ public class EntityIndex {
         if (verbose) LogInfo.begin_track("Start to read Fb Entity-Index");
         while ((line=br.readLine()) != null) {
             idx ++;
-            if (idx % 100000 == 0) LogInfo.logs("%d lines read into memory...", idx);
+            if (idx % 10000000 == 0) LogInfo.logs("%d lines read into memory...", idx);
             String[] spt = line.split("\t");
             idxToMid.put(spt[1], spt[0]);
         }
@@ -115,7 +115,7 @@ public class EntityIndex {
         int cnt = 0;
         while ((line = br.readLine()) != null) {
             cnt ++;
-            if (cnt % 100000 == 0) LogUpgrader.showLine(cnt, 100000);
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
             String[] spt = line.split("\t");
             String ent1 = getName(spt[0]);
             //String ent2 = getName(spt[2]);

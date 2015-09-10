@@ -42,7 +42,7 @@ public class TypeIndex {
         return ret;
     }
 
-    public static void scan(String inFile, String outFile_1, String outFile_2, String outFile_3) throws Exception {
+    public static void scan(String inFile, String outFile_1, String outFile_2) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw_t = new BufferedWriter(new FileWriter(outFile_1));
         BufferedWriter bw_et = new BufferedWriter(new FileWriter(outFile_2));
@@ -83,7 +83,7 @@ public class TypeIndex {
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            bw.write(EntityIndex.getIdx(spt[0]));
+            bw.write(EntityIndex.getIdx(spt[0]).toString());
             for (int i=1; i<spt.length; i++) bw.write("\t" + spt[i]);
             bw.write("\n");
             cnt ++;
@@ -117,7 +117,7 @@ public class TypeIndex {
 
     public static void main(String[] args) throws Exception {
         //initialize(args[0], args[1]);
-        //scan(args[0], args[1], args[2], args[3]);
+        //scan(args[0], args[1], args[2]);
         EntityIndex.initFromMid2Idx(args[5]);
         ChangeFromMid2Idx(args[2], args[3]);
     }
