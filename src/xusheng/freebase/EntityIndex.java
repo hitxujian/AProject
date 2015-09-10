@@ -68,6 +68,36 @@ public class EntityIndex {
         if (verbose) LogInfo.logs("Freebase Entity-Index read into memory!");
     }
 
+    public static void initFromMid2Idx(String file) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line = ""; int idx = 0;
+        if (verbose) LogInfo.begin_track("Start to read Fb Entity-Index");
+        while ((line=br.readLine()) != null) {
+            idx ++;
+            if (idx % 100000 == 0) LogInfo.logs("%d lines read into memory...", idx);
+            String[] spt = line.split("\t");
+            midToIdx.put(spt[0], spt[1]);
+        }
+        br.close();
+        if (verbose) LogInfo.end_track();
+        if (verbose) LogInfo.logs("Freebase Entity-Index(Mid to Idx) read into memory!");
+    }
+
+    public static void initFromIdx2Mid(String file) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line = ""; int idx = 0;
+        if (verbose) LogInfo.begin_track("Start to read Fb Entity-Index");
+        while ((line=br.readLine()) != null) {
+            idx ++;
+            if (idx % 100000 == 0) LogInfo.logs("%d lines read into memory...", idx);
+            String[] spt = line.split("\t");
+            idxToMid.put(spt[1], spt[0]);
+        }
+        br.close();
+        if (verbose) LogInfo.end_track();
+        if (verbose) LogInfo.logs("Freebase Entity-Index(Idx to Mid) read into memory!");
+    }
+
     public static String getName(String str) {
         String[] spt = str.split("/");
         String raw = spt[spt.length-1];

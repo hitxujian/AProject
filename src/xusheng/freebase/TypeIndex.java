@@ -76,6 +76,24 @@ public class TypeIndex {
         LogInfo.logs("Freebase Entity-Type Info constructed.");
     }
 
+    public static void ChangeFromMid2Idx(String inFile, String outFile) throws Exception {
+
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            bw.write(EntityIndex.getIdx(spt[0]));
+            for (int i=1; i<spt.length; i++) bw.write("\t" + spt[i]);
+            bw.write("\n");
+            cnt ++;
+            if (cnt % 1000000 ==0) LogUpgrader.showLine(cnt, 1000000);
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
     public static void initialize(String file_1, String file_2) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(file_1));
         String line = "";
@@ -99,6 +117,8 @@ public class TypeIndex {
 
     public static void main(String[] args) throws Exception {
         //initialize(args[0], args[1]);
-        scan(args[0], args[1], args[2], args[3]);
+        //scan(args[0], args[1], args[2], args[3]);
+        EntityIndex.initFromMid2Idx(args[5]);
+        ChangeFromMid2Idx(args[2], args[3]);
     }
 }
