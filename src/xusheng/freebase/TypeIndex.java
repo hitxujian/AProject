@@ -83,9 +83,8 @@ public class TypeIndex {
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            try {
-                bw.write(EntityIndex.getIdx(spt[0]));
-            } catch (Exception ex) { ex.printStackTrace();}
+            if (EntityIndex.getIdx(spt[0]).equals(null)) continue;
+            bw.write(EntityIndex.getIdx(spt[0]));
             for (int i=1; i<spt.length; i++) bw.write("\t" + spt[i]);
             bw.write("\n");
             cnt ++;
