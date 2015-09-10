@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @author Xusheng
@@ -83,14 +84,36 @@ public class TypeIndex {
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            if (EntityIndex.getIdx(spt[0]).equals(null)) continue;
+            if (EntityIndex.getIdx(spt[0]) == null) continue;
             bw.write(EntityIndex.getIdx(spt[0]));
             for (int i=1; i<spt.length; i++) bw.write("\t" + spt[i]);
             bw.write("\n");
             cnt ++;
-            if (cnt % 10000000 ==0) LogUpgrader.showLine(cnt, 10000000);
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
         }
         br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static void generateTEfile(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        HashMap<String, StringBuffer> map = new HashMap<>();
+        String line = ""; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            for (int i=1; i<spt.length; i++) {
+                if (! map.containsKey(spt[i])) map.put(spt[i], new StringBuffer());
+                map.get(spt[i]).append("\t" + spt[0]);
+            }
+            cnt ++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
+        }
+        br.close();
+        for (Map.Entry<String, StringBuffer> entry: map.entrySet()) {
+            bw.write(entry.getKey() + entry.getValue() + "\n");
+        }
         bw.close();
         LogInfo.logs("Job done.");
     }
@@ -121,5 +144,7 @@ public class TypeIndex {
         //scan(args[0], args[1], args[2]);
         EntityIndex.initFromMid2Idx(args[5]);
         ChangeFromMid2Idx(args[2], args[3]);
+        EntityIndex.clear();
+        generateTEfile(args[3], args[4]);
     }
 }

@@ -36,6 +36,11 @@ public class EntityIndex {
             return null;
     }
 
+    public static void clear() {
+        midToIdx.clear();
+        idxToMid.clear();
+    }
+
     public static void initialize_old(String file) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line = ""; int idx = 0;
