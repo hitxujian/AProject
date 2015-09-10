@@ -55,7 +55,7 @@ public class EntityIndex {
                     typeSet.put(arg2, tidx);
                     bw_t.write(arg2 + "\t" + tidx + "\n");
                 }
-                bw_et.write(entSet.get(arg1) + "\t" + typeSet.get(arg2));
+                bw_et.write(entSet.get(arg1) + "\t" + typeSet.get(arg2) + "\n");
                 continue;
             }
             if (! entSet.containsKey(arg2)) {
