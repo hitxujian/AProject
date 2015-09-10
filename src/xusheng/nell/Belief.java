@@ -1,4 +1,4 @@
-package xusheng.aaai2016.experiment;
+package xusheng.nell;
 
 /**
  * Created by Administrator on 2015/9/6.

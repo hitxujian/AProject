@@ -1,14 +1,11 @@
-package xusheng.nell;
+package xusheng.aaai2016.experiment;
 
 import fig.basic.LogInfo;
 import xusheng.util.log.LogUpgrader;
+import xusheng.util.struct.MapHelper;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Xusheng 9/8/2015

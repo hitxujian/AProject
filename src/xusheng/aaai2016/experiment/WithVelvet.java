@@ -1,6 +1,7 @@
 package xusheng.aaai2016.experiment;
 
 import fig.basic.LogInfo;
+import xusheng.nell.Belief;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
 
