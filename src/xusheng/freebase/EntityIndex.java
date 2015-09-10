@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Created by Administrator on 2015/5/2.
+ * Provide transformation between index and mid of Freebase Entity
+ * @author Xusheng
+ * @version 1.0
  */
 public class EntityIndex {
     public static HashMap<String, String> midToIdx = new HashMap<>();

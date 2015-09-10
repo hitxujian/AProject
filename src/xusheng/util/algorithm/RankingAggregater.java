@@ -1,11 +1,12 @@
 package xusheng.util.algorithm;
 
 /**
- * Created by Xusheng on 2015/9/8.
  * Input : n ranking lists (with or without weights)
  * Output: one ranking lists
  * Algorithm: Genetic Algorithm (mutate -> choose best group -> continue to mutate....)
- *
+ * @author Xusheng
+ * @author freefish_6174@126.com
+ * @version 2.0
  */
 import java.util.*;
 
@@ -19,7 +20,11 @@ public class RankingAggregater {
 
     public static boolean verbose = true;
 
-    /* weighted list */
+    /**
+     * weighted list
+     * @param lists      ranking lists
+     * @param weightList weights list
+     */
     public static ArrayList<String> rankingAggregate(ArrayList<ArrayList<String>> lists, ArrayList<Double> weightList) {
         ArrayList<ArrayList<String>> tmp = new ArrayList<ArrayList<String>>();
         int len = lists.size();
@@ -32,7 +37,10 @@ public class RankingAggregater {
         return ret;
     }
 
-    /* non-weighted list */
+    /**
+     * non-weighted list
+     * @param lists      ranking lists
+     */
     public static ArrayList<String> rankingAggregate(ArrayList<ArrayList<String>> lists) {
         ArrayList<String> ret = ranking(lists);
         return ret;
@@ -211,4 +219,8 @@ public class RankingAggregater {
         }
         System.out.println("\n" + getScore(standard));
     }
+
+    /* Output:
+
+     */
 }
