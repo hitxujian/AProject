@@ -54,45 +54,48 @@ public class PredicateIndex {
 
     // 8.23 whole new scan from the original freebase data
     public static void scan(String inFile_1, String inFile_2, String outFile_1, String outFile_2) throws Exception {
-        BufferedReader br_2 = new BufferedReader(new FileReader(inFile_2));
+        //BufferedReader br_2 = new BufferedReader(new FileReader(inFile_2));
         HashMap<String, Integer> preset = new HashMap<>();
-        String line = "";
+        /*String line = "";
         while ((line = br_2.readLine()) != null) {
             String[] spt = line.split("\t");
             preset.put(spt[0], Integer.parseInt(spt[1]));
         }
         br_2.close();
         LogInfo.logs("Part of predicate set read into menmory! size: %d", preset.size());
-
+        */
         BufferedReader br_1 = new BufferedReader(new FileReader(inFile_1));
         BufferedWriter bw_1 = new BufferedWriter(new FileWriter(outFile_1));
         BufferedWriter bw_2 = new BufferedWriter(new FileWriter(outFile_2));
 
 
-        line = "";
-        int cnt = 0, pcnt = 2498;//pcnt = 0;
+        String line = "";
+        int cnt = 0, pcnt = 0;
         while ((line = br_1.readLine()) !=null) {
             cnt ++;
-            if (cnt < 1020000000) continue;
+            //if (cnt < 1020000000) continue;
             if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
             String[] spt = line.split("\t");
             String ent1 = getName(spt[0]);
-            int index;
+            /*int index;
             if (EntityIndex.getIdx(ent1) != null) index = Integer.parseInt(EntityIndex.getIdx(ent1));
             else continue;
-            if (index < 20395306) continue;
+            if (index < 20395306) continue;*/
             String ent2 = getName(spt[2]);
             String pred = getName(spt[1]);
-            if (EntityIndex.getIdx(ent1) != null && EntityIndex.getIdx(ent2) != null)
-                if (!pred.startsWith("freebase") && !pred.startsWith("base") && !pred.startsWith("common")
-                        && !pred.startsWith("type") && !pred.startsWith("user") && !pred.startsWith("key")) {
-                    if (!preset.containsKey(pred)) {
-                        pcnt++;
-                        preset.put(pred, pcnt);
-                        bw_1.write(pred + "\t" + pcnt + "\n");
-                    }
-                    bw_2.write(EntityIndex.getIdx(ent1) + "\t" + preset.get(pred) + "\t" + EntityIndex.getIdx(ent2) + "\n");
+            if (EntityIndex.getIdx(ent1) == null || EntityIndex.getIdx(ent2) == null) {
+                LogInfo.logs("Can not find any idx for %s", line );
+                continue;
+            }
+            if (!pred.startsWith("freebase") && !pred.startsWith("base") && !pred.startsWith("common")
+                    && !pred.startsWith("type") && !pred.startsWith("user") && !pred.startsWith("key")) {
+                if (!preset.containsKey(pred)) {
+                    pcnt++;
+                    preset.put(pred, pcnt);
+                    bw_1.write(pred + "\t" + pcnt + "\n");
                 }
+                bw_2.write(EntityIndex.getIdx(ent1) + "\t" + preset.get(pred) + "\t" + EntityIndex.getIdx(ent2) + "\n");
+            }
         }
         br_1.close();
         LogInfo.logs("Predicates size: %d", preset.size());
@@ -120,7 +123,7 @@ public class PredicateIndex {
 
     public static void main(String[] args) throws Exception {
         //construct(args[0], args[1]);
-        EntityIndex.initialize(args[0]);
+        EntityIndex.initFromMid2Idx(args[0]);
         scan(args[1], args[4], args[2], args[3]);
     }
 }

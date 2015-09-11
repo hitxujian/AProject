@@ -115,7 +115,7 @@ public class EntityIndex {
     public static void scan(String inFile, String outFile) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
-        HashSet<String> entset = new HashSet<>();
+        HashSet<String> entSet = new HashSet<>();
         String line = "";
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -125,12 +125,12 @@ public class EntityIndex {
             String ent1 = getName(spt[0]);
             //String ent2 = getName(spt[2]);
             if (ent1.startsWith("m."))
-                if (!entset.contains(ent1)) {
+                if (!entSet.contains(ent1)) {
                     bw.write(ent1 + "\n");
-                    entset.add(ent1);
+                    entSet.add(ent1);
                 }
         }
-        LogInfo.logs("Total size: %d", entset.size());
+        LogInfo.logs("Total size: %d", entSet.size());
         br.close();
         bw.close();
     }
