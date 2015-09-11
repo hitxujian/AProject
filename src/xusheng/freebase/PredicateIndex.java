@@ -65,11 +65,13 @@ public class PredicateIndex {
         BufferedWriter bw_e = new BufferedWriter(new FileWriter(entFile));
 
         String line = "";
-        int cnt = 0, pcnt = 0, ecnt = 0;
+        int cnt = 0, pcnt = 0, ecnt = 0, psize = 0;
         while ((line = br_1.readLine()) !=null) {
             cnt ++;
-            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
-
+            if (cnt % 10000000 == 0) {
+                LogUpgrader.showLine(cnt, 10000000);
+                LogInfo.logs("Entity Size: %d, Predicate Size: %d, Property Size: %d.", entSet.size(), preSet.size(), psize);
+            }
             String[] spt = line.split("\t");
             String ent1 = getName(spt[0]);
             String ent2 = getName(spt[2]);
@@ -96,6 +98,7 @@ public class PredicateIndex {
                     bw_p.write(pred + "\t" + pcnt + "\n");
                 }
                 bw_f.write(entSet.get(ent1) + "\t" + preSet.get(pred) + "\t" + entSet.get(ent2) + "\n");
+                psize ++;
             }
         }
         br_1.close();
