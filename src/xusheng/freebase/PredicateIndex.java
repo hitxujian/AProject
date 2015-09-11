@@ -52,10 +52,12 @@ public class PredicateIndex {
         return ret;
     }
 
+    public static HashMap<String, Integer> preSet = new HashMap<>();
+    public static HashMap<String, Integer> entSet = new HashMap<>();
+
     // 8.23 whole new scan from the original freebase data
     public static void scan(String inFile_1, String outFile_1, String outFile_2, String entFile) throws Exception {
-        HashMap<String, Integer> preSet = new HashMap<>();
-        HashMap<String, Integer> entSet = new HashMap<>();
+
         BufferedReader br_1 = new BufferedReader(new FileReader(inFile_1));
 
         BufferedWriter bw_p = new BufferedWriter(new FileWriter(outFile_1));
