@@ -53,54 +53,55 @@ public class PredicateIndex {
     }
 
     // 8.23 whole new scan from the original freebase data
-    public static void scan(String inFile_1, String inFile_2, String outFile_1, String outFile_2) throws Exception {
-        //BufferedReader br_2 = new BufferedReader(new FileReader(inFile_2));
-        HashMap<String, Integer> preset = new HashMap<>();
-        /*String line = "";
-        while ((line = br_2.readLine()) != null) {
-            String[] spt = line.split("\t");
-            preset.put(spt[0], Integer.parseInt(spt[1]));
-        }
-        br_2.close();
-        LogInfo.logs("Part of predicate set read into menmory! size: %d", preset.size());
-        */
+    public static void scan(String inFile_1, String outFile_1, String outFile_2, String entFile) throws Exception {
+        HashMap<String, Integer> preSet = new HashMap<>();
+        HashMap<String, Integer> entSet = new HashMap<>();
         BufferedReader br_1 = new BufferedReader(new FileReader(inFile_1));
-        BufferedWriter bw_1 = new BufferedWriter(new FileWriter(outFile_1));
-        BufferedWriter bw_2 = new BufferedWriter(new FileWriter(outFile_2));
 
+        BufferedWriter bw_p = new BufferedWriter(new FileWriter(outFile_1));
+        BufferedWriter bw_f = new BufferedWriter(new FileWriter(outFile_2));
+        BufferedWriter bw_e = new BufferedWriter(new FileWriter(entFile));
 
         String line = "";
-        int cnt = 0, pcnt = 0;
+        int cnt = 0, pcnt = 0, ecnt = 0;
         while ((line = br_1.readLine()) !=null) {
             cnt ++;
-            //if (cnt < 1020000000) continue;
             if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
+
             String[] spt = line.split("\t");
             String ent1 = getName(spt[0]);
-            /*int index;
-            if (EntityIndex.getIdx(ent1) != null) index = Integer.parseInt(EntityIndex.getIdx(ent1));
-            else continue;
-            if (index < 20395306) continue;*/
             String ent2 = getName(spt[2]);
             String pred = getName(spt[1]);
-            if (EntityIndex.getIdx(ent1) == null || EntityIndex.getIdx(ent2) == null) {
-                LogInfo.logs("Can not find any idx for %s", line );
-                continue;
+
+            if (! ent1.startsWith("m.") || ! ent2.startsWith("m.")) continue;
+
+            if (! entSet.containsKey(ent1)) {
+                ecnt ++;
+                entSet.put(ent1, ecnt);
+                bw_e.write(ent1 + "\t" + ecnt + "\n");
             }
+            if (! entSet.containsKey(ent2)) {
+                ecnt ++;
+                entSet.put(ent2, ecnt);
+                bw_e.write(ent2 + "\t" + ecnt + "\n");
+            }
+
             if (!pred.startsWith("freebase") && !pred.startsWith("base") && !pred.startsWith("common")
                     && !pred.startsWith("type") && !pred.startsWith("user") && !pred.startsWith("key")) {
-                if (!preset.containsKey(pred)) {
+                if (!preSet.containsKey(pred)) {
                     pcnt++;
-                    preset.put(pred, pcnt);
-                    bw_1.write(pred + "\t" + pcnt + "\n");
+                    preSet.put(pred, pcnt);
+                    bw_p.write(pred + "\t" + pcnt + "\n");
                 }
-                bw_2.write(EntityIndex.getIdx(ent1) + "\t" + preset.get(pred) + "\t" + EntityIndex.getIdx(ent2) + "\n");
+                bw_f.write(entSet.get(ent1) + "\t" + preSet.get(pred) + "\t" + entSet.get(ent2) + "\n");
             }
         }
         br_1.close();
-        LogInfo.logs("Predicates size: %d", preset.size());
-        bw_1.close();
-        bw_2.close();
+        bw_p.close();
+        bw_f.close();
+        bw_e.close();
+        LogInfo.logs("Predicates size: %d", preSet.size());
+        LogInfo.logs("Entity-Idx size: %d", entSet.size());
     }
 
     public static void construct(String infile, String outfile) throws Exception {
@@ -123,8 +124,8 @@ public class PredicateIndex {
 
     public static void main(String[] args) throws Exception {
         //construct(args[0], args[1]);
-        EntityIndex.initFromMid2Idx(args[0]);
-        scan(args[1], args[4], args[2], args[3]);
+        //EntityIndex.initFromMid2Idx(args[0]);
+        scan(args[1], args[2], args[3], args[0]);
     }
 }
 
