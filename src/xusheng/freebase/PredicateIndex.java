@@ -71,6 +71,9 @@ public class PredicateIndex {
             if (cnt % 10000000 == 0) {
                 LogUpgrader.showLine(cnt, 10000000);
                 LogInfo.logs("Entity Size: %d, Predicate Size: %d, Property Size: %d.", entSet.size(), preSet.size(), psize);
+                bw_e.flush();
+                bw_f.flush();
+                bw_p.flush();
             }
             String[] spt = line.split("\t");
             String ent1 = getName(spt[0]);
