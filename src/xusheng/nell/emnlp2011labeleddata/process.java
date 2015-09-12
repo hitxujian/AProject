@@ -1,6 +1,7 @@
 package xusheng.nell.emnlp2011labeleddata;
 
 import fig.basic.LogInfo;
+import xusheng.nell.EntityIndex;
 
 import java.io.*;
 
@@ -24,9 +25,9 @@ public class process {
         br.close();
     }
 
-    public static void main(String[] args) throws Exception {
-        File f = new File(args[0]);
-        bw = new BufferedWriter(new FileWriter(args[1]));
+    public static void processFile(String inFile, String outFile) throws Exception {
+        File f = new File(inFile);
+        bw = new BufferedWriter(new FileWriter(outFile));
         File[] files = f.listFiles();
         for (File file : files) {
             String path = file.getAbsolutePath();
@@ -36,5 +37,29 @@ public class process {
                 extractPos(rel, path);
             }
         }
+    }
+
+    public static void transform2idx(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("###")) {
+                bw.write(line + "\n");
+                continue;
+            }
+            String[] spt = line.split("\t");
+            String idx1 = EntityIndex.getIdx(spt[0]);
+            String idx2 = EntityIndex.getIdx(spt[1]);
+            if (idx1 != null && idx2 != null) bw.write(idx1 + "\t" + idx2 + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job Done.");
+    }
+
+    public static void main(String[] args) throws Exception {
+        EntityIndex.initialize(args[3]);
+        transform2idx(args[0], args[1]);
     }
 }
