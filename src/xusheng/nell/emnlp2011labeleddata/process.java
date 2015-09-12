@@ -31,7 +31,7 @@ public class process {
         for (File file : files) {
             String path = file.getAbsolutePath();
             String rel = file.getName();
-            if (! path.startsWith("_")) {
+            if (! rel.startsWith("_")) {
                 LogInfo.logs("Process file %s", path);
                 extractPos(rel, path);
             }
