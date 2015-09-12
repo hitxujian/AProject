@@ -59,7 +59,7 @@ public class process {
     }
 
     public static void main(String[] args) throws Exception {
-        EntityIndex.initialize(args[3]);
+        EntityIndex.initialize(args[2]);
         transform2idx(args[0], args[1]);
     }
 }
