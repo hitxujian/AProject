@@ -32,7 +32,7 @@ public class process {
         for (File file : files) {
             String path = file.getAbsolutePath();
             String rel = file.getName();
-            if (! rel.startsWith("_")) {
+            if (rel.startsWith("_")) {
                 LogInfo.logs("Process file %s", path);
                 extractPos(rel, path);
             }
@@ -59,6 +59,7 @@ public class process {
     }
 
     public static void main(String[] args) throws Exception {
+        processFile(args[0], args[1]);
         EntityIndex.initialize(args[2]);
         transform2idx(args[0], args[1]);
     }
