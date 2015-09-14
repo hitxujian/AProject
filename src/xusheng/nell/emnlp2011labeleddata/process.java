@@ -60,7 +60,7 @@ public class process {
 
     public static void main(String[] args) throws Exception {
         processFile(args[0], args[1]);
-        EntityIndex.initialize(args[2]);
-        transform2idx(args[0], args[1]);
+        //EntityIndex.initialize(args[2]);
+        //transform2idx(args[0], args[1]);
     }
 }
