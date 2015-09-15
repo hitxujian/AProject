@@ -2,13 +2,18 @@ package xusheng.aaai2016.experiment;
 
 import fig.basic.LogInfo;
 import fig.basic.Pair;
+import xusheng.nell.Belief;
 import xusheng.util.log.LogUpgrader;
+import xusheng.util.struct.MapHelper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/9/15.
@@ -16,8 +21,8 @@ import java.util.HashMap;
 public class ELPreparer {
 
     public static void main(String[] args) throws Exception {
-        //changeFormat(args[0], args[1]);
-        generate2Files(args[1], args[2], args[3], args[4]);
+        changeFormat2(args[0], args[1]);
+        //generate2Files(args[1], args[2], args[3], args[4]);
     }
 
     public static String removeUnderline(String entity) {
@@ -39,6 +44,34 @@ public class ELPreparer {
             bw.write(removeUnderline(spt[0]) + "\t" + relation + "\t" + removeUnderline(spt[1]) + "\n");
         }
         br.close();
+        bw.close();
+        LogInfo.logs("Job Done.");
+    }
+
+    public static void changeFormat2(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        HashMap<String, HashSet<Pair<String, String>>> contents = new HashMap<>();
+        HashMap<String, Integer> count = new HashMap<>();
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            String rel = spt[1];
+            if (! contents.containsKey(rel)) contents.put(rel, new HashSet<>());
+            contents.get(rel).add(new Pair<>(spt[0], spt[2]));
+        }
+        br.close();
+        for (Map.Entry<String, HashSet<Pair<String, String>>> entry : contents.entrySet())
+            count.put(entry.getKey(), entry.getValue().size());
+        ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(count, true);
+        LogInfo.logs("Sorted size: %d", sorted.size());
+        for (int i=0; i<sorted.size(); i++) {
+            String rel = sorted.get(i).getKey();
+            HashSet<Pair<String, String>> set = contents.get(rel);
+            String format = String.format("###\t%s\t%d\t:\n", rel, set.size());
+            bw.write(format);
+            for (Pair<String, String> pair: set) bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
+        }
         bw.close();
         LogInfo.logs("Job Done.");
     }
