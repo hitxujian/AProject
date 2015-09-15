@@ -22,9 +22,9 @@ import java.util.Map;
 public class ELPreparer {
 
     public static void main(String[] args) throws Exception {
-        //changeFormat2(args[0], args[1]);
+        changeFormat2(args[0], args[1]);
         //generate2Files(args[1], args[2], args[3], args[4]);
-        fromIdx2Mid(args[0], args[1]);
+        //fromIdx2Mid(args[0], args[1]);
     }
 
     public static String removeUnderline(String entity) {
