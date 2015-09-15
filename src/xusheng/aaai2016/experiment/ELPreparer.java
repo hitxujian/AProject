@@ -2,6 +2,7 @@ package xusheng.aaai2016.experiment;
 
 import fig.basic.LogInfo;
 import fig.basic.Pair;
+import xusheng.freebase.EntityIndex;
 import xusheng.nell.Belief;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
@@ -21,12 +22,30 @@ import java.util.Map;
 public class ELPreparer {
 
     public static void main(String[] args) throws Exception {
-        changeFormat2(args[0], args[1]);
+        //changeFormat2(args[0], args[1]);
         //generate2Files(args[1], args[2], args[3], args[4]);
+        fromIdx2Mid(args[0], args[1]);
     }
 
     public static String removeUnderline(String entity) {
         return entity.replaceAll("_+", " ");
+    }
+
+    public static void fromIdx2Mid(String inFile, String outFile) throws Exception {
+        EntityIndex.initialize_old("/home/xusheng/old_data/entity_index.txt");
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("###")) {
+                bw.write(line + "\n");
+                continue;
+            }
+            String[] spt = line.split("\t");
+            bw.write(EntityIndex.getMid(spt[0]) + "\t" + EntityIndex.getMid(spt[1]) + "\n");
+        }
+        br.close();
+        bw.close();
     }
 
     public static void changeFormat(String inFile, String outFile) throws Exception {
