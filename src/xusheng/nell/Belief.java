@@ -11,7 +11,7 @@ public class Belief {
 
     public Belief(String line) {
         String[] spt = line.split("\t");
-        if (!spt[0].startsWith("concept") || !spt[0].startsWith("concept")) {
+        if (!spt[0].startsWith("concept") || !spt[2].startsWith("concept")) {
             isConcept = false;
             return;
         }
