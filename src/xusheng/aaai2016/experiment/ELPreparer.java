@@ -24,6 +24,7 @@ public class ELPreparer {
 
     public static void main(String[] args) throws Exception {
         changeFormat2(args[0], args[1]);
+        generateIdxFile(args[2], args[1], args[3]);
         //generate2Files(args[1], args[2], args[3], args[4]);
         //fromIdx2Mid(args[0], args[1]);
     }
@@ -97,6 +98,38 @@ public class ELPreparer {
             for (Triple<String, String, Integer> triple: set)
                 bw.write(triple.getFirst() + "\t" + triple.getSecond() + "\t" + triple.getThird() + "\n");
         }
+        bw.close();
+        LogInfo.logs("Job Done.");
+    }
+
+    public static void generateIdxFile(String idxFile, String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(idxFile));
+        HashMap<Integer, String> mp = new HashMap<>();
+        String line; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 10000 == 0) LogUpgrader.showLine(cnt, 10000);
+            String[] spt = line.split("\t");
+            String ret = spt[0] + "\t" + spt[2];
+            mp.put(cnt, ret);
+        }
+        br.close();
+
+        br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String relation = ""; cnt = 0;
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 10000 == 0) LogUpgrader.showLine(cnt, 10000);
+            if (line.startsWith("###")) {
+                bw.write(line + "\n");
+                continue;
+            }
+            String spt[] = line.split("\t");
+            int lineNum = Integer.parseInt(spt[2]);
+            bw.write(mp.get(lineNum) + "\n");
+        }
+        br.close();
         bw.close();
         LogInfo.logs("Job Done.");
     }
