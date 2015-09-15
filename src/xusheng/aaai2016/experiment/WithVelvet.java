@@ -19,7 +19,7 @@ public class WithVelvet {
     public static void main(String[] args) throws Exception {
         //countRel(args[0], args[1]);
         //process(args[0], args[2], args[3]);
-        for (int i = 10; i < 50; i++) {
+        for (int i = 40; i < 100; i++) {
             int j = i + 52;
             choose52_829_40(args[0], args[1], args[2], i, j);
         }
@@ -97,7 +97,7 @@ public class WithVelvet {
             typeMap.get(type).add(spt[1]);
         }
         br_t.close();
-        LogInfo.logs("Entity Type size: %d", typeMap.size());
+        //LogInfo.logs("Entity Type size: %d", typeMap.size());
 
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
