@@ -82,7 +82,7 @@ public class ELPreparer {
             contents.get(rel).add(new Triple<>(spt[0], spt[2], cnt));
         }
         br.close();
-        LogInfo.logs("Total Size: %d", contents);
+        LogInfo.logs("Total Size: %d", contents.size());
 
         for (Map.Entry<String, HashSet<Triple<String, String, Integer>>> entry : contents.entrySet())
             count.put(entry.getKey(), entry.getValue().size());
