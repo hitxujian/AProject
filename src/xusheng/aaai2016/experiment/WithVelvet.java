@@ -50,7 +50,7 @@ public class WithVelvet {
         BufferedWriter bw_o = new BufferedWriter(new FileWriter(outFile));
         PrintWriter pw = new PrintWriter(bw_o);
         BufferedWriter bw_t = new BufferedWriter(new FileWriter(typeFile));
-        HashMap<String, ArrayList<Belief>> contents = new HashMap<>();
+        HashMap<String, HashSet<Belief>> contents = new HashMap<>();
         HashMap<String, Integer> count = new HashMap<>();
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -60,7 +60,7 @@ public class WithVelvet {
                 bw_t.write(belief.toString() + "\n");
                 continue;
             }
-            if (! contents.containsKey(belief.relation)) contents.put(belief.relation, new ArrayList<>());
+            if (! contents.containsKey(belief.relation)) contents.put(belief.relation, new HashSet<>());
             contents.get(belief.relation).add(belief);
             cnt ++;
             if (cnt % 10000 == 0) LogUpgrader.showLine(cnt, 10000);
@@ -68,15 +68,15 @@ public class WithVelvet {
         LogInfo.logs("Total Size: %d", contents.size());
         br.close();
         bw_t.close();
-        for (Map.Entry<String, ArrayList<Belief>> entry : contents.entrySet())
+        for (Map.Entry<String, HashSet<Belief>> entry : contents.entrySet())
             count.put(entry.getKey(), entry.getValue().size());
         ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(count);
         LogInfo.logs("Sorted size: %d", sorted.size());
         for (int i=0; i<sorted.size(); i++) {
             String rel = sorted.get(i).getKey();
-            ArrayList<Belief> list = contents.get(rel);
-            pw.format("###\t%s\t%d\t:\n", rel, list.size());
-            for (Belief belief: list) pw.write(belief.toString() + "\n");
+            HashSet<Belief> set = contents.get(rel);
+            pw.format("###\t%s\t%d\t:\n", rel, set.size());
+            for (Belief belief: set) pw.write(belief.toString() + "\n");
         }
         pw.close();
     }
