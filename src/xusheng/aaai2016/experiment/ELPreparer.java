@@ -17,6 +17,10 @@ public class ELPreparer {
         changeFormat(args[0], args[1]);
     }
 
+    public static String removeUnderline(String entity) {
+        return entity.replaceAll("_+", " ");
+    }
+
     public static void changeFormat(String inFile, String outFile) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
@@ -29,7 +33,7 @@ public class ELPreparer {
                 continue;
             }
             String spt[] = line.split("\t");
-            bw.write(spt[0] + "\t" + relation + "\t" + spt[1] + "\n");
+            bw.write(removeUnderline(spt[0]) + "\t" + relation + "\t" + removeUnderline(spt[1]) + "\n");
         }
         br.close();
         bw.close();
