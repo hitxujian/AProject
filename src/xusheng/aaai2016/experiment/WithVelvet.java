@@ -18,8 +18,8 @@ public class WithVelvet {
 
     public static void main(String[] args) throws Exception {
         //countRel(args[0], args[1]);
-        //process(args[0], args[2], args[3]);
-        choose52_829_40(args[2], args[3], args[4], Integer.parseInt(args[5]), Integer.parseInt(args[6]));
+        process(args[0], args[2], args[3]);
+        //choose52_829_40(args[2], args[3], args[4], Integer.parseInt(args[5]), Integer.parseInt(args[6]));
     }
 
     public static void countRel(String inFile, String outFile) throws Exception {
@@ -109,8 +109,7 @@ public class WithVelvet {
             String[] spt = line.split("\t");
             entSet.add(spt[0]);
             entSet.add(spt[1]);
-
-
         }
     }
+
 }
