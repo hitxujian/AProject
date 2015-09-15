@@ -113,7 +113,7 @@ public class WithVelvet {
             entSet.add(spt[1]);
             HashSet<String> types = null;
             if (typeMap.containsKey(spt[0])) {
-                typeMap.get(spt[0]);
+                types = typeMap.get(spt[0]);
                 for (String type : types) typeSet.add(type);
             }
             if (typeMap.containsKey(spt[1])) {
