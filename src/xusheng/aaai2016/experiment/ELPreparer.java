@@ -17,7 +17,7 @@ public class ELPreparer {
 
     public static void main(String[] args) throws Exception {
         //changeFormat(args[0], args[1]);
-        genrate2Files(args[1], args[2], args[3], args[4]);
+        generate2Files(args[1], args[2], args[3], args[4]);
     }
 
     public static String removeUnderline(String entity) {
@@ -43,7 +43,7 @@ public class ELPreparer {
         LogInfo.logs("Job Done.");
     }
 
-    public static void genrate2Files(String inFile, String linkingFile, String nameFile, String idxFile) throws Exception {
+    public static void generate2Files(String inFile, String linkingFile, String nameFile, String idxFile) throws Exception {
         BufferedReader br_i = new BufferedReader(new FileReader(inFile));
         BufferedReader br_l = new BufferedReader(new FileReader(linkingFile));
         BufferedWriter bw_n = new BufferedWriter(new FileWriter(nameFile));
