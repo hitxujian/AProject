@@ -103,11 +103,11 @@ public class WithVelvet {
         int cnt = 0;
         while ((line = br.readLine()) != null) {
             if (line.startsWith("###")) {
-                LogInfo.logs(line + "@@@@@" + cnt);
+                //LogInfo.logs(line + "@@@@@" + cnt);
                 cnt++;
                 if (cnt < st) continue;
                 if (cnt > ed) break;
-                LogInfo.logs(line + "@@@@@" + cnt);
+                //LogInfo.logs(line + "@@@@@" + cnt);
                 bw.write(line + "\n");
                 continue;
             }
@@ -126,6 +126,7 @@ public class WithVelvet {
                 for (String type : types) typeSet.add(type);
             }
         }
+        bw.close();
         LogInfo.logs("Entity Size: %d\n", entSet.size());
         LogInfo.logs("Type Coverage: %d\n", typeSet.size());
     }
