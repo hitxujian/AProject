@@ -105,9 +105,10 @@ public class WithVelvet {
                 cnt++;
                 if (cnt < st) continue;
                 if (cnt > ed) break;
-                bw.write(line);
+                bw.write(line + "\n");
                 continue;
             }
+            if (cnt < st) continue;
             String[] spt = line.split("\t");
             entSet.add(spt[0]);
             entSet.add(spt[1]);
