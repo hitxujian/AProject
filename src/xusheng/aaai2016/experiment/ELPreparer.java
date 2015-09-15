@@ -26,7 +26,7 @@ public class ELPreparer {
         changeFormat2(args[0], args[1]);
         generateIdxFile(args[2], args[1], args[3]);
         //generate2Files(args[1], args[2], args[3], args[4]);
-        //fromIdx2Mid(args[0], args[1]);
+        fromIdx2Mid(args[4], args[5]);
     }
 
     public static String removeUnderline(String entity) {
