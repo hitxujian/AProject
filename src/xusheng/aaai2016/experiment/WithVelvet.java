@@ -18,7 +18,8 @@ public class WithVelvet {
 
     public static void main(String[] args) throws Exception {
         //countRel(args[0], args[1]);
-        process(args[0], args[2], args[3]);
+        //process(args[0], args[2], args[3]);
+        choose52_829_40(args[2], args[3], args[4], Integer.parseInt(args[5]), Integer.parseInt(args[6]));
     }
 
     public static void countRel(String inFile, String outFile) throws Exception {
@@ -70,7 +71,7 @@ public class WithVelvet {
         bw_t.close();
         for (Map.Entry<String, HashSet<Belief>> entry : contents.entrySet())
             count.put(entry.getKey(), entry.getValue().size());
-        ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(count);
+        ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(count, true);
         LogInfo.logs("Sorted size: %d", sorted.size());
         for (int i=0; i<sorted.size(); i++) {
             String rel = sorted.get(i).getKey();
@@ -79,5 +80,37 @@ public class WithVelvet {
             for (Belief belief: set) pw.write(belief.toString() + "\n");
         }
         pw.close();
+    }
+
+    public static void choose52_829_40(String inFile, String typeFile, String outFile, int st, int ed) throws Exception {
+        BufferedReader br_t = new BufferedReader(new FileReader(typeFile));
+        String line;
+        HashMap<String, HashSet<String>> typeMap = new HashMap<>();
+        while ((line = br_t.readLine()) != null) {
+            String[] spt = line.split("\t");
+            if (! typeMap.containsKey(spt[0])) typeMap.put(spt[0], new HashSet<>());
+            typeMap.get(spt[0]).add(spt[1]);
+        }
+        br_t.close();
+        LogInfo.logs("Entity Type done.");
+
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        HashSet<String> entSet = new HashSet<>(), typeSet = new HashSet<>();
+        int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("###")) {
+                cnt ++;
+                if (cnt < st) continue;
+                if (cnt > ed) break;
+                bw.write(line);
+                continue;
+            }
+            String[] spt = line.split("\t");
+            entSet.add(spt[0]);
+            entSet.add(spt[1]);
+
+
+        }
     }
 }
