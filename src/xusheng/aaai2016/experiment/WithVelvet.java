@@ -84,6 +84,7 @@ public class WithVelvet {
     }
 
     public static void choose52_829_40(String inFile, String typeFile, String outFile, int st, int ed) throws Exception {
+        LogInfo.logs(st + "\t" + ed + "\n");
         BufferedReader br_t = new BufferedReader(new FileReader(typeFile));
         String line;
         HashMap<String, HashSet<String>> typeMap = new HashMap<>();
@@ -94,7 +95,7 @@ public class WithVelvet {
             typeMap.get(type).add(spt[1]);
         }
         br_t.close();
-        LogInfo.logs("Entity Type done.");
+        LogInfo.logs("Entity Type size: %d", typeMap.size());
 
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
@@ -102,13 +103,16 @@ public class WithVelvet {
         int cnt = 0;
         while ((line = br.readLine()) != null) {
             if (line.startsWith("###")) {
+                LogInfo.logs(line + "@@@@@" + cnt);
                 cnt++;
                 if (cnt < st) continue;
                 if (cnt > ed) break;
+                LogInfo.logs(line + "@@@@@" + cnt);
                 bw.write(line + "\n");
                 continue;
             }
             if (cnt < st) continue;
+            bw.write(line + "\n");
             String[] spt = line.split("\t");
             entSet.add(spt[0]);
             entSet.add(spt[1]);
