@@ -19,8 +19,10 @@ public class WithVelvet {
     public static void main(String[] args) throws Exception {
         //countRel(args[0], args[1]);
         //process(args[0], args[2], args[3]);
-
-        choose52_829_40(args[0], args[1], args[2], Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+        for (int i = 10; i < 50; i++) {
+            int j = i + 52;
+            choose52_829_40(args[0], args[1], args[2], i, j);
+        }
     }
 
     public static void countRel(String inFile, String outFile) throws Exception {
