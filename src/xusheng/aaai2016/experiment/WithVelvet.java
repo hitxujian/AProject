@@ -19,10 +19,11 @@ public class WithVelvet {
     public static void main(String[] args) throws Exception {
         //countRel(args[0], args[1]);
         //process(args[0], args[2], args[3]);
-        for (int i = 40; i < 100; i++) {
+        /*for (int i = 40; i < 100; i++) {
             int j = i + 52;
             choose52_829_40(args[0], args[1], args[2], i, j);
-        }
+        }*/
+        get50_102(args[0], args[1]);
     }
 
     public static void countRel(String inFile, String outFile) throws Exception {
@@ -131,5 +132,34 @@ public class WithVelvet {
         bw.close();
         LogInfo.logs("Entity Size: %d\n", entSet.size());
         LogInfo.logs("Type Coverage: %d\n", typeSet.size());
+    }
+
+    public static void get50_102(String inFile, String path) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = null;
+        int cnt = 0, num = 0;
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("###")) {
+                cnt ++;
+                if (cnt < 50) continue;
+                if (cnt > 102) break;
+                String absPath = String.format(path + "/%d", num);
+                File dir = new File(absPath);
+                try {
+                    dir.mkdirs();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                bw = new BufferedWriter(new FileWriter(absPath + "/info.txt"));
+                bw.write(line.split("\t")[1]);
+                bw.close();
+                bw = new BufferedWriter(new FileWriter(absPath + "/entity_pairs.txt"));
+                continue;
+            }
+            if (cnt < 50) continue;
+            bw.write(line + "\n");
+        }
+        bw.close();
     }
 }
