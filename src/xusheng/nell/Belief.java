@@ -11,8 +11,8 @@ public class Belief {
     public Belief(String line) {
         String[] spt = line.split("\t");
         entity = spt[0];
-        relation = spt[2];
-        value = spt[3];
+        relation = spt[1];
+        value = spt[2];
         if (relation.equals("generalizations")) isType = true;
     }
 
