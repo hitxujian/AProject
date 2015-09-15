@@ -128,6 +128,7 @@ public class PredicateIndex {
             }
         }
         br.close();
+        bw.close();
     }
 
     public static void main(String[] args) throws Exception {

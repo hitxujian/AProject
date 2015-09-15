@@ -1,6 +1,7 @@
 package xusheng.aaai2016.experiment;
 
 import fig.basic.LogInfo;
+import xusheng.freebase.EntityIndex;
 import xusheng.nell.Belief;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
@@ -23,7 +24,9 @@ public class WithVelvet {
             int j = i + 52;
             choose52_829_40(args[0], args[1], args[2], i, j);
         }*/
-        get50_102(args[0], args[1]);
+        //
+        changeIdx(args[0], args[1], args[2]);
+        get50_102(args[1], args[3]);
     }
 
     public static void countRel(String inFile, String outFile) throws Exception {
@@ -161,6 +164,23 @@ public class WithVelvet {
             if (cnt < 50) continue;
             bw.write(line + "\n");
             bw.flush();
+        }
+        bw.close();
+    }
+
+    public static void changeIdx(String inFile, String outFile, String fbFile) throws Exception {
+        EntityIndex.initFromMid2Idx(fbFile);
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("###")) {
+                bw.write(line + "\n");
+                continue;
+            }
+            String[] spt = line.split("\t");
+            String ent1 = spt[0], ent2 = spt[1];
+            bw.write(EntityIndex.getIdx(ent1) + "\t" + EntityIndex.getIdx(ent2) + "\n");
         }
         bw.close();
     }
