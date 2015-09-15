@@ -6,6 +6,7 @@ import xusheng.freebase.EntityIndex;
 import xusheng.nell.Belief;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
+import xusheng.util.struct.Triple;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -70,26 +71,31 @@ public class ELPreparer {
     public static void changeFormat2(String inFile, String outFile) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
-        HashMap<String, HashSet<Pair<String, String>>> contents = new HashMap<>();
+        HashMap<String, HashSet<Triple<String, String, Integer>>> contents = new HashMap<>();
         HashMap<String, Integer> count = new HashMap<>();
-        String line;
+        String line; int cnt = 0;
         while ((line = br.readLine()) != null) {
+            cnt ++;
             String[] spt = line.split("\t");
             String rel = spt[1];
             if (! contents.containsKey(rel)) contents.put(rel, new HashSet<>());
-            contents.get(rel).add(new Pair<>(spt[0], spt[2]));
+            contents.get(rel).add(new Triple<>(spt[0], spt[2], cnt));
         }
         br.close();
-        for (Map.Entry<String, HashSet<Pair<String, String>>> entry : contents.entrySet())
+        LogInfo.logs("Total Size: %d", contents);
+
+        for (Map.Entry<String, HashSet<Triple<String, String, Integer>>> entry : contents.entrySet())
             count.put(entry.getKey(), entry.getValue().size());
         ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(count, true);
         LogInfo.logs("Sorted size: %d", sorted.size());
+
         for (int i=0; i<sorted.size(); i++) {
             String rel = sorted.get(i).getKey();
-            HashSet<Pair<String, String>> set = contents.get(rel);
+            HashSet<Triple<String, String, Integer>> set = contents.get(rel);
             String format = String.format("###\t%s\t%d\t:\n", rel, set.size());
             bw.write(format);
-            for (Pair<String, String> pair: set) bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
+            for (Triple<String, String, Integer> triple: set)
+                bw.write(triple.getFirst() + "\t" + triple.getSecond() + "\t" + triple.getThird() + "\n");
         }
         bw.close();
         LogInfo.logs("Job Done.");
