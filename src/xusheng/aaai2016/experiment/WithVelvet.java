@@ -154,12 +154,13 @@ public class WithVelvet {
                 }
                 bw = new BufferedWriter(new FileWriter(absPath + "/info.txt"));
                 bw.write(line.split("\t")[1]);
-                bw.close();
+                bw.flush();
                 bw = new BufferedWriter(new FileWriter(absPath + "/entity_pairs.txt"));
                 continue;
             }
             if (cnt < 50) continue;
             bw.write(line + "\n");
+            bw.flush();
         }
         bw.close();
     }
