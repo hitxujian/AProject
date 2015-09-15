@@ -19,6 +19,7 @@ public class WithVelvet {
     public static void main(String[] args) throws Exception {
         //countRel(args[0], args[1]);
         //process(args[0], args[2], args[3]);
+
         choose52_829_40(args[2], args[3], args[4], Integer.parseInt(args[5]), Integer.parseInt(args[6]));
     }
 
@@ -88,8 +89,9 @@ public class WithVelvet {
         HashMap<String, HashSet<String>> typeMap = new HashMap<>();
         while ((line = br_t.readLine()) != null) {
             String[] spt = line.split("\t");
-            if (! typeMap.containsKey(spt[0])) typeMap.put(spt[0], new HashSet<>());
-            typeMap.get(spt[0]).add(spt[1]);
+            String type = spt[0].replaceAll("_+", " ");
+            if (! typeMap.containsKey(type)) typeMap.put(type, new HashSet<>());
+            typeMap.get(type).add(spt[1]);
         }
         br_t.close();
         LogInfo.logs("Entity Type done.");
@@ -100,7 +102,7 @@ public class WithVelvet {
         int cnt = 0;
         while ((line = br.readLine()) != null) {
             if (line.startsWith("###")) {
-                cnt ++;
+                cnt++;
                 if (cnt < st) continue;
                 if (cnt > ed) break;
                 bw.write(line);
@@ -109,14 +111,17 @@ public class WithVelvet {
             String[] spt = line.split("\t");
             entSet.add(spt[0]);
             entSet.add(spt[1]);
-            HashSet<String> types = typeMap.get(spt[0]);
-            for (String type : types) typeSet.add(type);
-            types = typeMap.get(spt[1]);
-            for (String type : types) typeSet.add(type);
+            HashSet<String> types = null;
+            if (typeMap.containsKey(spt[0])) {
+                typeMap.get(spt[0]);
+                for (String type : types) typeSet.add(type);
+            }
+            if (typeMap.containsKey(spt[1])) {
+                types = typeMap.get(spt[1]);
+                for (String type : types) typeSet.add(type);
+            }
         }
         LogInfo.logs("Entity Size: %d\n", entSet.size());
         LogInfo.logs("Type Coverage: %d\n", typeSet.size());
     }
-
-
 }
