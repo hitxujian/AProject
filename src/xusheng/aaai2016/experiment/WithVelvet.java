@@ -55,7 +55,11 @@ public class WithVelvet {
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
             Belief belief = new Belief(line);
-            if (belief.isType) bw_t.write(belief.toString() + "\n");
+            if (!belief.isConcept) continue;
+            if (belief.isType) {
+                bw_t.write(belief.toString() + "\n");
+                continue;
+            }
             if (! contents.containsKey(belief.relation)) contents.put(belief.relation, new ArrayList<>());
             contents.get(belief.relation).add(belief);
             cnt ++;
