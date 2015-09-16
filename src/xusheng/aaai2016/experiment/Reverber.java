@@ -41,7 +41,7 @@ public class Reverber {
         String line, absPath = ""; int num = 0;
         while ((line = br.readLine()) != null) {
             if (line.startsWith("###")) {
-                absPath = path + "/num";
+                absPath = String.format("%s/%d", path, num);
                 File f = new File(absPath);
                 f.mkdirs();
                 LogInfo.logs("mkdir: %s", absPath);
