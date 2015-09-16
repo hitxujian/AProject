@@ -25,8 +25,8 @@ public class WithVelvet {
             choose52_829_40(args[0], args[1], args[2], i, j);
         }*/
         //
-        changeIdx(args[0], args[1], args[2]);
-        get50_102(args[1], args[3]);
+        changeIdx(args[0], args[1], args[2], args[4], args[5]);
+        //get50_102(args[1], args[3]);
     }
 
     public static void countRel(String inFile, String outFile) throws Exception {
@@ -168,20 +168,33 @@ public class WithVelvet {
         bw.close();
     }
 
-    public static void changeIdx(String inFile, String outFile, String fbFile) throws Exception {
-        EntityIndex.initFromMid2Idx(fbFile);
+    public static void changeIdx(String inFile, String midFile, String outFile, String fbFile, String oldFbFile) throws Exception {
+        EntityIndex.initialize_old(oldFbFile);
+        //EntityIndex.initFromMid2Idx(fbFile);
         BufferedReader br = new BufferedReader(new FileReader(inFile));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(midFile));
         String line;
         while ((line = br.readLine()) != null) {
-            if (line.startsWith("###")) {
+            /*if (line.startsWith("###")) {
                 bw.write(line + "\n");
                 continue;
-            }
+            }*/
             String[] spt = line.split("\t");
-            String ent1 = spt[0], ent2 = spt[1];
-            bw.write(EntityIndex.getIdx(ent1) + "\t" + EntityIndex.getIdx(ent2) + "\n");
+            String ent1 = spt[1].split(" ")[0];
+            String ent2 = spt[2].split(" ")[0];
+            bw.write(EntityIndex.getMid(ent1) + "\t" + EntityIndex.getMid(ent2) + "\n");
         }
         bw.close();
+        LogInfo.logs("Change to Mid.");
+        EntityIndex.clear();
+        EntityIndex.initFromMid2Idx(fbFile);
+        br = new BufferedReader(new FileReader(midFile));
+        bw = new BufferedWriter(new FileWriter(outFile));
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            bw.write(EntityIndex.getIdx(spt[0]) + "\t" + EntityIndex.getIdx(spt[1]) + "\n");
+        }
+        bw.close();
+        LogInfo.logs("Job Done.");
     }
 }
