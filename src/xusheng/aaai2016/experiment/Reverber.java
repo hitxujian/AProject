@@ -1,11 +1,9 @@
 package xusheng.aaai2016.experiment;
 
+import fig.basic.LogInfo;
 import xusheng.freebase.EntityIndex;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 
 /**
  * Created by Administrator on 2015/9/16.
@@ -13,7 +11,8 @@ import java.io.FileWriter;
 public class Reverber {
 
     public static void main(String[] args) throws Exception {
-        generateInput(args[0], args[1], args[2]);
+        //generateInput(args[0], args[1], args[2]);
+        changeInputFormat(args[3], args[4]);
     }
 
     public static void generateInput(String inFile, String outFile, String fbFile) throws Exception {
@@ -32,6 +31,29 @@ public class Reverber {
                 if (ent1 != null && ent2 != null)
                     bw.write(ent1 + "\t" + ent2 + "\n");
             }
+        }
+        bw.close();
+    }
+
+    public static void changeInputFormat(String inFile, String path) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = null;
+        String line, absPath = ""; int num = 0;
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("###")) {
+                absPath = path + "/num";
+                File f = new File(absPath);
+                f.mkdirs();
+                LogInfo.logs("mkdir: %s", absPath);
+                bw = new BufferedWriter(new FileWriter(absPath + "/info.txt"));
+                bw.write(line.split("\t")[1] + "\n");
+                bw.close();
+                num ++;
+                bw = new BufferedWriter(new FileWriter(absPath + "/entity_pair.txt"));
+                continue;
+            }
+            bw.write(line + "\n");
+            bw.flush();
         }
         bw.close();
     }
