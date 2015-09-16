@@ -47,7 +47,7 @@ public class EntityIndex {
         if (verbose) LogInfo.begin_track("Start to read Old Fb Entity-Index");
         while ((line=br.readLine()) != null) {
             idx ++;
-            if (idx % 100000 == 0) LogInfo.logs("%d lines read into memory...", idx);
+            if (idx % 10000000 == 0) LogInfo.logs("%d lines read into memory...", idx);
             String[] spt = line.split("\t");
             midToIdx.put(spt[1], spt[0]);
             idxToMid.put(spt[0], spt[1]);
