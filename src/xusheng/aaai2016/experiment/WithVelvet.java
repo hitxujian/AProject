@@ -25,7 +25,7 @@ public class WithVelvet {
             choose52_829_40(args[0], args[1], args[2], i, j);
         }*/
         //
-        changeIdx(args[0], args[1], args[2], args[4], args[5]);
+        changeIdx(args[0], args[1], args[2], args[3], args[4]);
         //get50_102(args[1], args[3]);
     }
 
