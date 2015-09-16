@@ -24,10 +24,13 @@ public class Reverber {
         while ((line = br.readLine()) != null) {
             if (! line.startsWith("#")) continue;
             String[] spt = line.split("\t");
-            bw.write("###\t" + spt[0] + "\t:\n");
+            bw.write("###\t" + spt[0].substring(1, spt[0].length()) + "\t:\n");
             for (int i=1; i<spt.length; i++) {
                 String[] pair = spt[i].split(" ");
-                bw.write(EntityIndex.getIdx(pair[0]) + "\t" + EntityIndex.getIdx(pair[1]) + "\n");
+                String ent1 = EntityIndex.getIdx(pair[0]);
+                String ent2 = EntityIndex.getIdx(pair[1]);
+                if (ent1 != null && ent2 != null)
+                    bw.write(ent1 + "\t" + ent2 + "\n");
             }
         }
         bw.close();
