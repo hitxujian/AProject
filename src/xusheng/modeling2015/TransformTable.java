@@ -1,7 +1,7 @@
 package xusheng.modeling2015;
 
 import fig.basic.LogInfo;
-import xusheng.util.struct.Pair;
+import fig.basic.Pair;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
