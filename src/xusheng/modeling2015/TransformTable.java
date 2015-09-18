@@ -23,15 +23,10 @@ public class TransformTable {
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
         DecimalFormat df = new DecimalFormat("#.00");
-        String line; int idx = 1;
+        String line;
         while ((line = br.readLine()) != null) {
-            idx ++;
             String[] spt = line.split(",");
-            for (int i=1; i<idx; i++) {
-                double distance = Double.parseDouble(spt[i])/90;
-                //dist.put(new Pair<>(String.valueOf(idx), String.valueOf(i)), distance);
-                bw.write(idx + "\t" + i + "\t" + String.format("%.2f", distance) + "\n");
-            }
+            bw.write(spt[1] + "\t" + spt[2] + "\t" + spt[3] + "\n");
         }
         br.close();
         bw.close();
