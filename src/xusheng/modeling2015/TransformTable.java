@@ -51,6 +51,7 @@ public class TransformTable {
             dist.put(pair, Double.parseDouble(spt[2]));
         }
         br.close();
+        LogInfo.logs("Total cite size: %d", citeSet.size());
     }
 
     public static void calcuPath(String outFile) throws Exception{
@@ -85,7 +86,7 @@ public class TransformTable {
             for (String ed : citeSet)
                 bw.write(st + "\t" + ed + "\t" + dist.get(new Pair<>(st, ed)) + "\n");
         bw.close();
-        LogInfo.logs("Complete.");
+        LogInfo.logs("Complete, total size : %d", dist.size());
     }
 
     public static void main(String[] args) throws Exception {
