@@ -26,7 +26,7 @@ public class TransformTable {
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split(",");
-            bw.write(spt[1] + "\t" + spt[2] + "\t" + spt[3] + "\n");
+            bw.write(spt[0] + "\t" + spt[1] + "\t" + spt[2] + "\n");
         }
         br.close();
         bw.close();
