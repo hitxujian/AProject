@@ -66,7 +66,7 @@ public class TransformTable {
                         Pair<String, String> pair = new Pair<>(st, ed);
                         if (dist.containsKey(pair)) {
                             double dis = dist.get(pair);
-                            if (dis < sum) {
+                            if (dis > sum) {
                                 LogInfo.logs("Update dist <%s ==> %s, %f> : <%s ==> %s ==> %s, %f>",
                                         st, ed, dis, st, mid, ed, sum);
                                 dist.put(new Pair<>(st, ed), sum);
