@@ -39,8 +39,23 @@ public class TransformTable {
     }
 
     public static void readFile(String inFile1, String inFile2, String outFile) throws Exception {
+        // read 31 City
         BufferedReader br = new BufferedReader(new FileReader(inFile1));
         String line;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            citeSet.add(spt[0]);
+            citeSet.add(spt[1]);
+            Pair<String, String> pair = new Pair<>(spt[0], spt[1]);
+            dist.put(pair, Double.parseDouble(spt[2]));
+            pair = new Pair<>(spt[1], spt[0]);
+            dist.put(pair, Double.parseDouble(spt[2]));
+        }
+        br.close();
+        LogInfo.logs("Total city size: %d", citeSet.size());
+
+        // read other cites
+        br = new BufferedReader(new FileReader(inFile2));
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             citeSet.add(spt[0]);
@@ -85,13 +100,14 @@ public class TransformTable {
         for (String st : citeSet)
             for (String ed : citeSet)
                 if (! st.equals(ed))
-                    bw.write(st + "\t" + ed + "\t" + dist.get(new Pair<>(st, ed)) + "\n");
+                    bw.write(st + "\t" + ed + "\t"
+                            + String.format("%.2f", dist.get(new Pair<>(st, ed))) + "\n");
         bw.close();
         LogInfo.logs("Complete, total size : %d", dist.size());
     }
 
     public static void main(String[] args) throws Exception {
-        //processSingleFile(args[0], args[1]);
+        processSingleFile(args[4], args[1]);
         readFile(args[0], args[1], args[2]);
         calcuPath(args[3]);
     }
