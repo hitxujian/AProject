@@ -1,7 +1,6 @@
 package xusheng.modeling2015;
 
 import fig.basic.LogInfo;
-import sun.rmi.runtime.Log;
 import xusheng.util.struct.Pair;
 
 import java.io.BufferedReader;
