@@ -67,7 +67,7 @@ public class TransformTable {
                         if (dist.containsKey(pair)) {
                             double dis = dist.get(pair);
                             if (dis > sum) {
-                                LogInfo.logs("Update dist <%s ==> %s, %f> : <%s ==> %s ==> %s, %f>",
+                                LogInfo.logs("Update dist <%s ==> %s, %.2f> : <%s ==> %s ==> %s, %.2f>",
                                         st, ed, dis, st, mid, ed, sum);
                                 dist.put(new Pair<>(st, ed), sum);
                                 dist.put(new Pair<>(ed, st), sum);
@@ -84,7 +84,8 @@ public class TransformTable {
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
         for (String st : citeSet)
             for (String ed : citeSet)
-                bw.write(st + "\t" + ed + "\t" + dist.get(new Pair<>(st, ed)) + "\n");
+                if (! st.equals(ed))
+                    bw.write(st + "\t" + ed + "\t" + dist.get(new Pair<>(st, ed)) + "\n");
         bw.close();
         LogInfo.logs("Complete, total size : %d", dist.size());
     }
