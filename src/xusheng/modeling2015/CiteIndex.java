@@ -51,11 +51,13 @@ public class CiteIndex {
                 idx ++;
                 cite2idx.put(spt[0], idx);
                 idx2cite.put(idx, spt[0]);
+                bw.write(idx + "\t" + spt[0] + "\n");
             }
             if (!cite2idx.containsKey(spt[1])) {
                 idx ++;
                 cite2idx.put(spt[1], idx);
                 idx2cite.put(idx, spt[1]);
+                bw.write(idx + "\t" + spt[1] + "\n");
             }
             int idx1 = getIdx(spt[0]);
             int idx2 = getIdx(spt[1]);
