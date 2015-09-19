@@ -41,26 +41,11 @@ public class CiteIndex {
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
 
-        String line; int idx = -1;
+        String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            if (Integer.parseInt(spt[0]) > 1000 || Integer.parseInt(spt[1]) > 1000)
-                continue;
-
-            if (!cite2idx.containsKey(spt[0])) {
-                idx ++;
-                cite2idx.put(spt[0], idx);
-                idx2cite.put(idx, spt[0]);
-                bw.write(idx + "\t" + spt[0] + "\n");
-            }
-            if (!cite2idx.containsKey(spt[1])) {
-                idx ++;
-                cite2idx.put(spt[1], idx);
-                idx2cite.put(idx, spt[1]);
-                bw.write(idx + "\t" + spt[1] + "\n");
-            }
-            int idx1 = getIdx(spt[0]);
-            int idx2 = getIdx(spt[1]);
+            int idx1 = Integer.parseInt(spt[0]);
+            int idx2 = Integer.parseInt(spt[1]);
             double dist = transform(spt[2]);
             matrix.put(new Pair<>(idx1, idx2), dist);
         }
