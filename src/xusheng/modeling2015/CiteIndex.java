@@ -69,8 +69,8 @@ public class CiteIndex {
 
         LogInfo.logs("Index Done, size : %d", cite2idx.size());
         bw = new BufferedWriter(new FileWriter(retFile));
-        for (int i=0; i<cite2idx.size(); i++) {
-            for (int j=0; j<cite2idx.size(); j++)
+        for (int i=1; i<=232; i++) {
+            for (int j=1; j<232; j++)
                 if (matrix.containsKey(new Pair<>(i, j)))
                     bw.write(String.format("%.2f\t", matrix.get(new Pair<>(i, j))));
                 else
