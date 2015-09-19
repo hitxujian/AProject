@@ -44,6 +44,9 @@ public class CiteIndex {
         String line; int idx = -1;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
+            if (Integer.parseInt(spt[0]) > 1000 || Integer.parseInt(spt[1]) > 1000)
+                continue;
+
             if (!cite2idx.containsKey(spt[0])) {
                 idx ++;
                 cite2idx.put(spt[0], idx);
