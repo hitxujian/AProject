@@ -12,8 +12,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Created by angrymidiao on 9/18/15.
+ * @author Xusheng
+ * @version 1.0
+ * Calculate shortest paths between any two nodes
  */
+
 public class TransformTable {
 
     public static HashMap<Pair<String, String>, Double> dist = new HashMap<>();
