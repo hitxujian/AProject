@@ -69,7 +69,10 @@ public class CiteIndex {
         bw = new BufferedWriter(new FileWriter(retFile));
         for (int i=0; i<cite2idx.size(); i++) {
             for (int j=0; j<cite2idx.size(); j++)
-                bw.write(String.format("%.2f\t", matrix.get(new Pair<>(i, j))));
+                if (matrix.containsKey(new Pair<>(i, j)))
+                    bw.write(String.format("%.2f\t", matrix.get(new Pair<>(i, j))));
+                else
+                    bw.write("0.00\t");
             bw.write("\n");
         }
         bw.close();
