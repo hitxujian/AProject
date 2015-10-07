@@ -67,8 +67,10 @@ public class PraDataCreator {
         PredicateIndex.initialize(predIdxFile);
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
-        String line = "";
+        String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
             String[] spt = line.split("\t");
             String subj = EntityIndex.getMid(spt[0]);
             String obj = EntityIndex.getMid(spt[2]);
@@ -76,15 +78,22 @@ public class PraDataCreator {
             bw.write(subj + "\t" + rel + "\t" + obj + "\n");
         }
         br.close();
+        LogInfo.logs("prop.aaai form changed.");
+        LogInfo.logs("Start to add type info...");
         TypeIndex.initialize(typeIdxFile);
         br = new BufferedReader(new FileReader(typeFile));
+        cnt = 0;
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
             String[] spt = line.split("\t");
             String ent = EntityIndex.getMid(spt[0]);
             for (int i=1; i<spt.length; i++)
                 bw.write(ent + "\ttype.object.type\t" + TypeIndex.getType(spt[i]) + "\n");
         }
-
+        br.close();
+        bw.close();
+        LogInfo.logs("Type info added.");
     }
 
     public static void main(String[] args) throws Exception {
