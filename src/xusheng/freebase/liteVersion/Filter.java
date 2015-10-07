@@ -155,7 +155,7 @@ public class Filter {
         Top5mIndices.initForIdxChange();
         IdxProp(tarDir + "/prop-final-sorted.aaai", tarDirNew + "/prop-final-sorted.aaai");
         IdxEntityIndex(tarDir + "/entity_index.aaai", tarDirNew + "/entity_index.aaai");
-        IdxEntityType(tarDir + "/entity_type.aaatari", tarDirNew + "/entity_type.aaai");
+        IdxEntityType(tarDir + "/entity_type.aaai", tarDirNew + "/entity_type.aaai");
         IdxTypeEntity(tarDir + "/type_entity.aaai", tarDirNew + "/type_entity.aaai");
         IdxProp(tarDir + "/prop.aaai", tarDirNew + "/prop.aaai");
     }
