@@ -37,8 +37,8 @@ public class PredicateIndex {
         String line = "";
         while ((line=br.readLine()) != null) {
             String[] spt = line.split("\t");
-            preToIdx.put(spt[1], spt[0]);
-            idxToPre.put(spt[0], spt[1]);
+            preToIdx.put(spt[0], spt[1]);
+            idxToPre.put(spt[1], spt[0]);
         }
         br.close();
         if (verbose) LogInfo.logs("Freebase Predicate-Index read into memory!");

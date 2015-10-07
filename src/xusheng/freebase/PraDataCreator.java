@@ -58,7 +58,37 @@ public class PraDataCreator {
         bw.close();
     }
 
-    public static void main(String[] args) throws IOException {
-        scan(args[0], args[1]);
+    public static String entIdxFile  = "/home/xusheng/data_0911/entity_index.aaai",
+                         predIdxFile = "/home/xusheng/data_0911/pred_index.aaai",
+                         typeIdxFile = "/home/xusheng/data_0911/type_index.aaai";
+
+    public static void changeForm(String inFile, String outFile, String typeFile) throws Exception {
+        EntityIndex.initFromIdx2Mid(entIdxFile);
+        PredicateIndex.initialize(predIdxFile);
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = "";
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            String subj = EntityIndex.getMid(spt[0]);
+            String obj = EntityIndex.getMid(spt[2]);
+            String rel = PredicateIndex.getPre(spt[1]);
+            bw.write(subj + "\t" + rel + "\t" + obj + "\n");
+        }
+        br.close();
+        TypeIndex.initialize(typeIdxFile);
+        br = new BufferedReader(new FileReader(typeFile));
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            String ent = EntityIndex.getMid(spt[0]);
+            for (int i=1; i<spt.length; i++)
+                bw.write(ent + "\ttype.object.type\t" + TypeIndex.getType(spt[i]) + "\n");
+        }
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        //scan(args[0], args[1]);
+        changeForm(args[2], args[3], args[4]);
     }
 }
