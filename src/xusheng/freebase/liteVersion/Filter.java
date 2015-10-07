@@ -1,6 +1,7 @@
 package xusheng.freebase.liteVersion;
 
 import fig.basic.LogInfo;
+import xusheng.freebase.EntityIndex;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
 
@@ -125,13 +126,109 @@ public class Filter {
         LogInfo.logs("Job done.");
     }
 
+    public static void newIdx(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        LogInfo.logs("Changing Idx " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 1000000 == 0) LogUpgrader.showLine(cnt, 1000000);
+            String[] spt = line.split("\t");
+            bw.write(spt[1] + "\t" + cnt + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static String tarDirNew = "/home/xusheng/data_0911/lite-newIdx";
     public static void main(String[] args) throws Exception {
         //countPopularity();
-        Top5mIndices.initialize();
+        //Top5mIndices.initialize();
         /*filterProp(oriDir + "/prop-final-sorted.aaai", tarDir + "/prop-final-sorted.aaai");
         filterEntityIndex(oriDir + "/entity_index.aaai", tarDir + "/entity_index.aaai");
         filterEntityType(oriDir + "/entity_type.aaai", tarDir + "/entity_type.aaai");
-        filterTypeEntity(oriDir + "/type_entity.aaai", tarDir + "/type_entity.aaai");*/
-        filterProp(oriDir + "/prop.aaai", tarDir + "/prop.aaai");
+        filterTypeEntity(oriDir + "/type_entity.aaai", tarDir + "/type_entity.aaai");
+        filterProp(oriDir + "/prop.aaai", tarDir + "/prop.aaai");*/
+        newIdx(tarDir + "/entity_index.aaai", tarDirNew + "/idx-changer.txt");
+        Top5mIndices.initForIdxChange();
+        IdxProp(tarDir + "/prop-final-sorted.aaai", tarDirNew + "/prop-final-sorted.aaai");
+        IdxEntityIndex(tarDir + "/entity_index.aaai", tarDirNew + "/entity_index.aaai");
+        IdxEntityType(tarDir + "/entity_type.aaatari", tarDirNew + "/entity_type.aaai");
+        IdxTypeEntity(tarDir + "/type_entity.aaai", tarDirNew + "/type_entity.aaai");
+        IdxProp(tarDir + "/prop.aaai", tarDirNew + "/prop.aaai");
+    }
+
+    public static void IdxProp(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        LogInfo.logs("Indexing " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
+            String[] spt = line.split("\t");
+            bw.write(Top5mIndices.getNewIdx(spt[0]) + "\t" + spt[1] + "\t" + Top5mIndices.getNewIdx(spt[2]) + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static void IdxEntityIndex(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = "";
+        int cnt = 0;
+        LogInfo.logs("Indexing " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
+            String[] spt = line.split("\t");
+            bw.write(spt[0] + "\t" + Top5mIndices.getNewIdx(spt[1]) + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static void IdxEntityType(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        LogInfo.logs("Indexing " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
+            String[] spt = line.split("\t");
+            bw.write(Top5mIndices.getNewIdx(spt[0]));
+            for (int i=1; i<spt.length; i++)
+                bw.write("\t" + spt[i]);
+            bw.write("\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static void IdxTypeEntity(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        LogInfo.logs("Indexing " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 1000 == 0) LogUpgrader.showLine(cnt, 1000);
+            String[] spt = line.split("\t");
+            StringBuffer sb = new StringBuffer();
+            for (int i=1; i<spt.length; i++) {
+                sb.append("\t" + Top5mIndices.getNewIdx(spt[i]));
+            }
+            bw.write(spt[0] + sb + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
     }
 }
