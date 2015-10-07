@@ -128,9 +128,10 @@ public class Filter {
     public static void main(String[] args) throws Exception {
         //countPopularity();
         Top5mIndices.initialize();
-        filterProp(oriDir + "/prop-final-sorted.aaai", tarDir + "/prop-final-sorted.aaai");
+        /*filterProp(oriDir + "/prop-final-sorted.aaai", tarDir + "/prop-final-sorted.aaai");
         filterEntityIndex(oriDir + "/entity_index.aaai", tarDir + "/entity_index.aaai");
         filterEntityType(oriDir + "/entity_type.aaai", tarDir + "/entity_type.aaai");
-        filterTypeEntity(oriDir + "/type_entity.aaai", tarDir + "/type_entity.aaai");
+        filterTypeEntity(oriDir + "/type_entity.aaai", tarDir + "/type_entity.aaai");*/
+        filterProp(oriDir + "/prop.aaai", tarDir + "/prop.aaai");
     }
 }

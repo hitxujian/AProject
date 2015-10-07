@@ -15,6 +15,7 @@ public class Top5mIndices {
     public static HashSet<String> top5m = new HashSet<>();
 
     public static void initialize() throws Exception {
+        LogInfo.logs("Start to read Top 5 million entities...");
         BufferedReader br = new BufferedReader(new FileReader(path));
         String line = "";
         while ((line = br.readLine()) != null) {
