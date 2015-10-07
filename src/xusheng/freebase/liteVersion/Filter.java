@@ -53,7 +53,84 @@ public class Filter {
         LogInfo.logs("Job done.");
     }
 
+    public static void filterProp(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        LogInfo.logs("Filtering " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
+            String[] spt = line.split("\t");
+            if (Top5mIndices.top5m.contains(spt[0]) && Top5mIndices.top5m.contains(spt[2]))
+                bw.write(line + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static void filterEntityIndex(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = "";
+        int cnt = 0;
+        LogInfo.logs("Filtering " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
+            String[] spt = line.split("\t");
+            if (Top5mIndices.top5m.contains(spt[1]))
+                bw.write(line + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static void filterEntityType(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        LogInfo.logs("Filtering " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 10000000 == 0) LogUpgrader.showLine(cnt, 10000000);
+            String[] spt = line.split("\t");
+            if (Top5mIndices.top5m.contains(spt[0]))
+                bw.write(line + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static void filterTypeEntity(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line = ""; int cnt = 0;
+        LogInfo.logs("Filtering " + outFile + "...");
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 1000 == 0) LogUpgrader.showLine(cnt, 1000);
+            String[] spt = line.split("\t");
+            StringBuffer sb = new StringBuffer();
+            for (int i=1; i<spt.length; i++) {
+                if (Top5mIndices.top5m.contains(spt[i])) sb.append("\t" + spt[i]);
+            }
+            if (sb.length() != 0) bw.write(spt[0] + sb + "\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
     public static void main(String[] args) throws Exception {
-        countPopularity();
+        //countPopularity();
+        Top5mIndices.initialize();
+        filterProp(oriDir + "/prop-final-sorted.aaai", tarDir + "/prop-final-sorted.aaai");
+        filterEntityIndex(oriDir + "/entity_index.aaai", tarDir + "/entity_index.aaai");
+        filterEntityType(oriDir + "/entity_type.aaai", tarDir + "/entity_type.aaai");
+        filterTypeEntity(oriDir + "/type_entity.aaai", tarDir + "/type_entity.aaai");
     }
 }
