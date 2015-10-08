@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -143,6 +144,7 @@ public class Filter {
     }
 
     public static String tarDirNew = "/home/xusheng/data_0911/lite-newIdx";
+    public static String fbDir = "/home/data/freebase";
     public static void main(String[] args) throws Exception {
         //countPopularity();
         //Top5mIndices.initialize();
@@ -152,13 +154,41 @@ public class Filter {
         filterTypeEntity(oriDir + "/type_entity.aaai", tarDir + "/type_entity.aaai");
         filterProp(oriDir + "/prop.aaai", tarDir + "/prop.aaai");*/
         //newIdx(tarDir + "/entity_index.aaai", tarDirNew + "/idx-changer.txt");
-        Top5mIndices.initForIdxChange();
+        //Top5mIndices.initForIdxChange();
         /*IdxProp(tarDir + "/prop-final-sorted.aaai", tarDirNew + "/prop-final-sorted.aaai");
         IdxEntityIndex(tarDir + "/entity_index.aaai", tarDirNew + "/entity_index.aaai");
         IdxEntityType(tarDir + "/entity_type.aaai", tarDirNew + "/entity_type.aaai");
         IdxTypeEntity(tarDir + "/type_entity.aaai", tarDirNew + "/type_entity.aaai");
-        IdxProp(tarDir + "/prop.aaai", tarDirNew + "/prop.aaai");*/
-        IdxTop(tarDir + "/top5m.txt", tarDirNew + "/top5m.txt");
+        IdxProp(tarDir + "/prop.aaai", tarDirNew + "/prop.aaai");
+        IdxTop(tarDir + "/top5m.txt", tarDirNew + "/top5m.txt");*/
+        filterName(fbDir + "/freebase_idmatch", tarDirNew + "/entWithName.txt");
+
+    }
+
+    public static String getName(String str) {
+        String[] spt = str.split("/");
+        String raw = spt[spt.length-1];
+        int len = raw.length();
+        String ret = raw.substring(0, len - 1);
+        return ret;
+    }
+
+    public static void filterName(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        HashSet<String> set = new HashSet<>();
+        String line; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 1000000 == 0) LogUpgrader.showLine(cnt, 1000000);
+            String[] spt = line.split("\t");
+            String ent = getName(spt[0]);
+            if (ent.startsWith("m.")) set.add(ent);
+        }
+        for (String name : set) bw.write(name + "\n");
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
     }
 
     public static void IdxTop(String inFile, String outFile) throws Exception {
@@ -248,4 +278,6 @@ public class Filter {
         bw.close();
         LogInfo.logs("Job done.");
     }
+
+
 }
