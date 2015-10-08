@@ -161,8 +161,35 @@ public class Filter {
         IdxTypeEntity(tarDir + "/type_entity.aaai", tarDirNew + "/type_entity.aaai");
         IdxProp(tarDir + "/prop.aaai", tarDirNew + "/prop.aaai");
         IdxTop(tarDir + "/top5m.txt", tarDirNew + "/top5m.txt");*/
-        filterName(fbDir + "/freebase_idmatch", tarDirNew + "/entWithName.txt");
+        //filterName(fbDir + "/freebase_idmatch", tarDirNew + "/entWithName.txt");
+        splitEntity(tarDirNew + "/entWithName.txt", tarDirNew + "/entity_index.aaai", tarDirNew + "/withName.txt", tarDirNew + "/withourName.txt");
+    }
 
+    public static void splitEntity(String inFile1, String inFile2, String outFile1, String outFile2) throws Exception {
+        BufferedReader br1 = new BufferedReader(new FileReader(inFile1));
+        BufferedReader br2 = new BufferedReader(new FileReader(inFile2));
+        BufferedWriter bw1 = new BufferedWriter(new FileWriter(outFile1));
+        BufferedWriter bw2 = new BufferedWriter(new FileWriter(outFile2));
+        HashSet<String> set = new HashSet<>();
+        String line; int cnt = 0;
+        while ((line = br1.readLine()) != null) {
+            cnt++;
+            if (cnt % 1000000 == 0) LogUpgrader.showLine(cnt, 1000000);
+            set.add(line);
+        }
+        LogInfo.logs("Name read.");
+
+        while ((line = br2.readLine()) != null) {
+            String[] spt = line.split("\t");
+            if (set.contains(spt[0])) bw1.write(spt[0] + "\n");
+            else bw2.write(spt[0] + "\n");
+        }
+
+        br1.close();
+        br2.close();
+        bw1.close();
+        bw2.close();
+        LogInfo.logs("Job done.");
     }
 
     public static String getName(String str) {
