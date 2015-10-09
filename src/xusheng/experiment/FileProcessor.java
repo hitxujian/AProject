@@ -1,4 +1,4 @@
-package xusheng.aaai2016.experiment;
+package xusheng.experiment;
 
 import fig.basic.LogInfo;
 import xusheng.util.log.LogUpgrader;

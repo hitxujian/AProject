@@ -162,7 +162,21 @@ public class Filter {
         IdxProp(tarDir + "/prop.aaai", tarDirNew + "/prop.aaai");
         IdxTop(tarDir + "/top5m.txt", tarDirNew + "/top5m.txt");*/
         //filterName(fbDir + "/freebase_idmatch", tarDirNew + "/entWithName.txt");
-        splitEntity(oriDir + "/entWithName.txt", oriDir + "/entity_index.aaai", oriDir + "/withName.txt", oriDir + "/withourName.txt");
+        //splitEntity(oriDir + "/entWithName.txt", oriDir + "/entity_index.aaai", oriDir + "/withName.txt", oriDir + "/withourName.txt");
+        EntityIndex.initFromIdx2Mid(oriDir + "/entity_index.aaai");
+        changeId2Mid(oriDir + "/top5m.idx", oriDir + "/top5m.mid");
+    }
+
+    public static void changeId2Mid(String inFile, String outFile) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outFile));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            bw.write(EntityIndex.getMid(spt[0]) + "\t" + spt[1] + "\n");
+        }
+        bw.close();
+        br.close();
     }
 
     public static void splitEntity(String inFile1, String inFile2, String outFile1, String outFile2) throws Exception {

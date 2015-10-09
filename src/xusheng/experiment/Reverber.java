@@ -1,4 +1,4 @@
-package xusheng.aaai2016.experiment;
+package xusheng.experiment;
 
 import fig.basic.LogInfo;
 import xusheng.freebase.EntityIndex;
@@ -12,7 +12,7 @@ public class Reverber {
 
     public static void main(String[] args) throws Exception {
         //generateInput(args[0], args[1], args[2]);
-        changeInputFormat(args[3], args[4]);
+        //changeInputFormat(args[3], args[4]);
     }
 
     public static void generateInput(String inFile, String outFile, String fbFile) throws Exception {
