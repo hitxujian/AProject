@@ -162,7 +162,7 @@ public class Filter {
         IdxProp(tarDir + "/prop.aaai", tarDirNew + "/prop.aaai");
         IdxTop(tarDir + "/top5m.txt", tarDirNew + "/top5m.txt");*/
         //filterName(fbDir + "/freebase_idmatch", tarDirNew + "/entWithName.txt");
-        splitEntity(tarDirNew + "/entWithName.txt", tarDirNew + "/entity_index.aaai", tarDirNew + "/withName.txt", tarDirNew + "/withourName.txt");
+        splitEntity(oriDir + "/entWithName.txt", oriDir + "/entity_index.aaai", oriDir + "/withName.txt", oriDir + "/withourName.txt");
     }
 
     public static void splitEntity(String inFile1, String inFile2, String outFile1, String outFile2) throws Exception {
