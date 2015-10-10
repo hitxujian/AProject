@@ -27,7 +27,7 @@ public class EntityType {
         int num = 0;
         while ((line=br.readLine()) != null) {
             num ++;
-            LogUpgrader.showLine(num, 100000);
+            LogUpgrader.showLine(num, 10000000);
             String[] spt = line.split("\t");
             if (!en2type.containsKey(spt[0]))
                 en2type.put(spt[0], new ArrayList<>());
