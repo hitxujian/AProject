@@ -2,8 +2,12 @@ package xusheng.experiment;
 
 import fig.basic.LogInfo;
 import xusheng.freebase.EntityIndex;
+import xusheng.freebase.EntityType;
+import xusheng.util.log.LogUpgrader;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Administrator on 2015/9/16.
@@ -13,6 +17,38 @@ public class Reverber {
     public static void main(String[] args) throws Exception {
         //generateInput(args[0], args[1], args[2]);
         //changeInputFormat(args[3], args[4]);
+        EntityIndex.initFromMid2Idx(fbDir + "/entity_index.aaai");
+        selectSubjTypeConsistency();
+    }
+    public static String rvDir = "/home/xusheng/reverb";
+    public static String fbDir = "/home/xusheng/data_0911";
+    public static void selectSubjTypeConsistency() throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(rvDir + "/3m.tsv"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/rel-suppSubj.mid"));
+        String line = ""; int cnt = 0;
+        ArrayList<String> subjMid = new ArrayList<>();
+        subjMid.add("");
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 1000000 == 0) LogUpgrader.showLine(cnt, 1000000);
+            String[] spt = line.split("\t");
+            subjMid.add(EntityIndex.getIdx("m." + spt[3]));
+        }
+        br.close();
+        LogInfo.logs("subj read.");
+
+        br = new BufferedReader(new FileReader(rvDir + "/3m-relation-supports.txt"));
+        cnt = 0;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            if (spt.length <= 50) continue;
+            cnt ++;
+            bw.write(spt[0] + "\t");
+            for (int i=1; i<spt.length; i++)
+                bw.write("\t" + subjMid.get(Integer.parseInt(spt[i])));
+            bw.write("\n");
+        }
+        LogInfo.logs("Job done, size: " + cnt);
     }
 
     public static void generateInput(String inFile, String outFile, String fbFile) throws Exception {

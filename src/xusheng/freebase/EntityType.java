@@ -30,7 +30,7 @@ public class EntityType {
             LogUpgrader.showLine(num, 100000);
             String[] spt = line.split("\t");
             if (!en2type.containsKey(spt[0]))
-                en2type.put(spt[0], new ArrayList<String>());
+                en2type.put(spt[0], new ArrayList<>());
             for (int i=1; i<spt.length; i++)
                 en2type.get(spt[0]).add(spt[i]);
         }
