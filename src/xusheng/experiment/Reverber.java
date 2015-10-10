@@ -17,9 +17,31 @@ public class Reverber {
     public static void main(String[] args) throws Exception {
         //generateInput(args[0], args[1], args[2]);
         //changeInputFormat(args[3], args[4]);
-        EntityIndex.initFromMid2Idx(fbDir + "/entity_index.aaai");
-        selectSubjTypeConsistency();
+        //EntityIndex.initFromMid2Idx(fbDir + "/entity_index.aaai");
+        //selectSubjTypeConsistency();
+        EntityType.initialize(fbDir + "/entity_type.aaai");
+        work();
     }
+
+    public static void work() throws Exception{
+        BufferedReader br = new BufferedReader(new FileReader(rvDir + "/rel-suppSubj.idx"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/rel-suppSubj-type.idx"));
+        String line = ""; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            if (cnt % 1000 == 0) LogUpgrader.showLine(cnt, 1000);
+            String[] spt = line.split("\t");
+            bw.write("###\t" + spt[0] + "\n");
+            for (int i=1; i<spt.length; i++) {
+                ArrayList<String> types = EntityType.getTypes(spt[i]);
+                bw.write(types.get(0));
+                for (int j=1; j<types.size(); j++) bw.write("\t" + types.get(j));
+                bw.write("\n");
+            }
+        }
+        LogInfo.logs("Job done.");
+    }
+
     public static String rvDir = "/home/xusheng/reverb";
     public static String fbDir = "/home/xusheng/data_0911";
     public static void selectSubjTypeConsistency() throws Exception {
