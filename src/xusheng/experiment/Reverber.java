@@ -34,11 +34,14 @@ public class Reverber {
             bw.write("###\t" + spt[0] + "\n");
             for (int i=1; i<spt.length; i++) {
                 ArrayList<String> types = EntityType.getTypes(spt[i]);
+                if (types == null) continue;
                 bw.write(types.get(0));
                 for (int j=1; j<types.size(); j++) bw.write("\t" + types.get(j));
                 bw.write("\n");
             }
         }
+        br.close();
+        bw.close();
         LogInfo.logs("Job done.");
     }
 
@@ -70,6 +73,8 @@ public class Reverber {
                 bw.write("\t" + subjMid.get(Integer.parseInt(spt[i])));
             bw.write("\n");
         }
+        br.close();
+        bw.close();
         LogInfo.logs("Job done, size: " + cnt);
     }
 
