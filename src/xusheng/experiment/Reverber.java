@@ -35,7 +35,7 @@ public class Reverber {
             for (int i=1; i<spt.length; i++) {
                 ArrayList<String> types = EntityType.getTypes(spt[i]);
                 if (types == null) continue;
-                bw.write(types.get(0));
+                bw.write("@" + spt[i] + "\t" + types.get(0));
                 for (int j=1; j<types.size(); j++) bw.write("\t" + types.get(j));
                 bw.write("\n");
             }
