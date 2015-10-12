@@ -8,6 +8,8 @@ import xusheng.util.log.LogUpgrader;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/9/16.
@@ -19,8 +21,38 @@ public class Reverber {
         //changeInputFormat(args[3], args[4]);
         //EntityIndex.initFromMid2Idx(fbDir + "/entity_index.aaai");
         //selectSubjTypeConsistency();
-        EntityType.initialize(fbDir + "/entity_type.aaai");
-        work();
+        //EntityType.initialize(fbDir + "/entity_type.aaai");
+        //work();
+        filter();
+    }
+
+    public static void filter() throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(rvDir + "/rel-suppSubj-type.idx"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/filtered.idx"));
+        String line = "", rel = "";
+        HashMap<String, String> map = new HashMap<>();
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("###")) {
+                if (map.size() >= 50) {
+                    bw.write("###\t" + rel + "\n");
+                    for (Map.Entry<String, String> entry : map.entrySet()) {
+                        bw.write(entry.getKey() + entry.getValue() + "\n");
+                    }
+                }
+                rel = line.split("\t")[1];
+                map = new HashMap<>();
+                continue;
+            }
+            String[] spt = line.split("\t");
+            if (!map.containsKey(spt[0])) {
+                StringBuffer buf = new StringBuffer();
+                for (int i=1; i<spt.length; i++) buf.append("\t" + spt[i]);
+                map.put(spt[0], buf.toString());
+            }
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
     }
 
     public static void work() throws Exception{
