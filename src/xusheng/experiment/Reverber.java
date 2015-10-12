@@ -28,31 +28,60 @@ public class Reverber {
 
     public static void filter() throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(rvDir + "/rel-suppSubj-type.idx"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/filtered.idx"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/filtered-2.idx"));
         String line = "", rel = "";
         HashMap<String, String> map = new HashMap<>();
+        HashSet<String> set = new HashSet<>();
+        ArrayList<HashSet<String>> tmp = new ArrayList<>();
         while ((line = br.readLine()) != null) {
             if (line.startsWith("###")) {
                 if (map.size() >= 50) {
-                    bw.write("###\t" + rel + "\n");
-                    for (Map.Entry<String, String> entry : map.entrySet()) {
-                        bw.write(entry.getKey() + entry.getValue() + "\n");
+                    int cnt = 0;
+                    double average = 0;
+                    for (HashSet<String> lset: tmp) {
+                        double score = score(lset, set);
+                        if (score > 0.5) cnt++;
+                        average += score;
                     }
+                    average /= tmp.size();
+                    if (cnt > 10) {
+                        bw.write("###\t" + rel + "\t" + cnt + "\n");
+                        for (Map.Entry<String, String> entry : map.entrySet()) {
+                            bw.write(entry.getKey() + entry.getValue() + "\n");
+                        }
+                        LogInfo.logs("SUCCESS: " + rel + "\t" + average);
+                    } else LogInfo.logs("FAIL: " + rel + "\t" + average);
                 }
                 rel = line.split("\t")[1];
                 map = new HashMap<>();
+                set = new HashSet<>();
+                tmp = new ArrayList<>();
                 continue;
             }
             String[] spt = line.split("\t");
             if (!map.containsKey(spt[0])) {
                 StringBuffer buf = new StringBuffer();
-                for (int i=1; i<spt.length; i++) buf.append("\t" + spt[i]);
+                HashSet<String> lineset = new HashSet<>();
+                for (int i=1; i<spt.length; i++) {
+                    set.add(spt[i]);
+                    lineset.add(spt[i]);
+                    buf.append("\t" + spt[i]);
+                }
+                tmp.add(lineset);
                 map.put(spt[0], buf.toString());
             }
         }
         br.close();
         bw.close();
         LogInfo.logs("Job done.");
+    }
+
+    public static double score(HashSet<String> setA, HashSet<String> setB) {
+        int intersetion = 0;
+        for (String elem: setA)
+            if (setB.contains(elem)) intersetion ++;
+        int union = setA.size() + setB.size();
+        return (double) intersetion / (double) union;
     }
 
     public static void work() throws Exception{
