@@ -28,7 +28,7 @@ public class Reverber {
 
     public static void filter(String a1, String a2) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(rvDir + "/rel-suppSubj-type.idx"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/filtered-2.idx"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/filtered-" + a1 + ".idx"));
         String line = "", rel = "";
         HashMap<String, String> map = new HashMap<>();
         HashSet<String> set = new HashSet<>();
