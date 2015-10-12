@@ -23,10 +23,10 @@ public class Reverber {
         //selectSubjTypeConsistency();
         //EntityType.initialize(fbDir + "/entity_type.aaai");
         //work();
-        filter();
+        filter(args[0], args[1]);
     }
 
-    public static void filter() throws Exception {
+    public static void filter(String a1, String a2) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(rvDir + "/rel-suppSubj-type.idx"));
         BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/filtered-2.idx"));
         String line = "", rel = "";
@@ -40,11 +40,11 @@ public class Reverber {
                     double average = 0;
                     for (HashSet<String> lset: tmp) {
                         double score = score(lset, set);
-                        if (score > 0.5) cnt++;
+                        if (score > Double.parseDouble(a1)) cnt++;
                         average += score;
                     }
                     average /= tmp.size();
-                    if (cnt > 10) {
+                    if (cnt > Integer.parseInt(a2)) {
                         bw.write("###\t" + rel + "\t" + cnt + "\n");
                         for (Map.Entry<String, String> entry : map.entrySet()) {
                             bw.write(entry.getKey() + entry.getValue() + "\n");
