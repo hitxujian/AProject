@@ -34,10 +34,9 @@ public class Sampler {
             cnt ++;
             if (set.contains(cnt)) {
                 if (line.startsWith(" "))
-                    bw.write(line.split(" +")[3] + "_\n");
+                    bw.write(line.split(" +")[3] + "_" + line.split(" +")[3] + "\n");
                 else
-                    bw.write(line.split(" +")[2] + "_\n");
-                bw.write(line + "\n");
+                    bw.write(line.split(" +")[2] + "_" + line.split(" +")[2] + "\n");
             }
             if (cnt >1500) break;
         }
