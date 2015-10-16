@@ -33,7 +33,10 @@ public class Sampler {
         while ((line = br.readLine()) != null) {
             cnt ++;
             if (set.contains(cnt)) {
-                bw.write(line.split(" +")[3] + "_\n");
+                if (line.startsWith(" "))
+                    bw.write(line.split(" +")[3] + "_\n");
+                else
+                    bw.write(line.split(" +")[2] + "_\n");
                 bw.write(line + "\n");
             }
             if (cnt >1500) break;
