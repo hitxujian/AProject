@@ -15,7 +15,7 @@ import java.util.Random;
  */
 public class Sampler {
 
-    public static String file = "/home/kangqi/workspace/UniformProject/dist.tsv";
+    public static String file = "/home/kangqi/workspace/UniformProject/dist.txt";
     public static String dir = "/home/xusheng";
 
     public static void main(String[] args) throws Exception {
