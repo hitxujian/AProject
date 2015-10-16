@@ -19,7 +19,7 @@ public class Sampler {
     public static String dir = "/home/xusheng";
 
     public static void main(String[] args) throws Exception {
-         deal();
+        deal();
     }
 
     public static void deal() throws Exception {
@@ -33,7 +33,7 @@ public class Sampler {
         while ((line = br.readLine()) != null) {
             cnt ++;
             if (set.contains(cnt)) {
-                bw.write(line.split(" ")[4] + "_\n");
+                bw.write(line.split(" +")[3] + "_\n");
                 bw.write(line + "\n");
             }
             if (cnt >1500) break;
