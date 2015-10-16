@@ -23,7 +23,25 @@ public class Reverber {
         //selectSubjTypeConsistency();
         //EntityType.initialize(fbDir + "/entity_type.aaai");
         //work();
-        filter(args[0], args[1]);
+        //filter(args[0], args[1]);
+        process();
+    }
+
+    public static void process() throws Exception{
+        BufferedReader br = new BufferedReader(new FileReader(rvDir + "/filtered-0.18.idx"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rvDir + "/ret.txt"));
+        String line = "";
+        while ((line = br.readLine()) != null) {
+            if (line.startsWith("#")) {
+                String head = line.split("\t")[0];
+                if (head.equals("###")) bw.write("R\t" + line + "\n");
+                else if (head.equals("##")) bw.write("W\t" + line + "\n");
+                else if (head.equals("#")) bw.write("E\t" + line + "\n");
+            }
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
     }
 
     public static void filter(String a1, String a2) throws Exception {
