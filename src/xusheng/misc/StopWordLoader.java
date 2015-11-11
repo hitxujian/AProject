@@ -19,7 +19,7 @@ public class StopWordLoader {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line = "";
         while ((line = br.readLine()) != null) stopSet.add(line);
-        LogInfo.logs("%d Stop Words Loaded.");
+        LogInfo.logs("%d Stop Words Loaded.", stopSet.size());
         return stopSet;
     }
 }

@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class WordEmbedder {
@@ -17,7 +19,7 @@ public class WordEmbedder {
     public static String pattyPath = "/home/xusheng/word2vec/wikipedia-patterns.txt";
     public static String stopPath = "/home/xusheng/word2vec/stop.simple";
 
-    public static void work(String outFile) throws Exception {
+    public static void workForKeywordExtraction(String outFile) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(randPath));
         String line = ""; int cnt = 0;
         HashSet<String> set = new HashSet<>();
@@ -51,9 +53,50 @@ public class WordEmbedder {
         LogInfo.logs("Job done.");
     }
 
-    public static HashSet<String> stopSet = null;
+    public static void workForVecCreation(String file) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(predpPath));
+        String line = ""; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t")[1].split("\\.");
+            for (String item : spt) {
+                String[] spt2 = item.split("_");
+                for (String word: spt2) predWordSet.add(word);
+            }
+        }
+        br.close();
+        br = new BufferedReader(new FileReader(path + "/random_patty_keywords.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(path + "/pred-rel-word.similarity"));
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            for (String word: spt) relWordSet.add(word);
+        }
+
+        for (String predWord: predWordSet) {
+            for (String relWord: relWordSet) {
+                if (VecLoader.vectors.containsKey(predWord) && VecLoader.vectors.containsKey(relWord))
+                    bw.write(predWord + "\t" + relWord + "\t" +
+                            multi(VecLoader.vectors.get(predWord), VecLoader.vectors.get(relWord)) + "\n");
+            }
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job done.");
+    }
+
+    public static String multi(ArrayList<Double> arrA, ArrayList<Double> arrB) {
+        double sum = 0;
+        for (int i=0; i<arrA.size(); i++) {
+            for (int j=0; j<arrB.size(); j++) sum += arrA.get(i) * arrB.get(j);
+        }
+        return String.valueOf(sum);
+    }
+
+    public static HashSet<String> stopSet = null, predWordSet = new HashSet<>(), relWordSet = new HashSet<>();
+
     public static void main(String[] args) throws Exception {
-        stopSet = StopWordLoader.getStopSet(stopPath);
-        work(path + "/random_patty_keywords.txt");
+        //stopSet = StopWordLoader.getStopSet(stopPath);
+        //workForKeywordExtraction(path + "/random_patty_keywords.txt");
+        VecLoader.load();
+        workForVecCreation(path + "");
     }
 }
