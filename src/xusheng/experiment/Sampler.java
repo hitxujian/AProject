@@ -19,7 +19,34 @@ public class Sampler {
     public static String dir = "/home/xusheng";
 
     public static void main(String[] args) throws Exception {
-        deal();
+        rename();
+    }
+
+    public static void rename() throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(dir + "/rand120.tsv"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(dir + "/rand120-name.tsv"));
+        String line = "";
+        HashSet<String> set = new HashSet<>();
+        while ((line = br.readLine()) != null) {
+            String idx = line.split("_")[0];
+            set.add(idx);
+        }
+        br.close();
+        br = new BufferedReader(new FileReader(file));
+        while ((line = br.readLine()) != null) {
+            String idx;
+            if (line.startsWith(" "))
+                idx = line.split(" +")[3];
+            else
+                idx = line.split(" +")[2];
+            if (set.contains(idx)) {
+                bw.write(idx + "_\n");
+                bw.write(line + "\n");
+            }
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Job Done");
     }
 
     public static void deal() throws Exception {
