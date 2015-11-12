@@ -60,10 +60,9 @@ public class WordEmbedder {
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t")[0].split("\\.");
-            for (String item : spt) {
-                String[] spt2 = item.split("_");
-                for (String word: spt2) predWordSet.add(word);
-            }
+            String[] spt2 = spt[spt.length-1].split("_");
+            for (String word: spt2) predWordSet.add(word);
+
         }
         br.close();
         LogInfo.logs("%d Predicate Word Loaded.", predWordSet.size());
