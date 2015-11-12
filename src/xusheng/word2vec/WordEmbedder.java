@@ -18,6 +18,7 @@ public class WordEmbedder {
     public static String randPath = "/home/xusheng/word2vec/Random_Patty_120.tsv";
     public static String pattyPath = "/home/xusheng/word2vec/wikipedia-patterns.txt";
     public static String stopPath = "/home/xusheng/word2vec/stop.simple";
+    public static String gooleNewsDir = "/home/xusheng/word2vec/GoogleNews-vectors-negative300.txt";
 
     public static void workForKeywordExtraction(String outFile) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(randPath));
@@ -64,21 +65,37 @@ public class WordEmbedder {
             }
         }
         br.close();
+        LogInfo.logs("%d Predicate Word Loaded.", predWordSet.size());
         br = new BufferedReader(new FileReader(path + "/random_patty_keywords.txt"));
         BufferedWriter bw = new BufferedWriter(new FileWriter(path + "/pred-rel-word.similarity"));
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             for (String word: spt) relWordSet.add(word);
         }
+        br.close();
+        LogInfo.logs("%d Relation Word Loaded.", relWordSet.size());
+        br = new BufferedReader(new FileReader(gooleNewsDir));
+        HashMap<String, ArrayList<Double>> vectors = new HashMap<>();
 
-        for (String predWord: predWordSet) {
-            for (String relWord: relWordSet) {
-                if (VecLoader.vectors.containsKey(predWord) && VecLoader.vectors.containsKey(relWord))
-                    bw.write(predWord + "\t" + relWord + "\t" +
-                            multi(VecLoader.vectors.get(predWord), VecLoader.vectors.get(relWord)) + "\n");
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split(" ");
+            if (predWordSet.contains(spt[0]) || relWordSet.contains(spt[0])) {
+                ArrayList<Double> vec = new ArrayList<>();
+                for (int i=1; i<spt.length; i++) vec.add(Double.parseDouble(spt[i]));
+                vectors.put(spt[0], vec);
             }
         }
         br.close();
+        LogInfo.logs("%d Vectors Loaded.", vectors.size());
+
+        for (String predWord: predWordSet) {
+            for (String relWord: relWordSet) {
+                if (vectors.containsKey(predWord) && vectors.containsKey(relWord))
+                    bw.write(predWord + "\t" + relWord + "\t" +
+                            multi(vectors.get(predWord), vectors.get(relWord)) + "\n");
+            }
+        }
+
         bw.close();
         LogInfo.logs("Job done.");
     }
@@ -96,7 +113,7 @@ public class WordEmbedder {
     public static void main(String[] args) throws Exception {
         //stopSet = StopWordLoader.getStopSet(stopPath);
         //workForKeywordExtraction(path + "/random_patty_keywords.txt");
-        VecLoader.load();
+        //VecLoader.load();
         workForVecCreation(path + "");
     }
 }
