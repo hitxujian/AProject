@@ -59,7 +59,7 @@ public class WordEmbedder {
         BufferedReader br = new BufferedReader(new FileReader(predpPath));
         String line = ""; int cnt = 0;
         while ((line = br.readLine()) != null) {
-            String[] spt = line.split("\t")[1].split("\\.");
+            String[] spt = line.split("\t")[0].split("\\.");
             for (String item : spt) {
                 String[] spt2 = item.split("_");
                 for (String word: spt2) predWordSet.add(word);
@@ -67,6 +67,7 @@ public class WordEmbedder {
         }
         br.close();
         LogInfo.logs("%d Predicate Word Loaded.", predWordSet.size());
+
         br = new BufferedReader(new FileReader(path + "/random_patty_keywords.txt"));
         BufferedWriter bw = new BufferedWriter(new FileWriter(path + "/pred-rel-word.similarity"));
         while ((line = br.readLine()) != null) {
@@ -75,6 +76,7 @@ public class WordEmbedder {
         }
         br.close();
         LogInfo.logs("%d Relation Word Loaded.", relWordSet.size());
+
         br = new BufferedReader(new FileReader(gooleNewsDir));
         HashMap<String, ArrayList<Double>> vectors = new HashMap<>();
 
