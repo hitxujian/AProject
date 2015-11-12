@@ -2,6 +2,7 @@ package xusheng.word2vec;
 
 import fig.basic.LogInfo;
 import xusheng.misc.StopWordLoader;
+import xusheng.util.log.LogUpgrader;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -78,6 +79,8 @@ public class WordEmbedder {
         HashMap<String, ArrayList<Double>> vectors = new HashMap<>();
 
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 500000);
             String[] spt = line.split(" ");
             if (predWordSet.contains(spt[0]) || relWordSet.contains(spt[0])) {
                 ArrayList<Double> vec = new ArrayList<>();
