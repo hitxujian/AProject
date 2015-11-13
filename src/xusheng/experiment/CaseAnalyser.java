@@ -12,14 +12,14 @@ import java.io.FileWriter;
  */
 public class CaseAnalyser {
 
-    public static String path = "/home/xusheng";
+    public static String path = "/home/xusheng/caseAnalysis";
     public static String compPath = "/home/xusheng/train_matrix_comp";
     public static void chooseCover() throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(compPath));
-        BufferedWriter cp = new BufferedWriter(new FileWriter(path + "/Cover-Pos.pair"));
-        BufferedWriter cn = new BufferedWriter(new FileWriter(path + "/Cover-Neg.pair"));
-        BufferedWriter up = new BufferedWriter(new FileWriter(path + "/Uncover-Pos.pair"));
-        BufferedWriter un = new BufferedWriter(new FileWriter(path + "/Uncover-Neg.pair"));
+        BufferedWriter cp = new BufferedWriter(new FileWriter(path + "/Cover-Pos-2.pair"));
+        BufferedWriter cn = new BufferedWriter(new FileWriter(path + "/Cover-Neg-2.pair"));
+        BufferedWriter up = new BufferedWriter(new FileWriter(path + "/Uncover-Pos-2.pair"));
+        BufferedWriter un = new BufferedWriter(new FileWriter(path + "/Uncover-Neg-2.pair"));
         String line; int cnt = 0;
         br.readLine();
         while ((line = br.readLine()) != null) {
@@ -32,7 +32,7 @@ public class CaseAnalyser {
             String pairs = spt[2] + "\t" + spt[3];
             line = br.readLine();
             spt = line.split(" ");
-            if (spt[450].equals("1"))
+            if (spt[437].equals("1"))
                 if (pos) cp.write(pairs + "\n");
                 else cn.write(pairs + "\n");
             else if (pos) up.write(pairs + "\n");
