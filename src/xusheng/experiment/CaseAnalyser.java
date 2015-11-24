@@ -65,12 +65,15 @@ public class CaseAnalyser {
             else pos = false;
             line = br.readLine();
             spt = line.split(" ");
-            if (spt[450].equals("1") || spt[437].equals("1") || spt[390].equals("1") || spt[123].equals("1") || spt[449].equals("1")
+            /*if (spt[450].equals("1") || spt[437].equals("1") || spt[390].equals("1") || spt[123].equals("1") || spt[449].equals("1")
                     || spt[151].equals("1") || spt[336].equals("1") || spt[380].equals("1") || spt[465].equals("1") ||
                     spt[2142].equals("1") ||
                     spt[2998].equals("1") || spt[2997].equals("1") || spt[2996].equals("1") || spt[2988].equals("1") || spt[2987].equals("1")
                     || spt[2986].equals("1") || spt[2985].equals("1") || spt[2984].equals("1") || spt[2983].equals("1") ||
-                    spt[2982].equals("1"))
+                    spt[2982].equals("1"))*/
+            boolean flag = false;
+            for (int i=0; i<spt.length; i++) if (spt[i].equals("1")) { flag = true; break; }
+            if (flag)
                 if (pos) TP += 1;
                 else FP += 1;
             else if (pos) FN +=1;
