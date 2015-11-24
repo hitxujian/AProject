@@ -65,7 +65,7 @@ public class CaseAnalyser {
             else pos = false;
             line = br.readLine();
             spt = line.split(" ");
-            if (spt[450].equals("1") || spt[437].equals("1"))
+            if (spt[450].equals("1") || spt[437].equals("1") || spt[390].equals("1") || spt[123].equals("1") || spt[449].equals("1"))
                 if (pos) TP += 1;
                 else FP += 1;
             else if (pos) FN +=1;
