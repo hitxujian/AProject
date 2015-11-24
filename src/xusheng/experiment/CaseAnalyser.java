@@ -66,8 +66,7 @@ public class CaseAnalyser {
             line = br.readLine();
             spt = line.split(" ");
             if (spt[234].equals("1") || spt[248].equals("1") || spt[190].equals("1") || spt[236].equals("1") || spt[291].equals("1")
-                    || spt[197].equals("1") || spt[204].equals("1") || spt[202].equals("1") || spt[57].equals("1") ||
-                    spt[266].equals("1"))
+                    )
             //boolean flag = false;
             //for (int i=0; i<spt.length; i++) if (spt[i].equals("1")) { flag = true; break; }
             //if (flag)
