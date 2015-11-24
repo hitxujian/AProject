@@ -47,6 +47,31 @@ public class CaseAnalyser {
     }
 
     public static void main(String[] args) throws Exception {
-        chooseCover();
+        //chooseCover();
+        calcuF1();
+    }
+
+    public static void calcuF1() throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(compPath));
+        String line; int cnt = 0;
+        int TP = 0, FP = 0, TN = 0, FN = 0;
+        br.readLine();
+        while ((line = br.readLine()) != null) {
+            cnt += 2;
+            if (cnt == 8148) break;
+            boolean pos;
+            String[] spt = line.split("\t");
+            if (spt[1].equals("+1")) pos = true;
+            else pos = false;
+            line = br.readLine();
+            spt = line.split(" ");
+            if (spt[450].equals("1") || spt[438].equals("1"))
+                if (pos) TP += 1;
+                else FP += 1;
+            else if (pos) FN +=1;
+            else TN += 1;
+        }
+        double f1 = (double) 2*TP / (2*TP + FP + FN);
+        LogInfo.logs("TP: %d, FP: %d, TN: %d, FN: %d\nF1: %.2f", TP, FP, TN, FN, f1);
     }
 }
