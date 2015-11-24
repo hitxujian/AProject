@@ -13,7 +13,7 @@ import java.io.FileWriter;
 public class CaseAnalyser {
 
     public static String path = "/home/xusheng/caseAnalysis";
-    public static String compPath = "/home/xusheng/test_matrix_comp";
+    public static String compPath = "/home/xusheng/test_matrix_comp_2";
     public static void chooseCover() throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(compPath));
         BufferedWriter cp = new BufferedWriter(new FileWriter(path + "/Cover-Pos-2.pair"));
@@ -58,22 +58,19 @@ public class CaseAnalyser {
         br.readLine();
         while ((line = br.readLine()) != null) {
             cnt += 2;
-            if (cnt == 2088) break;
+            if (cnt == 744) break;
             boolean pos;
             String[] spt = line.split("\t");
             if (spt[1].equals("+1")) pos = true;
             else pos = false;
             line = br.readLine();
             spt = line.split(" ");
-            /*if (spt[450].equals("1") || spt[437].equals("1") || spt[390].equals("1") || spt[123].equals("1") || spt[449].equals("1")
-                    || spt[151].equals("1") || spt[336].equals("1") || spt[380].equals("1") || spt[465].equals("1") ||
-                    spt[2142].equals("1") ||
-                    spt[2998].equals("1") || spt[2997].equals("1") || spt[2996].equals("1") || spt[2988].equals("1") || spt[2987].equals("1")
-                    || spt[2986].equals("1") || spt[2985].equals("1") || spt[2984].equals("1") || spt[2983].equals("1") ||
-                    spt[2982].equals("1"))*/
-            boolean flag = false;
-            for (int i=0; i<spt.length; i++) if (spt[i].equals("1")) { flag = true; break; }
-            if (flag)
+            if (spt[234].equals("1") || spt[248].equals("1") || spt[190].equals("1") || spt[236].equals("1") || spt[292].equals("1")
+                    || spt[197].equals("1") || spt[204].equals("1") || spt[202].equals("1") || spt[57].equals("1") ||
+                    spt[266].equals("1"))
+            //boolean flag = false;
+            //for (int i=0; i<spt.length; i++) if (spt[i].equals("1")) { flag = true; break; }
+            //if (flag)
                 if (pos) TP += 1;
                 else FP += 1;
             else if (pos) FN +=1;
