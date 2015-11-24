@@ -13,7 +13,7 @@ import java.io.FileWriter;
 public class CaseAnalyser {
 
     public static String path = "/home/xusheng/caseAnalysis";
-    public static String compPath = "/home/xusheng/train_matrix_comp";
+    public static String compPath = "/home/xusheng/test_matrix_comp";
     public static void chooseCover() throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(compPath));
         BufferedWriter cp = new BufferedWriter(new FileWriter(path + "/Cover-Pos-2.pair"));
@@ -58,7 +58,7 @@ public class CaseAnalyser {
         br.readLine();
         while ((line = br.readLine()) != null) {
             cnt += 2;
-            if (cnt == 8148) break;
+            if (cnt == 2088) break;
             boolean pos;
             String[] spt = line.split("\t");
             if (spt[1].equals("+1")) pos = true;
