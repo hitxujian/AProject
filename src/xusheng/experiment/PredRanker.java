@@ -78,10 +78,9 @@ public class PredRanker {
         String line; int cnt = 0;
         br.readLine();
         while (!(line = br.readLine()).startsWith("===")) {
-            LogInfo.logs(line);
             String pos = line.split("\t")[1];
+            line = br.readLine();
             if (pos.equals("+1")) {
-                line = br.readLine();
                 String[] spt = line.split(" ");
                 for (int i=0; i<spt.length; i++) {
                     if (spt[i].equals("1")) {
