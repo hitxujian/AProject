@@ -36,7 +36,7 @@ public class PredRanker {
                     if (!file.exists()) continue;
                     processSchemaEdge(dirIdx);
                     processCoverInfo(dirIdx);
-                    writeRet(retPath + files[i].getName());
+                    writeRet(retPath + "/" + files[i].getName());
                 }
             }
         } catch (IOException ex) {
