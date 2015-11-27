@@ -151,7 +151,8 @@ public class PredRanker {
 
         for (Map.Entry<String, HashMap<String, Double>> entry: tFreq.entrySet()) {
             BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/p1127-score/" + entry.getKey()));
-            for (Map.Entry<String, Double> entry1: entry.getValue().entrySet())
+            ArrayList<Map.Entry<String, Double>> sorted = MapHelper.sort(entry.getValue());
+            for (Map.Entry<String, Double> entry1: sorted)
                 bw.write(entry1.getKey() + "\t" + entry1.getValue() + "\n");
             bw.close();
         }
