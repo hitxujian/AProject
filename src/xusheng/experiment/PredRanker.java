@@ -82,7 +82,7 @@ public class PredRanker {
             line = br.readLine();
             if (pos.equals("+1")) {
                 String[] spt = line.split(" ");
-                for (int i=0; i<spt.length; i++) {
+                for (int i=0; i<spt.length-1; i++) {
                     if (spt[i].equals("1")) {
                         for (String edge : schemaEdges.get(i + 1)) {
                             if (!coverInfo.containsKey(edge)) coverInfo.put(edge, 1);
