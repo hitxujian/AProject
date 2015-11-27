@@ -22,7 +22,7 @@ public class PredRanker {
     public static String retPath = "/home/xusheng/p1127";
 
     public static void main(String[] args) throws IOException {
-        fileProcess();
+        //fileProcess();
         run();
     }
 
@@ -110,7 +110,7 @@ public class PredRanker {
         LogInfo.logs("write into " + path);
     }
 
-    public static HashMap<String, HashMap<String, Double>> dFreq = new HashMap<>();
+    public static HashMap<String, HashMap<String, Double>> tFreq = new HashMap<>();
     public static HashMap<String, Double> idFreq = new HashMap<>();
     public static final double total = 103;
 
@@ -135,12 +135,12 @@ public class PredRanker {
                 tmp.put(spt[0], Integer.parseInt(spt[1]));
                 sum += Integer.parseInt(spt[1]);
             }
-            HashMap<String, Double> df = new HashMap<>();
+            HashMap<String, Double> tf = new HashMap<>();
             for (Map.Entry<String, Integer> entry: tmp.entrySet()) {
                 double a = (double) entry.getValue() / sum;
-                df.put(entry.getKey(), a);
+                tf.put(entry.getKey(), a);
             }
-            dFreq.put(files[i].getName(), df);
+            tFreq.put(files[i].getName(), tf);
             br.close();
         }
         for (Map.Entry<String, Integer> entry: idf.entrySet()) {
@@ -150,7 +150,7 @@ public class PredRanker {
         LogInfo.logs("Frequency File Read.");
 
         String path = "/home/xusheng/p1127-ret";
-        for (Map.Entry<String, HashMap<String, Double>> entry: dFreq.entrySet()) {
+        for (Map.Entry<String, HashMap<String, Double>> entry: tFreq.entrySet()) {
             String rel = entry.getKey();
             LogInfo.logs("Calculate tf-idf score for %s...", path + "/" + rel);
             HashMap<String, Double> ret = new HashMap<>();
