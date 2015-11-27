@@ -149,6 +149,20 @@ public class PredRanker {
         }
         LogInfo.logs("Frequency File Read.");
 
+        for (Map.Entry<String, HashMap<String, Double>> entry: tFreq.entrySet()) {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/p1127-score/" + entry.getKey()));
+            for (Map.Entry<String, Double> entry1: entry.getValue().entrySet())
+                bw.write(entry1.getKey() + "\t" + entry1.getValue() + "\n");
+            bw.close();
+        }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/p1127-score/idf-score"));
+        ArrayList<Map.Entry<String, Double>> sorted = MapHelper.sort(idFreq);
+        for (Map.Entry<String, Double> entry: sorted) {
+           bw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
+        }
+
+
         String path = "/home/xusheng/p1127-ret";
         for (Map.Entry<String, HashMap<String, Double>> entry: tFreq.entrySet()) {
             String rel = entry.getKey();
@@ -158,8 +172,8 @@ public class PredRanker {
                 double a = entry1.getValue() * idFreq.get(entry1.getKey());
                 ret.put(entry1.getKey(), a);
             }
-            ArrayList<Map.Entry<String, Double>> sorted = MapHelper.sort(ret);
-            BufferedWriter bw = new BufferedWriter(new FileWriter(path + "/" + rel));
+            sorted = MapHelper.sort(ret);
+            bw = new BufferedWriter(new FileWriter(path + "/" + rel));
             for (Map.Entry<String, Double> entry1: sorted)
                 bw.write(entry1.getKey() + "\t" + entry1.getValue() + "\n");
             bw.close();
