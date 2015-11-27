@@ -57,6 +57,8 @@ public class PredRanker {
                 while ((line = br.readLine()) != "") {
                     LogInfo.logs(line);
                     String[] spt = line.split(" ");
+                    LogInfo.logs(spt);
+                    LogInfo.logs(spt.length);
                     String edge;
                     if (spt[1].equals("IsA,")) edge = spt[1] + spt[2];
                     else edge = spt[1];
