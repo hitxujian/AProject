@@ -66,7 +66,7 @@ public class PredRanker {
             }
         }
         br.close();
-        LogInfo.logs(path + "/schema processed.");
+        LogInfo.logs(".../schema processed. Size: %d", schemaEdges.size());
     }
 
     public static HashMap<String, Integer> coverInfo;
@@ -96,7 +96,7 @@ public class PredRanker {
             }
         }
         br.close();
-        LogInfo.logs(path + "/train_matrix_comp processed.");
+        LogInfo.logs(".../train_matrix_comp processed. Size: %d", coverInfo.size());
     }
 
     public static void writeRet(String path) throws IOException {
