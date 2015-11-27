@@ -32,6 +32,8 @@ public class PredRanker {
             for (int i=0; i<files.length; i++) {
                 if (files[i].isDirectory()) {
                     String dirIdx = files[i].getAbsolutePath();
+                    File file = new File(dirIdx + "/schema");
+                    if (!file.exists()) continue;
                     processSchemaEdge(dirIdx);
                     processCoverInfo(dirIdx);
                     writeRet(retPath + files[i].getName());
