@@ -75,7 +75,7 @@ public class PredRanker {
         BufferedReader br = new BufferedReader(new FileReader(path + "/train_matrix_comp"));
         String line; int cnt = 0;
         br.readLine();
-        while (!(line = br.readLine()).startsWith("===")) {
+        while (!(line = br.readLine()).startsWith("###")) {
             String[] spt = line.split("\t");
             if (spt[1].equals("+1")) {
                 line = br.readLine();
