@@ -158,10 +158,9 @@ public class PredRanker {
 
         BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/p1127-score/idf-score"));
         ArrayList<Map.Entry<String, Double>> sorted = MapHelper.sort(idFreq);
-        for (Map.Entry<String, Double> entry: sorted) {
+        for (Map.Entry<String, Double> entry: sorted)
            bw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
-        }
-
+        bw.close();
 
         String path = "/home/xusheng/p1127-ret";
         for (Map.Entry<String, HashMap<String, Double>> entry: tFreq.entrySet()) {
