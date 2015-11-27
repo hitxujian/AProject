@@ -54,6 +54,7 @@ public class PredRanker {
                 br.readLine();
                 schemaEdges.put(cnt, new ArrayList<>());
                 while ((line = br.readLine()) != "") {
+                    LogInfo.logs(line);
                     String[] spt = line.split(" ");
                     String edge;
                     if (spt[1].equals("IsA,")) edge = spt[1] + spt[2];
