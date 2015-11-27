@@ -127,7 +127,7 @@ public class PredRanker {
             int sum = 0;
             while ((line = br.readLine()) != null) {
                 String[] spt = line.split("\t");
-                if (!idFreq.containsKey(spt[0])) idf.put(spt[0], 1);
+                if (!idf.containsKey(spt[0])) idf.put(spt[0], 1);
                 else {
                     int cnt = idf.get(spt[0]);
                     idf.put(spt[0], cnt + 1);
