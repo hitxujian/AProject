@@ -19,7 +19,7 @@ public class PredRanker {
     public static String dir = "/home/kangqi/workspace/UniformProject/resources/paraphrase/emnlp2015/" +
             "PATTY120_Matt-Fb2m_med_gGD_s20_len3_fb1_sh0_aT0_c150_c21.2_aD1_SF1_SL1_cov0.10_pH10_dt1.0_sz30000_aI1";
 
-    public static String retPath = "/home/xusheng/p1117";
+    public static String retPath = "/home/xusheng/p1127";
 
     public static void main(String[] args) throws IOException {
         fileProcess();
@@ -110,7 +110,59 @@ public class PredRanker {
         LogInfo.logs("write into " + path);
     }
 
-    public static void run() throws IOException {
+    public static HashMap<String, HashMap<String, Double>> dFreq = new HashMap<>();
+    public static HashMap<String, Double> idFreq = new HashMap<>();
+    public static final double total = 103;
 
+    public static void run() throws IOException {
+        File root = new File(retPath);
+        File[] files = root.listFiles();
+        HashMap<String, Integer> idf = new HashMap<>();
+        for (int i=0; i<files.length; i++) {
+            String path = files[i].getAbsolutePath();
+            LogInfo.logs("Reading %s...", path);
+            BufferedReader br = new BufferedReader(new FileReader(path));
+            String line;
+            HashMap<String, Integer> tmp = new HashMap<>();
+            int sum = 0;
+            while ((line = br.readLine()) != null) {
+                String[] spt = line.split("\t");
+                if (!idFreq.containsKey(spt[0])) idf.put(spt[0], 1);
+                else {
+                    int cnt = idf.get(spt[0]);
+                    idf.put(spt[0], cnt + 1);
+                }
+                tmp.put(spt[0], Integer.parseInt(spt[1]));
+                sum += Integer.parseInt(spt[1]);
+            }
+            HashMap<String, Double> df = new HashMap<>();
+            for (Map.Entry<String, Integer> entry: tmp.entrySet()) {
+                double a = (double) entry.getValue() / sum;
+                df.put(entry.getKey(), a);
+            }
+            dFreq.put(files[i].getName(), df);
+            br.close();
+        }
+        for (Map.Entry<String, Integer> entry: idf.entrySet()) {
+            double a = Math.log(total / entry.getValue());
+            idFreq.put(entry.getKey(), a);
+        }
+        LogInfo.logs("Frequency File Read.");
+
+        String path = "/home/xusheng/p1127-ret";
+        for (Map.Entry<String, HashMap<String, Double>> entry: dFreq.entrySet()) {
+            String rel = entry.getKey();
+            LogInfo.logs("Calculate tf-idf score for %s...", path + "/" + rel);
+            HashMap<String, Double> ret = new HashMap<>();
+            for (Map.Entry<String, Double> entry1: entry.getValue().entrySet()) {
+                double a = entry1.getValue() * idFreq.get(entry1.getKey());
+                ret.put(entry1.getKey(), a);
+            }
+            ArrayList<Map.Entry<String, Double>> sorted = MapHelper.sort(ret);
+            BufferedWriter bw = new BufferedWriter(new FileWriter(path + "/" + rel));
+            for (Map.Entry<String, Double> entry1: sorted)
+                bw.write(entry1.getKey() + "\t" + entry1.getValue() + "\n");
+            bw.close();
+        }
     }
 }
