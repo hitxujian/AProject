@@ -1,6 +1,7 @@
 package xusheng.experiment;
 
 import fig.basic.LogInfo;
+import xusheng.util.struct.MapHelper;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -101,7 +102,8 @@ public class PredRanker {
 
     public static void writeRet(String path) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(path));
-        for (Map.Entry<String, Integer> entry: coverInfo.entrySet()) {
+        ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(coverInfo);
+        for (Map.Entry<String, Integer> entry: sorted) {
             bw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
         }
         bw.close();
