@@ -45,6 +45,7 @@ public class PredRanker {
     public static HashMap<Integer, ArrayList<String>> schemaEdges;
 
     public static void processSchemaEdge(String path) throws IOException{
+        LogInfo.logs("Start to process " + path + "/schema...");
         schemaEdges = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path + "/schema"));
         String line; int cnt = 0;
@@ -70,6 +71,7 @@ public class PredRanker {
     public static HashMap<String, Integer> coverInfo;
 
     public static void processCoverInfo(String path) throws IOException {
+        LogInfo.logs("Start to process " + path + "/matrix...");
         coverInfo = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path + "/train_matrix_comp"));
         String line; int cnt = 0;
