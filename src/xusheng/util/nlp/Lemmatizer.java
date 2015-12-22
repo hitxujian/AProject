@@ -11,6 +11,11 @@ import edu.stanford.nlp.util.CoreMap;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Created by Xusheng on 2015/5/16.
+ * Lemmatizer using stanford nlp.
+ */
+
 //Reference: http://nlp.stanford.edu/software/corenlp.shtml
 public class Lemmatizer {
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class WordEmbedder {
+public class                                                                                                                 WordEmbedder {
 
     public static String path = "/home/xusheng/word2vec";
     public static String predpPath = "/home/xusheng/data_0911/pred_index.aaai";

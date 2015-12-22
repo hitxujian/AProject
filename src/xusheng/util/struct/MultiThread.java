@@ -3,7 +3,8 @@ package xusheng.util.struct;
 import java.util.ArrayList;
 
 /**
- * Created by Administrator on 2015/5/16.
+ * Created by Xusheng on 2015/5/16.
+ * Multi-thread class for easy use.
  */
 
 public class MultiThread {
