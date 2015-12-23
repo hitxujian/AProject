@@ -1,7 +1,7 @@
 package xusheng.util.nlp;
 
 /**
- * Created by angrymidiao on 12/22/15.
+ * Created by Xusheng on 12/22/15.
  */
 
 import edu.stanford.nlp.ling.CoreLabel;
