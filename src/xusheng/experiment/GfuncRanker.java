@@ -45,9 +45,12 @@ public class GfuncRanker {
             if (verbose) LogUpgrader.showLine(cnt, 20);
         }
 
+        int rank = 0;
         ArrayList<Map.Entry<String, Double>> sorted = MapHelper.sort(map, true);
         for (Map.Entry<String, Double> entry : sorted) {
-            LogInfo.logs("#g-func: " + entry.getValue() + "\n" + entry.getKey());
+            rank ++;
+            LogInfo.logs("#" + rank + " g-func: " + entry.getValue() +
+                    "\n" + entry.getKey() + "\n");
         }
         LogInfo.logs("Job done.");
     }
