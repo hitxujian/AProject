@@ -34,7 +34,7 @@ public class GfuncRanker {
             int cover = Integer.parseInt(line.split("EP ")[1].split(" ")[0]);
             int numOfEp = Integer.parseInt(line.split("of ")[1].split(" ")[0]);
             if (verbose) LogInfo.logs(fscore + " " + cover + " " + numOfEp);
-            double gscore = fscore + 2 * Math.log(E) + numOfEp - cover;
+            double gscore = fscore + 2 * Math.log(E)/Math.log(2) * (numOfEp - cover);
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append(line + "\n");
             while ((line = br.readLine()).length() != 0) {
