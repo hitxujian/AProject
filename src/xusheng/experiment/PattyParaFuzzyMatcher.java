@@ -30,6 +30,7 @@ public class PattyParaFuzzyMatcher {
                     File file = new File(files[i].getAbsolutePath() + "/schema");
                     if (!file.exists()) continue;
                     String name = files[i].getName();
+                    if (verbose) LogInfo.logs(name);
                     String idx = name.split("_")[0];
                     patty120idx.add(idx);
                 }
