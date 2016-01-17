@@ -33,7 +33,7 @@ public class PattyParaFuzzyMatcher {
                     if (verbose) LogInfo.logs(name);
                     String idx = name.split("_")[0];
                     if (verbose) LogInfo.logs(idx);
-                    patty120idx.add(idx);
+                    if (idx != null) patty120idx.add(idx);
                 }
             }
             if (verbose) LogInfo.logs(patty120idx.size());
@@ -46,7 +46,7 @@ public class PattyParaFuzzyMatcher {
         String line;
         while ((line = br.readLine()) != null) {
             String idx = line.split("\t")[0];
-            if (patty120idx.contains(idx))
+            if (idx != null && patty120idx.contains(idx))
                 patty120.add(line);
             bw.write(line + "\n");
         }
