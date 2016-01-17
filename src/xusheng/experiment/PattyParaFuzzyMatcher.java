@@ -32,6 +32,7 @@ public class PattyParaFuzzyMatcher {
                     String name = files[i].getName();
                     if (verbose) LogInfo.logs(name);
                     String idx = name.split("_")[0];
+                    if (verbose) LogInfo.logs(idx);
                     patty120idx.add(idx);
                 }
             }
