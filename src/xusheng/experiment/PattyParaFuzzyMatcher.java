@@ -20,11 +20,11 @@ public class PattyParaFuzzyMatcher {
 
     public static HashSet<String> patty120idx, patty120 = new HashSet<>();
 
-
     public static void extract120() throws IOException{
         try {
             File root = new File(dir);
             File[] files = root.listFiles();
+            if (verbose) LogInfo.logs(files.length);
             for (int i=0; i<files.length; i++) {
                 if (files[i].isDirectory()) {
                     File file = new File(files[i].getAbsolutePath() + "/schema");
@@ -36,11 +36,11 @@ public class PattyParaFuzzyMatcher {
                     if (idx != null) patty120idx.add(idx);
                 }
             }
-            if (verbose) LogInfo.logs(patty120idx.size());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
+        if (verbose) LogInfo.logs(patty120idx.size());
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/patty120.txt"));
         String line;
