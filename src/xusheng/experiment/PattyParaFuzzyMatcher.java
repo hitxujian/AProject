@@ -18,7 +18,8 @@ public class PattyParaFuzzyMatcher {
 
     public static boolean verbose = true;
 
-    public static HashSet<String> patty120idx, patty120 = new HashSet<>();
+    public static HashSet<String> patty120idx = new HashSet<>();
+    public static HashSet<String> patty120 = new HashSet<>();
 
     public static void extract120() throws IOException{
         try {
