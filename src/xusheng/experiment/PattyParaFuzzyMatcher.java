@@ -18,10 +18,10 @@ public class PattyParaFuzzyMatcher {
 
     public static boolean verbose = true;
 
-    public static HashSet<String> patty120idx = new HashSet<>();
-    public static HashSet<String> patty120 = new HashSet<>();
+    public static HashSet<String> patty120idx = null;
 
     public static void extract120() throws IOException{
+        patty120idx = new HashSet<>();
         try {
             File root = new File(dir);
             File[] files = root.listFiles();
@@ -47,16 +47,17 @@ public class PattyParaFuzzyMatcher {
         String line;
         while ((line = br.readLine()) != null) {
             String idx = line.split("\t")[0];
-            if (idx != null && patty120idx.contains(idx))
-                patty120.add(line);
-            bw.write(line + "\n");
+            if (idx != null && patty120idx.contains(idx)) {
+                bw.write(line + "\n");
+            }
         }
         br.close();
         bw.close();
-        pattyFile = "/home/xusheng/patty120.txt";
     }
 
+    public static HashSet<String> patty120 = new HashSet<>();
     public static void work() throws IOException {
+        pattyFile = "/home/xusheng/patty120.txt";
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
         String line;
         while ((line = br.readLine()) != null) {
