@@ -72,7 +72,7 @@ public class PattyParaFuzzyMatcher {
         /*
         Process patty file, select most occur 3 keywords
          */
-        pattyFile = dataFile + "/patty/patty120.txt";
+        //pattyFile = dataFile + "/patty/patty120.txt";
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
         String line = br.readLine();
         int cnt = 0;
@@ -81,11 +81,13 @@ public class PattyParaFuzzyMatcher {
             String idx = spt[0];
             String pattern = spt[1];
             String[] relations = pattern.split(";$");
-            LogInfo.logs(relations);
+            for (String str: relations) LogInfo.logs(str);
             HashMap<String, Integer> occurence = new HashMap<>();
             for (int i=0; i<relations.length; i++) {
+                LogInfo.logs(i);
                 String[] words = relations[i].split(" ");
                 for (int j=0; j<words.length; j++) {
+                    LogInfo.logs(j);
                     if (words[j].startsWith("[") || stopSet.contains(words[j]))
                         continue;
                     if (!occurence.containsKey(words[j])) occurence.put(words[j], 1);
