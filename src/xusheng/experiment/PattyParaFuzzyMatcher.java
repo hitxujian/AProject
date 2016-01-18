@@ -103,7 +103,7 @@ public class PattyParaFuzzyMatcher {
                 i++;
             }
             pattyData.add(keywords);
-            if (LogUpgrader.showLine(cnt, 10)) LogInfo.logs(keywords);
+            if (LogUpgrader.showLine(cnt, 10000)) LogInfo.logs(keywords);
             cnt ++;
         }
         LogInfo.logs("Total %d PATTY relations.", cnt);
@@ -117,7 +117,7 @@ public class PattyParaFuzzyMatcher {
         cnt = 0;
         while ((line = br.readLine()) != null) {
             cnt ++;
-            LogUpgrader.showLine(cnt, 10000);
+            LogUpgrader.showLine(cnt, 10);
             String[] spt = line.split("\\|\\|\\|");
             String left[] = spt[1].split(" ");
             String right[] = spt[2].split(" ");
@@ -127,6 +127,10 @@ public class PattyParaFuzzyMatcher {
             HashSet<String> rightWords = new HashSet<>();
             for (String word: right)
                 if (!stopSet.contains(word)) rightWords.add(word);
+
+            LogInfo.logs(leftWords);
+            LogInfo.logs(rightWords);
+
             ArrayList<String> leftMatch = fuzzyMatch(leftWords, pattyData);
             ArrayList<String> rightMatch = fuzzyMatch(rightWords, pattyData);
 
