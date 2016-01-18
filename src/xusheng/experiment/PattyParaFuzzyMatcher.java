@@ -72,7 +72,7 @@ public class PattyParaFuzzyMatcher {
         /*
         Process patty file, select most occur 3 keywords
          */
-        pattyFile = "/home/xusheng/patty120.txt";
+        pattyFile = dataFile + "/patty/patty120.txt";
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
         String line = br.readLine();
         int cnt = 0;
@@ -99,7 +99,7 @@ public class PattyParaFuzzyMatcher {
             HashSet<String> keywords = new HashSet<>();
             while (i<3 && i<sorted.size()) keywords.add(sorted.get(i).getKey());
             pattyData.add(keywords);
-            if (LogUpgrader.showLine(cnt, 10000)) LogInfo.logs(keywords);
+            if (LogUpgrader.showLine(cnt, 10)) LogInfo.logs(keywords);
             cnt ++;
         }
         LogInfo.logs("Total %d PATTY relations.", cnt);
