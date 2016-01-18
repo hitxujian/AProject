@@ -64,9 +64,9 @@ public class PattyParaFuzzyMatcher {
         bw.close();
     }
 
-    public static ArrayList<HashSet<String>> pattyData = null;
+    public static ArrayList<HashSet<String>> pattyData = new ArrayList<>();
     public static HashSet<String> stopSet = null;
-    public static HashSet<Pair<Integer, Integer>> retPair = null;
+    public static HashSet<Pair<Integer, Integer>> retPair = new HashSet<>();
 
     public static void work() throws IOException {
         /*
