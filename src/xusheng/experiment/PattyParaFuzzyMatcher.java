@@ -128,8 +128,6 @@ public class PattyParaFuzzyMatcher {
             for (String word: right)
                 if (!word.equals("") && !stopSet.contains(word)) rightWords.add(word);
 
-            LogInfo.logs(leftWords + "\t" + rightWords);
-
             HashSet<String> leftMatch = fuzzyMatch(leftWords, pattyData);
             HashSet<String> rightMatch = fuzzyMatch(rightWords, pattyData);
 
