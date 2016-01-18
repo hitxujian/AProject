@@ -133,7 +133,6 @@ public class PattyParaFuzzyMatcher {
             HashSet<String> leftMatch = fuzzyMatch(leftWords, pattyData);
             HashSet<String> rightMatch = fuzzyMatch(rightWords, pattyData);
 
-            LogInfo.logs(leftMatch.size() + "\t" + rightMatch.size());
 
             if (leftMatch == null || rightMatch == null) continue;
             for (String lmatch: leftMatch)
@@ -156,7 +155,6 @@ public class PattyParaFuzzyMatcher {
     }
 
     public static HashSet<String> fuzzyMatch(HashSet<String> words, ArrayList<HashSet<String>> patty) {
-        LogInfo.logs(words + "\t" + patty.size());
         HashSet<String> ret = new HashSet<>();
         int idx = 0;
         for (HashSet<String> set: patty) {
