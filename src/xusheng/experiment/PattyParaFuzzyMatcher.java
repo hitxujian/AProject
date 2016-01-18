@@ -5,17 +5,16 @@ import fig.basic.Pair;
 import xusheng.misc.StopWordLoader;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
+import xusheng.util.struct.MultiThread;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Xusheng on 1/17/2016.
  */
-public class PattyParaFuzzyMatcher {
+public class PattyParaFuzzyMatcher implements Runnable {
 
     public static String dir = "/home/kangqi/workspace/UniformProject/resources/paraphrase/emnlp2015/" +
             "PATTY120_Matt-Fb2m_med_gGD_s20_len3_fb1_sh0_aT0_c150_c21.2_aD1_SF1_SL1_cov0.10_pH10_dt1.0_sz30000_aI1";
@@ -64,17 +63,71 @@ public class PattyParaFuzzyMatcher {
         bw.close();
     }
 
+    public static String[] taskList = new String[640000];
     public static ArrayList<HashSet<String>> pattyData = new ArrayList<>();
     public static HashSet<String> stopSet = null;
     public static HashSet<Pair<Integer, Integer>> retPair = new HashSet<>();
+    public static BufferedWriter bw;
+    public static int curr = -1, end = -1;
 
-    public static void work() throws IOException {
+    public static synchronized int getCurr() {
+        if (curr < end) {
+            int ret = curr;
+            curr ++;
+            if (curr % 1000 == 0) LogInfo.logs("Current Idx: %d [%s]", curr, new Date().toString());
+            return ret;
+        }
+        return -1;
+    }
+
+    public static synchronized void writeRet(Pair<Integer, Integer> pair) throws Exception {
+        if (retPair.contains(pair)) return;
+        bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
+        retPair.add(pair);
+    }
+
+    public void run() {
+        while (true) {
+            try {
+                int idx = getCurr();
+                if (idx == -1) return;
+                String[] spt = taskList[idx].split("\t");
+
+                String left[] = spt[1].split(" ");
+                String right[] = spt[2].split(" ");
+                HashSet<String> leftWords = new HashSet<>();
+                for (String word: left)
+                    if (!word.equals("") && !stopSet.contains(word)) leftWords.add(word);
+                HashSet<String> rightWords = new HashSet<>();
+                for (String word: right)
+                    if (!word.equals("") && !stopSet.contains(word)) rightWords.add(word);
+
+                HashSet<Integer> leftMatch = fuzzyMatch(leftWords, pattyData);
+                HashSet<Integer> rightMatch = fuzzyMatch(rightWords, pattyData);
+
+                if (leftMatch == null || rightMatch == null) continue;
+                for (int lidx: leftMatch)
+                    for (int ridx: rightMatch) {
+                        //if (!lmatch.equals(rightMatch)) bw.write(lmatch + "\t###\t" + rmatch + "\n");
+                        if (lidx == ridx) continue;
+                        Pair<Integer, Integer> pair;
+                        if (lidx < ridx) pair = new Pair<>(lidx, ridx);
+                        else pair = new Pair<>(ridx, lidx);
+                        writeRet(pair);
+                    }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public static void work() throws Exception {
         /*
         Process patty file, select most occur 3 keywords
          */
         //pattyFile = dataFile + "/patty/patty120.txt";
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords.txt"));
+        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords.txt"));
         String line = br.readLine();
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -118,43 +171,28 @@ public class PattyParaFuzzyMatcher {
         Process ppdb file
           */
         br = new BufferedReader(new FileReader(ppdbFile));
-        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
         cnt = 0;
         while ((line = br.readLine()) != null) {
-            cnt ++;
-            LogUpgrader.showLine(cnt, 100);
+            cnt++;
+            LogUpgrader.showLine(cnt, 10000);
             String[] spt = line.split("\\|\\|\\|");
-            String left[] = spt[1].split(" ");
-            String right[] = spt[2].split(" ");
-            HashSet<String> leftWords = new HashSet<>();
-            for (String word: left)
-                if (!word.equals("") && !stopSet.contains(word)) leftWords.add(word);
-            HashSet<String> rightWords = new HashSet<>();
-            for (String word: right)
-                if (!word.equals("") && !stopSet.contains(word)) rightWords.add(word);
-
-            HashSet<Integer> leftMatch = fuzzyMatch(leftWords, pattyData);
-            HashSet<Integer> rightMatch = fuzzyMatch(rightWords, pattyData);
-
-
-            if (leftMatch == null || rightMatch == null) continue;
-            for (int lidx: leftMatch)
-                for (int ridx: rightMatch) {
-                    //if (!lmatch.equals(rightMatch)) bw.write(lmatch + "\t###\t" + rmatch + "\n");
-                    if (lidx == ridx) continue;
-                    Pair<Integer, Integer> pair;
-                    if (lidx < ridx) pair = new Pair<>(lidx, ridx);
-                    else pair = new Pair<>(ridx, lidx);
-                    if (retPair.contains(pair)) continue;
-                    bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
-                    retPair.add(pair);
-                }
+            String newline = spt[1] + "\t" + spt[2];
+            taskList[cnt] = newline;
         }
-        /*for (Pair<Integer, Integer> pair : retPair) {
-            bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
-        }*/
         br.close();
+        LogInfo.logs("ppdb file read into taskList.");
+
+        curr = 1;
+        end = cnt + 1;
+        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
+        LogInfo.begin_track("Begin fuzzy match...");
+        int threads = 8;
+        PattyParaFuzzyMatcher workThread = new PattyParaFuzzyMatcher();
+        MultiThread multiThread = new MultiThread(threads, workThread);
+        LogInfo.logs("%d threads are running...", threads);
+        multiThread.runMultiThread();
         bw.close();
+        LogInfo.end_track();
     }
 
     public static HashSet<Integer> fuzzyMatch(HashSet<String> words, ArrayList<HashSet<String>> patty) {
