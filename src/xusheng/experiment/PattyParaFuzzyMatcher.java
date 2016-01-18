@@ -162,7 +162,7 @@ public class PattyParaFuzzyMatcher {
             int cnt = 0;
             for (String str: set)
                 if (words.contains(str)) cnt ++;
-            if (cnt > 0) {
+            if (cnt >= set.size()-1) {
                 String str = String.valueOf(idx) + "\t" + set.toString();
                 ret.add(str);
             }
