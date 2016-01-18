@@ -117,7 +117,7 @@ public class PattyParaFuzzyMatcher {
         cnt = 0;
         while ((line = br.readLine()) != null) {
             cnt ++;
-            LogUpgrader.showLine(cnt, 10);
+            LogUpgrader.showLine(cnt, 10000);
             String[] spt = line.split("\\|\\|\\|");
             String left[] = spt[1].split(" ");
             String right[] = spt[2].split(" ");
