@@ -80,14 +80,12 @@ public class PattyParaFuzzyMatcher {
             String[] spt = line.split("\t");
             String idx = spt[0];
             String pattern = spt[1];
-            String[] relations = pattern.split(";$");
+            String[] relations = pattern.split(";\\$");
             for (String str: relations) LogInfo.logs(str);
             HashMap<String, Integer> occurence = new HashMap<>();
             for (int i=0; i<relations.length; i++) {
-                LogInfo.logs(i);
                 String[] words = relations[i].split(" ");
                 for (int j=0; j<words.length; j++) {
-                    LogInfo.logs(j);
                     if (words[j].startsWith("[") || stopSet.contains(words[j]))
                         continue;
                     if (!occurence.containsKey(words[j])) occurence.put(words[j], 1);
