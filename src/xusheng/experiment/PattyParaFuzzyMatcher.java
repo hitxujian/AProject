@@ -81,6 +81,7 @@ public class PattyParaFuzzyMatcher {
             String idx = spt[0];
             String pattern = spt[1];
             String[] relations = pattern.split(";$");
+            LogInfo.logs(relations);
             HashMap<String, Integer> occurence = new HashMap<>();
             for (int i=0; i<relations.length; i++) {
                 String[] words = relations[i].split(" ");
