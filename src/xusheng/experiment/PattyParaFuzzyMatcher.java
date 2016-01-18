@@ -19,7 +19,7 @@ public class PattyParaFuzzyMatcher {
 
     public static String dir = "/home/kangqi/workspace/UniformProject/resources/paraphrase/emnlp2015/" +
             "PATTY120_Matt-Fb2m_med_gGD_s20_len3_fb1_sh0_aT0_c150_c21.2_aD1_SF1_SL1_cov0.10_pH10_dt1.0_sz30000_aI1";
-    public static String dataFile = "/home/xusheng/data";
+    public static String dataFile = "/home/xusheng/AProject/data";
     public static String pattyFile = dataFile + "/patty/wikipedia-patterns.txt";
     public static String ppdbFile = dataFile + "/ppdb-1.0-s-phrasal";
     public static String stopWFile = dataFile + "/misc/stop.simple";
