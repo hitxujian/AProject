@@ -128,40 +128,40 @@ public class PattyParaFuzzyMatcher {
             for (String word: right)
                 if (!word.equals("") && !stopSet.contains(word)) rightWords.add(word);
 
-            HashSet<String> leftMatch = fuzzyMatch(leftWords, pattyData);
-            HashSet<String> rightMatch = fuzzyMatch(rightWords, pattyData);
+            HashSet<Integer> leftMatch = fuzzyMatch(leftWords, pattyData);
+            HashSet<Integer> rightMatch = fuzzyMatch(rightWords, pattyData);
 
 
             if (leftMatch == null || rightMatch == null) continue;
-            for (String lmatch: leftMatch)
-                for (String rmatch: rightMatch) {
+            for (int lidx: leftMatch)
+                for (int ridx: rightMatch) {
                     //if (!lmatch.equals(rightMatch)) bw.write(lmatch + "\t###\t" + rmatch + "\n");
-                    int lidx = Integer.parseInt(lmatch.split("\t")[0]);
-                    int ridx = Integer.parseInt(rmatch.split("\t")[0]);
                     if (lidx == ridx) continue;
                     Pair<Integer, Integer> pair;
                     if (lidx < ridx) pair = new Pair<>(lidx, ridx);
                     else pair = new Pair<>(ridx, lidx);
+                    if (retPair.contains(pair)) continue;
+                    bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
                     retPair.add(pair);
                 }
         }
-        for (Pair<Integer, Integer> pair : retPair) {
+        /*for (Pair<Integer, Integer> pair : retPair) {
             bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
-        }
+        }*/
         br.close();
         bw.close();
     }
 
-    public static HashSet<String> fuzzyMatch(HashSet<String> words, ArrayList<HashSet<String>> patty) {
-        HashSet<String> ret = new HashSet<>();
+    public static HashSet<Integer> fuzzyMatch(HashSet<String> words, ArrayList<HashSet<String>> patty) {
+        HashSet<Integer> ret = new HashSet<>();
         int idx = 0;
         for (HashSet<String> set: patty) {
             int cnt = 0;
             for (String str: set)
                 if (words.contains(str)) cnt ++;
             if ((float) cnt/set.size() >= 0.5) {
-                String str = String.valueOf(idx) + "\t" + set.toString();
-                ret.add(str);
+                //String str = String.valueOf(idx) + "\t" + set.toString();
+                ret.add(idx);
             }
             idx ++;
         }
