@@ -81,7 +81,7 @@ public class PattyParaFuzzyMatcher {
             String idx = spt[0];
             String pattern = spt[1];
             String[] relations = pattern.split(";\\$");
-            for (String str: relations) LogInfo.logs(str);
+            //for (String str: relations) LogInfo.logs(str);
             HashMap<String, Integer> occurence = new HashMap<>();
             for (int i=0; i<relations.length; i++) {
                 String[] words = relations[i].split(" ");
@@ -135,7 +135,7 @@ public class PattyParaFuzzyMatcher {
                 for (String rmatch: rightMatch) {
                     //if (!lmatch.equals(rightMatch)) bw.write(lmatch + "\t###\t" + rmatch + "\n");
                     int lidx = Integer.parseInt(lmatch.split("\t")[0]);
-                    int ridx = Integer.parseInt(rmatch.split("\t")[1]);
+                    int ridx = Integer.parseInt(rmatch.split("\t")[0]);
                     if (lidx == ridx) continue;
                     Pair<Integer, Integer> pair;
                     if (lidx < ridx) pair = new Pair<>(lidx, ridx);
