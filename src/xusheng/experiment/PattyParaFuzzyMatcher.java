@@ -123,16 +123,17 @@ public class PattyParaFuzzyMatcher {
             String right[] = spt[2].split(" ");
             HashSet<String> leftWords = new HashSet<>();
             for (String word: left)
-                if (!stopSet.contains(word)) leftWords.add(word);
+                if (!word.equals("") && !stopSet.contains(word)) leftWords.add(word);
             HashSet<String> rightWords = new HashSet<>();
             for (String word: right)
-                if (!stopSet.contains(word)) rightWords.add(word);
+                if (!word.equals("") && !stopSet.contains(word)) rightWords.add(word);
 
-            LogInfo.logs(leftWords);
-            LogInfo.logs(rightWords);
+            LogInfo.logs(leftWords + "\t" + rightWords);
 
-            ArrayList<String> leftMatch = fuzzyMatch(leftWords, pattyData);
-            ArrayList<String> rightMatch = fuzzyMatch(rightWords, pattyData);
+            HashSet<String> leftMatch = fuzzyMatch(leftWords, pattyData);
+            HashSet<String> rightMatch = fuzzyMatch(rightWords, pattyData);
+
+            LogInfo.logs(leftMatch + "\t" + rightMatch);
 
             if (leftMatch == null || rightMatch == null) continue;
             for (String lmatch: leftMatch)
@@ -154,8 +155,8 @@ public class PattyParaFuzzyMatcher {
         bw.close();
     }
 
-    public static ArrayList<String> fuzzyMatch(HashSet<String> words, ArrayList<HashSet<String>> patty) {
-        ArrayList<String> ret = new ArrayList<>();
+    public static HashSet<String> fuzzyMatch(HashSet<String> words, ArrayList<HashSet<String>> patty) {
+        HashSet<String> ret = new HashSet<>();
         int idx = 0;
         for (HashSet<String> set: patty) {
             int cnt = 0;
