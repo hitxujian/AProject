@@ -74,6 +74,7 @@ public class PattyParaFuzzyMatcher {
          */
         //pattyFile = dataFile + "/patty/patty120.txt";
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords.txt"));
         String line = br.readLine();
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -86,7 +87,7 @@ public class PattyParaFuzzyMatcher {
             for (int i=0; i<relations.length; i++) {
                 String[] words = relations[i].split(" ");
                 for (int j=0; j<words.length; j++) {
-                    if (words[j].startsWith("[") || stopSet.contains(words[j]))
+                    if (words[j].startsWith("[") || stopSet.contains(words[j]) || words[j].equals(""))
                         continue;
                     if (!occurence.containsKey(words[j])) occurence.put(words[j], 1);
                     else {
@@ -103,17 +104,21 @@ public class PattyParaFuzzyMatcher {
                 i++;
             }
             pattyData.add(keywords);
+            bw.write(idx);
+            for (String str: keywords) bw.write("\t" + str);
+            bw.write("\n");
             if (LogUpgrader.showLine(cnt, 10000)) LogInfo.logs(keywords);
             cnt ++;
         }
         LogInfo.logs("Total %d PATTY relations.", cnt);
         br.close();
+        bw.close();
 
         /*
         Process ppdb file
           */
         br = new BufferedReader(new FileReader(ppdbFile));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
+        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
         cnt = 0;
         while ((line = br.readLine()) != null) {
             cnt ++;
