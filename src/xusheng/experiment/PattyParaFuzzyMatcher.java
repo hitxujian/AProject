@@ -156,13 +156,14 @@ public class PattyParaFuzzyMatcher {
     }
 
     public static HashSet<String> fuzzyMatch(HashSet<String> words, ArrayList<HashSet<String>> patty) {
+        LogInfo.logs(words + "\t" + patty.size());
         HashSet<String> ret = new HashSet<>();
         int idx = 0;
         for (HashSet<String> set: patty) {
             int cnt = 0;
             for (String str: set)
                 if (words.contains(str)) cnt ++;
-            if (cnt >= set.size()-1) {
+            if ((float) cnt/set.size() >= 0.5) {
                 String str = String.valueOf(idx) + "\t" + set.toString();
                 ret.add(str);
             }
