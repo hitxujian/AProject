@@ -98,7 +98,10 @@ public class PattyParaFuzzyMatcher {
             ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(occurence);
             int i=0;
             HashSet<String> keywords = new HashSet<>();
-            while (i<3 && i<sorted.size()) keywords.add(sorted.get(i).getKey());
+            while (i<3 && i<sorted.size()) {
+                keywords.add(sorted.get(i).getKey());
+                i++;
+            }
             pattyData.add(keywords);
             if (LogUpgrader.showLine(cnt, 10)) LogInfo.logs(keywords);
             cnt ++;
