@@ -9,7 +9,6 @@ import xusheng.util.struct.MultiThread;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Xusheng on 1/17/2016.
@@ -93,8 +92,8 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 if (idx == -1) return;
                 String[] spt = taskList[idx].split("\t");
 
-                String left[] = spt[1].split(" ");
-                String right[] = spt[2].split(" ");
+                String left[] = spt[0].split(" ");
+                String right[] = spt[1].split(" ");
                 HashSet<String> leftWords = new HashSet<>();
                 for (String word: left)
                     if (!word.equals("") && !stopSet.contains(word)) leftWords.add(word);
