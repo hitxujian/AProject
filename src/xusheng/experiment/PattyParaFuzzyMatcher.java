@@ -151,11 +151,13 @@ public class PattyParaFuzzyMatcher implements Runnable {
             ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(occurence);
             int i=0;
             HashSet<String> keywords = new HashSet<>();
+            System.out.print(idx + "\t");
             while (i<3 && i<sorted.size()) {
-                LogInfo.logs(sorted.get(i).getKey() + "\t" + sorted.get(i).getValue());
+                System.out.print("\t" + sorted.get(i).getKey() + "\t" + sorted.get(i).getValue());
                 keywords.add(sorted.get(i).getKey());
                 i++;
             }
+            System.out.print("\n");
             pattyData.put(idx, keywords);
             bw.write(String.valueOf(idx));
             for (String str: keywords) bw.write("\t" + str);
