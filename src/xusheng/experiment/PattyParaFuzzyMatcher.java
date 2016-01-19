@@ -157,7 +157,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 i++;
             }
             pattyData.put(idx, keywords);
-            bw.write(idx);
+            bw.write(String.valueOf(idx));
             for (String str: keywords) bw.write("\t" + str);
             bw.write("\n");
             if (LogUpgrader.showLine(cnt, 10)) LogInfo.logs(keywords);
