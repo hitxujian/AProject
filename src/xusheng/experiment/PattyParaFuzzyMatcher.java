@@ -124,9 +124,9 @@ public class PattyParaFuzzyMatcher implements Runnable {
         /*
         Process patty file, select most occur 3 keywords
          */
-        pattyFile = dataFile + "/patty/patty120.txt";
+        //pattyFile = dataFile + "/patty/patty120.txt";
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
-        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords-120.txt"));
+        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords.txt"));
         String line = br.readLine();
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -151,13 +151,13 @@ public class PattyParaFuzzyMatcher implements Runnable {
             ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(occurence);
             int i=0;
             HashSet<String> keywords = new HashSet<>();
-            System.out.print(idx + "\t");
+            //System.out.print(idx + "\t");
             while (i<3 && i<sorted.size()) {
-                System.out.print("\t" + sorted.get(i).getKey() + "\t" + sorted.get(i).getValue());
+                //System.out.print("\t" + sorted.get(i).getKey() + "\t" + sorted.get(i).getValue());
                 keywords.add(sorted.get(i).getKey());
                 i++;
             }
-            System.out.print("\n");
+            //System.out.print("\n");
             pattyData.put(idx, keywords);
             bw.write(String.valueOf(idx));
             for (String str: keywords) bw.write("\t" + str);
@@ -186,7 +186,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
 
         curr = 1;
         end = cnt + 1;
-        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet-120.txt"));
+        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
         LogInfo.begin_track("Begin fuzzy match...");
         int threads = 8;
         PattyParaFuzzyMatcher workThread = new PattyParaFuzzyMatcher();
