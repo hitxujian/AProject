@@ -201,7 +201,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
             int cnt = 0;
             for (String str: set)
                 if (words.contains(str)) cnt ++;
-            if ((float) cnt/set.size() >= 0.6 && (float) cnt/words.size() >= 0.5) {
+            if ((float) cnt/set.size() >= 0.6 && (float) cnt/words.size() >= 0.66) {
                 //String str = String.valueOf(idx) + "\t" + set.toString();
                 ret.add(idx);
             }
