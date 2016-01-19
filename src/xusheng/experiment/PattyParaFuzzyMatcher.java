@@ -124,9 +124,9 @@ public class PattyParaFuzzyMatcher implements Runnable {
         /*
         Process patty file, select most occur 3 keywords
          */
-        //pattyFile = dataFile + "/patty/patty120.txt";
+        pattyFile = dataFile + "/patty/patty120.txt";
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
-        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords.txt"));
+        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords-120.txt"));
         String line = br.readLine();
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -183,7 +183,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
 
         curr = 1;
         end = cnt + 1;
-        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
+        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet-120.txt"));
         LogInfo.begin_track("Begin fuzzy match...");
         int threads = 8;
         PattyParaFuzzyMatcher workThread = new PattyParaFuzzyMatcher();
