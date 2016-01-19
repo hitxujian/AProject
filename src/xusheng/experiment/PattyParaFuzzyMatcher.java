@@ -132,7 +132,6 @@ public class PattyParaFuzzyMatcher implements Runnable {
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             int idx = Integer.parseInt(spt[0]);
-            LogInfo.logs(idx);
             String pattern = spt[1];
             String[] relations = pattern.split(";\\$");
             //for (String str: relations) LogInfo.logs(str);
@@ -153,6 +152,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
             int i=0;
             HashSet<String> keywords = new HashSet<>();
             while (i<3 && i<sorted.size()) {
+                LogInfo.logs(sorted.get(i).getKey() + "\t" + sorted.get(i).getValue());
                 keywords.add(sorted.get(i).getKey());
                 i++;
             }
@@ -174,7 +174,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
         cnt = 0;
         while ((line = br.readLine()) != null) {
             cnt++;
-            LogUpgrader.showLine(cnt, 10000);
+            //LogUpgrader.showLine(cnt, 10000);
             String[] spt = line.split("\\|\\|\\|");
             String newline = spt[1] + "\t" + spt[2];
             taskList[cnt] = newline;
