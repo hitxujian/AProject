@@ -120,13 +120,16 @@ public class PattyParaFuzzyMatcher implements Runnable {
         }
     }
 
-    public static void work() throws Exception {
+    public static void work(String _120) throws Exception {
         /*
         Process patty file, select most occur 3 keywords
          */
-        //pattyFile = dataFile + "/patty/patty120.txt";
+        if (_120.equals("120")) pattyFile = dataFile + "/patty/patty120.txt";
         BufferedReader br = new BufferedReader(new FileReader(pattyFile));
-        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords.txt"));
+        if (_120.equals("120"))
+            bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords-120.txt"));
+        else
+            bw = new BufferedWriter(new FileWriter(dataFile + "/patty/keywords.txt"));
         String line = br.readLine();
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -186,7 +189,10 @@ public class PattyParaFuzzyMatcher implements Runnable {
 
         curr = 1;
         end = cnt + 1;
-        bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
+        if (_120.equals("120"))
+            bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet-120.txt"));
+        else
+            bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
         LogInfo.begin_track("Begin fuzzy match...");
         int threads = 8;
         PattyParaFuzzyMatcher workThread = new PattyParaFuzzyMatcher();
@@ -217,7 +223,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
     public static void main(String[] args) throws Exception {
         //extract120();
         stopSet = StopWordLoader.getStopSet(stopWFile);
-        work();
+        work(args[0]);
     }
 
 }
