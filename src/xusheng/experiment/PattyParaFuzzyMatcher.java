@@ -63,7 +63,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
     }
 
     public static String[] taskList = new String[640000];
-    public static ArrayList<HashSet<String>> pattyData = new ArrayList<>();
+    public static HashMap<Integer, HashSet<String>> pattyData = new HashMap<>();
     public static HashSet<String> stopSet = null;
     public static HashSet<Pair<Integer, Integer>> retPair = new HashSet<>();
     public static BufferedWriter bw;
@@ -131,7 +131,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
         int cnt = 0;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            String idx = spt[0];
+            int idx = Integer.parseInt(spt[0]);
             String pattern = spt[1];
             String[] relations = pattern.split(";\\$");
             //for (String str: relations) LogInfo.logs(str);
@@ -155,7 +155,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 keywords.add(sorted.get(i).getKey());
                 i++;
             }
-            pattyData.add(keywords);
+            pattyData.put(idx, keywords);
             bw.write(idx);
             for (String str: keywords) bw.write("\t" + str);
             bw.write("\n");
@@ -194,18 +194,18 @@ public class PattyParaFuzzyMatcher implements Runnable {
         LogInfo.end_track();
     }
 
-    public static HashSet<Integer> fuzzyMatch(HashSet<String> words, ArrayList<HashSet<String>> patty) {
+    public static HashSet<Integer> fuzzyMatch(HashSet<String> words, HashMap<Integer, HashSet<String>> patty) {
         HashSet<Integer> ret = new HashSet<>();
-        int idx = 0;
-        for (HashSet<String> set: patty) {
+        for (Map.Entry<Integer, HashSet<String>> entry: patty.entrySet()) {
             int cnt = 0;
-            for (String str: set)
+            int idx = entry.getKey();
+            HashSet<String> set = entry.getValue();
+            for (String str: entry.getValue())
                 if (words.contains(str)) cnt ++;
             if ((float) cnt/set.size() >= 0.6 && (float) cnt/words.size() >= 0.66) {
                 //String str = String.valueOf(idx) + "\t" + set.toString();
                 ret.add(idx);
             }
-            idx ++;
         }
         if (ret.size()>0) return ret;
         else return null;
