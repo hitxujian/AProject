@@ -101,6 +101,9 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 for (String word: right)
                     if (!word.equals("") && !stopSet.contains(word)) rightWords.add(word);
 
+                // if two phrases's keywords are similar, just skip it
+                if (similar(leftWords, rightWords)) continue;
+
                 HashSet<Integer> leftMatch = fuzzyMatch(leftWords, pattyData);
                 HashSet<Integer> rightMatch = fuzzyMatch(rightWords, pattyData);
 
@@ -108,7 +111,8 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 for (int lidx: leftMatch)
                     for (int ridx: rightMatch) {
                         //if (!lmatch.equals(rightMatch)) bw.write(lmatch + "\t###\t" + rmatch + "\n");
-                        if (lidx == ridx) continue;
+                        // if two relation's EP has no intersection, just pass it
+                        if (lidx == ridx || !hasIntersectEP(lidx, ridx)) continue;
                         Pair<Integer, Integer> pair;
                         if (lidx < ridx) pair = new Pair<>(lidx, ridx);
                         else pair = new Pair<>(ridx, lidx);
@@ -174,6 +178,8 @@ public class PattyParaFuzzyMatcher implements Runnable {
 
         /*
         Process ppdb file
+        first stage: use all of the data;
+        second stage: only use those keywords are different
           */
         br = new BufferedReader(new FileReader(ppdbFile));
         cnt = 0;
@@ -220,9 +226,51 @@ public class PattyParaFuzzyMatcher implements Runnable {
         else return null;
     }
 
+    public static boolean similar(HashSet<String> setA, HashSet<String> setB) {
+        int cnt = 0;
+        for (String strA: setA)
+            for (String strB: setB) {
+                if (strA.equals(strB)) cnt ++;
+            }
+        if ((float) cnt / setA.size() > 0.6 && (float) cnt / setB.size() > 0.6)
+            return true;
+        else return false;
+    }
+
+    public static boolean hasIntersectEP(int idxA, int idxB) {
+        HashSet<String> setA = instances.get(idxA);
+        HashSet<String> setB = instances.get(idxB);
+        for (String str: setA)
+            if (setB.contains(str)) return true;
+        return false;
+    }
+
+    public static HashMap<Integer, HashSet<String>> instances = new HashMap<>();
+    public static void readInstance() throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(dataFile + "/patty/wikipedia-instances.txt"));
+        String line;
+        HashSet<String> set = new HashSet<>();
+        String prev = null;
+        int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 1000000);
+            String[] spt = line.split("\t");
+            if (!spt[0].equals(prev))  {
+                if (prev != null) instances.put(Integer.parseInt(prev), set);
+                set.clear();
+                prev = spt[0];
+            }
+            set.add(spt[1] + "\t" + spt[2]);
+        }
+        br.close();
+        LogInfo.logs("Instances read. size: %d", instances.size());
+    }
+
     public static void main(String[] args) throws Exception {
         //extract120();
         stopSet = StopWordLoader.getStopSet(stopWFile);
+        readInstance();
         work(args[0]);
     }
 
