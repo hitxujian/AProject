@@ -240,9 +240,12 @@ public class PattyParaFuzzyMatcher implements Runnable {
     public static boolean hasIntersectEP(int idxA, int idxB) {
         HashSet<String> setA = instances.get(idxA);
         HashSet<String> setB = instances.get(idxB);
+        if (setA.size() < 100 || setB.size() < 100) return false;
+        int cnt = 0;
         for (String str: setA)
-            if (setB.contains(str)) return true;
-        return false;
+            if (setB.contains(str))  cnt ++;
+        if (cnt > 5) return true;
+        else return false;
     }
 
     public static HashMap<Integer, HashSet<String>> instances = new HashMap<>();
