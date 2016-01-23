@@ -169,7 +169,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
             bw.write(String.valueOf(idx));
             for (String str: keywords) bw.write("\t" + str);
             bw.write("\n");
-            if (LogUpgrader.showLine(cnt, 10)) LogInfo.logs(keywords);
+            if (LogUpgrader.showLine(cnt, 10000)) LogInfo.logs(keywords);
             cnt ++;
         }
         LogInfo.logs("Total %d PATTY relations.", cnt);
@@ -240,7 +240,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
     public static boolean hasIntersectEP(int idxA, int idxB) {
         HashSet<String> setA = instances.get(idxA);
         HashSet<String> setB = instances.get(idxB);
-        if (setA.size() < 10 || setB.size() < 10) return false;
+        //if (setA.size() < 10 || setB.size() < 10) return false;
         int cnt = 0;
         for (String str: setA)
             if (setB.contains(str))  cnt ++;
