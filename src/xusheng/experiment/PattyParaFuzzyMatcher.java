@@ -249,18 +249,21 @@ public class PattyParaFuzzyMatcher implements Runnable {
     }
 
     public static HashMap<Integer, HashSet<String>> instances = new HashMap<>();
-    public static void readInstance() throws Exception {
+    public static void readInstance(String thresh) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(dataFile + "/patty/wikipedia-instances.txt"));
         String line;
         HashSet<String> set = new HashSet<>();
         String prev = null;
-        int cnt = 0;
+        int cnt = 0, num = 0;
+        int threshold = Integer.parseInt(thresh);
         while ((line = br.readLine()) != null) {
             cnt ++;
-            LogUpgrader.showLine(cnt, 1000000);
+            LogUpgrader.showLine(cnt, 3000000);
             String[] spt = line.split("\t");
             if (!spt[0].equals(prev))  {
                 if (prev != null) instances.put(Integer.parseInt(prev), set);
+                if (set.size() > threshold)
+                    num ++;
                 set.clear();
                 prev = spt[0];
             }
@@ -268,12 +271,13 @@ public class PattyParaFuzzyMatcher implements Runnable {
         }
         br.close();
         LogInfo.logs("Instances read. size: %d", instances.size());
+        LogInfo.logs("Size of > %d: %d", threshold, num);
     }
 
     public static void main(String[] args) throws Exception {
         //extract120();
         stopSet = StopWordLoader.getStopSet(stopWFile);
-        readInstance();
+        readInstance(args[1]);
         work(args[0]);
     }
 
