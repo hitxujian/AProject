@@ -244,7 +244,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
             LogInfo.logs("22528" + setA.toString());
             LogInfo.logs("67314" + setB.toString());
         }
-        //if (setA.size() < 5 || setB.size() < 5) return false;
+        if (setA.size() < 5 || setB.size() < 5) return false;
         int cnt = 0;
         for (String str: setA)
             if (setB.contains(str))  cnt ++;
@@ -256,24 +256,21 @@ public class PattyParaFuzzyMatcher implements Runnable {
     public static void readInstance(String thresh) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(dataFile + "/patty/wikipedia-instances.txt"));
         String line;
-        HashSet<String> set = new HashSet<>();
-        String prev = null;
         int cnt = 0, num = 0;
         int threshold = Integer.parseInt(thresh);
         while ((line = br.readLine()) != null) {
             cnt ++;
             LogUpgrader.showLine(cnt, 3000000);
             String[] spt = line.split("\t");
-            if (!spt[0].equals(prev))  {
-                if (prev != null) instances.put(Integer.parseInt(prev), set);
-                if (set.size() > threshold)
-                    num ++;
-                set.clear();
-                prev = spt[0];
-            }
-            set.add(spt[1] + "\t" + spt[2]);
+            int idx = Integer.parseInt(spt[0]);
+            if (!instances.containsKey(idx))
+                instances.put(idx, new HashSet<>());
+            instances.get(idx).add(spt[1] + "\t" + spt[2]);
         }
         br.close();
+        for (Map.Entry<Integer, HashSet<String>> entry: instances.entrySet()) {
+            if (entry.getValue().size()>threshold) num ++;
+        }
         LogInfo.logs("Instances read. size: %d", instances.size());
         LogInfo.logs("Size of > %d: %d", threshold, num);
     }
