@@ -248,7 +248,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
         int cnt = 0;
         for (String str: setA)
             if (setB.contains(str))  cnt ++;
-        if (cnt > 1) return true;
+        if (cnt > 0) return true;
         else return false;
     }
 
