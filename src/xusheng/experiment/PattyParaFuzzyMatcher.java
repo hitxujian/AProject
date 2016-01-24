@@ -79,9 +79,11 @@ public class PattyParaFuzzyMatcher implements Runnable {
         return -1;
     }
 
-    public static synchronized void writeRet(Pair<Integer, Integer> pair) throws Exception {
+    public static synchronized void writeRet(Pair<Integer, Integer> pair, String ppdb) throws Exception {
         if (retPair.contains(pair)) return;
         bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
+        bw.write(instances.get(pair.getFirst()).toString() + "\t" + instances.get(pair.getSecond()).toString() + "\n");
+        bw.write(ppdb + "\n");
         retPair.add(pair);
     }
 
@@ -116,7 +118,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
                         Pair<Integer, Integer> pair;
                         if (lidx < ridx) pair = new Pair<>(lidx, ridx);
                         else pair = new Pair<>(ridx, lidx);
-                        writeRet(pair);
+                        writeRet(pair, taskList[idx]);
                     }
             } catch (Exception ex) {
                 ex.printStackTrace();
