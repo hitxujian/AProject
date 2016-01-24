@@ -102,10 +102,12 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 String right[] = spt[1].split(" ");
                 HashSet<String> leftWords = new HashSet<>();
                 for (String word: left)
-                    if (!word.equals("") && !stopSet.contains(word)) leftWords.add(word);
+                    if (!word.equals("") && !stopSet.contains(word))
+                        leftWords.add(Lemmatizer.lemmatize(word));
                 HashSet<String> rightWords = new HashSet<>();
                 for (String word: right)
-                    if (!word.equals("") && !stopSet.contains(word)) rightWords.add(word);
+                    if (!word.equals("") && !stopSet.contains(word))
+                        rightWords.add(Lemmatizer.lemmatize(word));
 
                 // if two phrases's keywords are similar, just skip it
                 if (similar(leftWords, rightWords)) continue;
@@ -196,7 +198,8 @@ public class PattyParaFuzzyMatcher implements Runnable {
             cnt++;
             //LogUpgrader.showLine(cnt, 10000);
             String[] spt = line.split("\\|\\|\\|");
-            String newline = Lemmatizer.lemmatize(spt[1] + "\t" + spt[2]);
+            //String newline = Lemmatizer.lemmatize(spt[1] + "\t" + spt[2]);
+            String newline = spt[1] + "\t" + spt[2];
             LogInfo.logs(newline);
             taskList[cnt] = newline;
         }
