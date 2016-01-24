@@ -197,6 +197,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
             //LogUpgrader.showLine(cnt, 10000);
             String[] spt = line.split("\\|\\|\\|");
             String newline = Lemmatizer.lemmatize(spt[1] + "\t" + spt[2]);
+            LogInfo.logs(newline);
             taskList[cnt] = newline;
         }
         br.close();
