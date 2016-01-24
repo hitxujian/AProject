@@ -210,7 +210,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
         if (_120.equals("120"))
             bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet-120.txt"));
         else
-            bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt"));
+            bw = new BufferedWriter(new FileWriter(dataFile + "/patty/matchRet.txt-" + threshold));
         LogInfo.begin_track("Begin fuzzy match...");
         int threads = 8;
         PattyParaFuzzyMatcher workThread = new PattyParaFuzzyMatcher();
@@ -252,7 +252,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
     public static int hasIntersectEP(int idxA, int idxB) {
         HashSet<String> setA = instances.get(idxA);
         HashSet<String> setB = instances.get(idxB);
-        if (setA.size() < 5 || setB.size() < 5) return -1;
+        if (setA.size() < threshold || setB.size() < threshold) return -1;
         int cnt = 0;
         for (String str: setA)
             if (setB.contains(str))  cnt ++;
@@ -260,11 +260,10 @@ public class PattyParaFuzzyMatcher implements Runnable {
     }
 
     public static HashMap<Integer, HashSet<String>> instances = new HashMap<>();
-    public static void readInstance(String thresh) throws Exception {
+    public static void readInstance() throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(dataFile + "/patty/wikipedia-instances.txt"));
         String line;
         int cnt = 0, num = 0;
-        int threshold = Integer.parseInt(thresh);
         while ((line = br.readLine()) != null) {
             cnt ++;
             LogUpgrader.showLine(cnt, 3000000);
@@ -282,11 +281,13 @@ public class PattyParaFuzzyMatcher implements Runnable {
         LogInfo.logs("Size of > %d: %d", threshold, num);
     }
 
+    public static int threshold = 0;
     public static void main(String[] args) throws Exception {
         //extract120();
         stopSet = StopWordLoader.getStopSet(stopWFile);
         Lemmatizer.initPipeline();
-        readInstance(args[1]);
+        threshold = Integer.parseInt(args[1]);
+        readInstance();
         work(args[0]);
     }
 
