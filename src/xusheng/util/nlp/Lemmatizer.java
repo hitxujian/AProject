@@ -57,7 +57,9 @@ public class Lemmatizer {
 	
 	public static void main(String[] args) throws Exception {
 		initPipeline();
-        String str = "[did]";
-		System.out.println(lemmatize(str));
+        String str = "your [[did]] teams hello ";
+        System.out.println(lemmatize(str));
+		System.out.println(lemmatize(str).startsWith("-"));
+        System.out.println(lemmatize(str).split(" ")[1]);
 	}
 }

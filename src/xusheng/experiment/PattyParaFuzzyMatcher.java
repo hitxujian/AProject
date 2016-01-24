@@ -151,14 +151,15 @@ public class PattyParaFuzzyMatcher implements Runnable {
             //for (String str: relations) LogInfo.logs(str);
             HashMap<String, Integer> occurence = new HashMap<>();
             for (int i=0; i<relations.length; i++) {
-                String[] words = relations[i].split(" ");
+                String relation = Lemmatizer.lemmatize(relations[i]);
+                String[] words = relation.split(" ");
                 for (int j=0; j<words.length; j++) {
-                    if (words[j].startsWith("[") || stopSet.contains(words[j]) || words[j].equals(""))
+                    if (words[j].startsWith("-") || stopSet.contains(words[j]) || words[j].equals(""))
                         continue;
-                    String word = Lemmatizer.lemmatize(words[j]);
-                    if (!occurence.containsKey(word)) occurence.put(word, 1);
+                    //String word = Lemmatizer.lemmatize(words[j]);
+                    if (!occurence.containsKey(words[j])) occurence.put(words[j], 1);
                     else {
-                        int tmp = occurence.get(word) + 1;
+                        int tmp = occurence.get(words[j]) + 1;
                         occurence.put(words[j], tmp);
                     }
                 }
