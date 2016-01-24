@@ -240,7 +240,11 @@ public class PattyParaFuzzyMatcher implements Runnable {
     public static boolean hasIntersectEP(int idxA, int idxB) {
         HashSet<String> setA = instances.get(idxA);
         HashSet<String> setB = instances.get(idxB);
-        if (setA.size() < 5 || setB.size() < 5) return false;
+        if (idxA == 22528 && idxB == 67314) {
+            LogInfo.logs("22528" + setA.toString());
+            LogInfo.logs("67314" + setB.toString());
+        }
+        //if (setA.size() < 5 || setB.size() < 5) return false;
         int cnt = 0;
         for (String str: setA)
             if (setB.contains(str))  cnt ++;
@@ -264,10 +268,6 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 if (prev != null) instances.put(Integer.parseInt(prev), set);
                 if (set.size() > threshold)
                     num ++;
-                if (cnt < 430) {
-                    LogInfo.logs(prev);
-                    for (String str : set) LogInfo.logs(str);
-                }
                 set.clear();
                 prev = spt[0];
             }
@@ -282,7 +282,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
         //extract120();
         stopSet = StopWordLoader.getStopSet(stopWFile);
         readInstance(args[1]);
-        //work(args[0]);
+        work(args[0]);
     }
 
 }
