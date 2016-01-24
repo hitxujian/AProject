@@ -264,7 +264,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 if (prev != null) instances.put(Integer.parseInt(prev), set);
                 if (set.size() > threshold)
                     num ++;
-                if (cnt < 10) {
+                if (cnt < 1000) {
                     LogInfo.logs(prev);
                     for (String str : set) LogInfo.logs(str);
                 }
