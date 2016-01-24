@@ -121,7 +121,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
                         //if (!lmatch.equals(rightMatch)) bw.write(lmatch + "\t###\t" + rmatch + "\n");
                         // if two relation's EP has no intersection, just pass it
                         int intersect = hasIntersectEP(lidx, ridx);
-                        if (lidx == ridx || intersect != -1) continue;
+                        if (lidx == ridx || intersect == -1) continue;
                         Pair<Integer, Integer> pair;
                         if (lidx < ridx) pair = new Pair<>(lidx, ridx);
                         else pair = new Pair<>(ridx, lidx);
