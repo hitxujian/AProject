@@ -4,6 +4,7 @@ import fig.basic.LogInfo;
 import fig.basic.Pair;
 import xusheng.misc.StopWordLoader;
 import xusheng.util.log.LogUpgrader;
+import xusheng.util.nlp.Lemmatizer;
 import xusheng.util.struct.MapHelper;
 import xusheng.util.struct.MultiThread;
 
@@ -154,9 +155,10 @@ public class PattyParaFuzzyMatcher implements Runnable {
                 for (int j=0; j<words.length; j++) {
                     if (words[j].startsWith("[") || stopSet.contains(words[j]) || words[j].equals(""))
                         continue;
-                    if (!occurence.containsKey(words[j])) occurence.put(words[j], 1);
+                    String word = Lemmatizer.lemmatize(words[j]);
+                    if (!occurence.containsKey(word)) occurence.put(word, 1);
                     else {
-                        int tmp = occurence.get(words[j]) + 1;
+                        int tmp = occurence.get(word) + 1;
                         occurence.put(words[j], tmp);
                     }
                 }
@@ -193,7 +195,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
             cnt++;
             //LogUpgrader.showLine(cnt, 10000);
             String[] spt = line.split("\\|\\|\\|");
-            String newline = spt[1] + "\t" + spt[2];
+            String newline = Lemmatizer.lemmatize(spt[1] + "\t" + spt[2]);
             taskList[cnt] = newline;
         }
         br.close();
@@ -279,6 +281,7 @@ public class PattyParaFuzzyMatcher implements Runnable {
     public static void main(String[] args) throws Exception {
         //extract120();
         stopSet = StopWordLoader.getStopSet(stopWFile);
+        Lemmatizer.initPipeline();
         readInstance(args[1]);
         work(args[0]);
     }

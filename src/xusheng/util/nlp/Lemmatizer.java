@@ -31,7 +31,7 @@ public class Lemmatizer {
 	
 	public static String lemmatize(String str) throws Exception {
 		// initialize CoreNLP pipeline
-		initPipeline();
+		//initPipeline();
 		// create an empty Annotation just with the given text
 	    Annotation document = new Annotation(str);
 	    // run all Annotators on this text
@@ -56,7 +56,8 @@ public class Lemmatizer {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		String str = "did";
+		initPipeline();
+        String str = "[did]";
 		System.out.println(lemmatize(str));
 	}
 }
