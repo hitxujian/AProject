@@ -79,10 +79,12 @@ public class PattyParaFuzzyMatcher implements Runnable {
         return -1;
     }
 
-    public static synchronized void writeRet(Pair<Integer, Integer> pair, String ppdb) throws Exception {
+    public static synchronized void writeRet(Pair<Integer, Integer> pair, String ppdb, int intersect) throws Exception {
         if (retPair.contains(pair)) return;
-        bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\n");
-        bw.write(instances.get(pair.getFirst()).toString() + "\t" + instances.get(pair.getSecond()).toString() + "\n");
+        bw.write(pair.getFirst() + "\t" + pair.getSecond() + "\t"
+                + instances.get(pair.getFirst()).size() + "\t"
+                + instances.get(pair.getSecond()).size() + "\t" + intersect + "\n");
+        bw.write(pattyData.get(pair.getFirst()).toString() + "\t" + pattyData.get(pair.getSecond()).toString() + "\n");
         bw.write(ppdb + "\n");
         bw.flush();
         retPair.add(pair);
@@ -115,11 +117,12 @@ public class PattyParaFuzzyMatcher implements Runnable {
                     for (int ridx: rightMatch) {
                         //if (!lmatch.equals(rightMatch)) bw.write(lmatch + "\t###\t" + rmatch + "\n");
                         // if two relation's EP has no intersection, just pass it
-                        if (lidx == ridx || !hasIntersectEP(lidx, ridx)) continue;
+                        int intersect = hasIntersectEP(lidx, ridx);
+                        if (lidx == ridx || intersect < 1) continue;
                         Pair<Integer, Integer> pair;
                         if (lidx < ridx) pair = new Pair<>(lidx, ridx);
                         else pair = new Pair<>(ridx, lidx);
-                        writeRet(pair, taskList[idx]);
+                        writeRet(pair, taskList[idx], intersect);
                     }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -240,15 +243,14 @@ public class PattyParaFuzzyMatcher implements Runnable {
         else return false;
     }
 
-    public static boolean hasIntersectEP(int idxA, int idxB) {
+    public static int hasIntersectEP(int idxA, int idxB) {
         HashSet<String> setA = instances.get(idxA);
         HashSet<String> setB = instances.get(idxB);
-        if (setA.size() < 5 || setB.size() < 5) return false;
+        if (setA.size() < 5 || setB.size() < 5) return -1;
         int cnt = 0;
         for (String str: setA)
             if (setB.contains(str))  cnt ++;
-        if (cnt > 0) return true;
-        else return false;
+        return cnt;
     }
 
     public static HashMap<Integer, HashSet<String>> instances = new HashMap<>();
