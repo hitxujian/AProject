@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class VecLoader {
 
     public static String gooleNewsDir = "/home/xusheng/word2vec/GoogleNews-vectors-negative300.txt";
-    public static HashMap<String, ArrayList<Double>> vectors = null;
+    public static HashMap<String, ArrayList<Double>> vectors = new HashMap<>();
 
     public static void load() throws Exception {
         if (vectors != null) return;
@@ -27,8 +27,8 @@ public class VecLoader {
             String[] spt = line.split(" ");
             ArrayList<Double> vec = new ArrayList<>();
             for (int i=1; i<spt.length; i++) vec.add(Double.parseDouble(spt[i]));
-            LogInfo.logs(spt[0] + "\t" + vec.size());
-            if (spt[0] != null) vectors.put(spt[0], vec);
+            //LogInfo.logs(spt[0] + "\t" + vec.size());
+            vectors.put(spt[0], vec);
         }
         br.close();
         LogInfo.logs("Google News Vectors Loaded. Size: %d", vectors.size());
