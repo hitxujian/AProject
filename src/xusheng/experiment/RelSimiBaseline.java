@@ -35,6 +35,7 @@ public class RelSimiBaseline {
             String ret = "NULL";
             for (String lword: left) {
                 for (String rword: right) {
+                    if (lword.equals(rword)) continue;
                     double tmp = cos(lword, rword);
                     if (tmp > max) {
                         max = tmp;
@@ -42,7 +43,7 @@ public class RelSimiBaseline {
                     }
                 }
             }
-            bw.write(ret + "\n");
+            bw.write(ret + "\t" + max + "\n");
             br.readLine();
         }
         br.close();
