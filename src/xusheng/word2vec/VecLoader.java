@@ -27,6 +27,7 @@ public class VecLoader {
             String[] spt = line.split(" ");
             ArrayList<Double> vec = new ArrayList<>();
             for (int i=1; i<spt.length; i++) vec.add(Double.parseDouble(spt[i]));
+            LogInfo.logs(spt[0] + "\t" + vec.size());
             if (spt[0] != null) vectors.put(spt[0], vec);
         }
         br.close();
