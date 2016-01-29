@@ -54,8 +54,9 @@ public class RelSimiBaseline {
     public static double multi(ArrayList<Double> arrA, ArrayList<Double> arrB) {
         if (arrA == null || arrB == null) return -1;
         double sum = 0;
-        for (int i=0; i<arrA.size(); i++) {
-            for (int j=0; j<arrB.size(); j++) sum += arrA.get(i) * arrB.get(j);
+        int len = arrA.size() > arrB.size()? arrB.size(): arrA.size();
+        for (int i=0; i<len; i++) {
+            sum += arrA.get(i) * arrB.get(i);
         }
         return sum;
     }

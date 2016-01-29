@@ -27,10 +27,10 @@ public class VecLoader {
             String[] spt = line.split(" ");
             ArrayList<Double> vec = new ArrayList<>();
             for (int i=1; i<spt.length; i++) vec.add(Double.parseDouble(spt[i]));
-            vectors.put(spt[0], vec);
+            if (spt[0] != null) vectors.put(spt[0], vec);
         }
         br.close();
-        LogInfo.logs("Google News Vectors Loaded.");
+        LogInfo.logs("Google News Vectors Loaded. Size: %d", vectors.size());
     }
 
     public static void main(String[] args) throws Exception {
