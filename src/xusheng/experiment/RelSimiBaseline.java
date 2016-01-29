@@ -27,8 +27,10 @@ public class RelSimiBaseline {
             String[] spt = line.split("\\]\t\\[");
             String[] left = spt[0].split("\\[")[1].split(", ");
             String[] right = spt[1].substring(0, spt[1].length()-1).split(", ");
-            LogInfo.logs(left.toString());
-            LogInfo.logs(right.toString());
+            for (String str: left) System.out.print(str + "\t");
+            System.out.print("\n");
+            for (String str: right) System.out.print(str + "\t");
+            System.out.print("\n");
             double max = -1;
             String ret = "NULL";
             for (String lword: left) {
