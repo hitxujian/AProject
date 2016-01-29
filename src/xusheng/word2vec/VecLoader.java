@@ -13,12 +13,13 @@ import java.util.HashMap;
  */
 public class VecLoader {
 
-    public static String gooleNewsDir = "/home/xusheng/word2vec/GoogleNews-vectors-negative300.txt";
-    public static HashMap<String, ArrayList<Double>> vectors = new HashMap<>();
+    public static String googleNewsDir = "/home/xusheng/word2vec/GoogleNews-vectors-negative300.txt";
+    public static HashMap<String, ArrayList<Double>> vectors = null;
 
     public static void load() throws Exception {
         if (vectors != null) return;
-        BufferedReader br = new BufferedReader(new FileReader(gooleNewsDir));
+        vectors = new HashMap<>();
+        BufferedReader br = new BufferedReader(new FileReader(googleNewsDir));
         String line = br.readLine();
         int cnt = 0;
         while ((line = br.readLine()) != null) {
