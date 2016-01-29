@@ -19,7 +19,8 @@ public class VecLoader {
     public static void load() throws Exception {
         if (vectors != null) return;
         BufferedReader br = new BufferedReader(new FileReader(gooleNewsDir));
-        String line = ""; int cnt = 0;
+        String line = br.readLine();
+        int cnt = 0;
         while ((line = br.readLine()) != null) {
             cnt ++;
             LogUpgrader.showLine(cnt, 500000);
