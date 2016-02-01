@@ -47,6 +47,7 @@ public class Skeleton {
             sum += _prob;
             combProb.put(key, _prob);
         }
+        LogInfo.logs(sum);
 
         /*
             sum += (_prob * _prob);
