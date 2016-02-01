@@ -4,6 +4,7 @@ import fig.basic.LogInfo;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -22,8 +23,23 @@ public class RelSimiCalculator {
             getFiles();
         else if (args[0].equals("Task_2")) {
             STR = args[1];
+            getBaseline();
             calcuSimi();
         }
+    }
+
+    public static HashMap<String, String> baseline = new HashMap<>();
+    public static void getBaseline() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/rel-simi/baseline.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.substring(1).split("\t");
+            String key = spt[0] + "\t" + spt[1];
+            line = br.readLine();
+            String value = line.split("\t")[2];
+            baseline.put(key, value);
+        }
+        br.close();
     }
 
     public static void getFiles() {
@@ -105,16 +121,22 @@ public class RelSimiCalculator {
         LogInfo.end_track();
     }
 
+    public static HashSet<String> targets = new HashSet<>();
     public static void calcuSimi() throws IOException {
+        LogInfo.logs("==>Relation Similarity: ");
         getPairs();
         for (Map.Entry<Integer, Integer> entry: pairs.entrySet()) {
             String name_1 = home + "/similarity/" + entry.getKey() + "_" + entry.getKey();
             String name_2 = home + "/similarity/" + entry.getValue() + "_" + entry.getValue();
             if (new File(name_1).exists() && new File(name_2).exists()) {
                 work4Pair(name_1, name_2, entry.getKey(), entry.getValue());
+                targets.add(entry.getKey() + "\t" + entry.getValue());
             }
         }
-
+        LogInfo.logs("\n==>Baseline-w2v: ");
+        for (String str: targets) {
+            LogInfo.logs("%s\t:\t%s", str, baseline.get(str));
+        }
     }
 
     public static void work4Pair(String file_1, String file_2, int name_1, int name_2) throws IOException {
@@ -137,7 +159,9 @@ public class RelSimiCalculator {
         double ret = 0;
         if (STR.equals("COS")) ret = cos(distribution_1, distribution_2);
         if (STR.equals("KL")) ret = kl(distribution_1, distribution_2);
-        LogInfo.logs(name_1 + "\t" + name_2 + "\t:\t" + ret + "\n");
+
+
+        LogInfo.logs("%s\t%s\t:\t%.8f", name_1, name_2, ret);
     }
 
     public static double cos(HashMap<String, Double> distribution_1, HashMap<String, Double> distribution_2) {
