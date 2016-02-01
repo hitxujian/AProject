@@ -93,9 +93,14 @@ public class RelSimiCalculator {
             LogInfo.logs("Skeleton %d => numOfSchema: %d, prob: %f, numOfEdge: %d",
                     cnt, entry.getValue().numOfSchema, entry.getValue().prob,
                     entry.getValue().edgeCount.size());
+
+            double sum = 0;
             HashMap<String, Double> ret = entry.getValue().combProb;
-            for (Map.Entry<String, Double> entry1: ret.entrySet())
+            for (Map.Entry<String, Double> entry1: ret.entrySet()) {
+                sum += entry1.getValue();
                 bw.write(entry1.getKey() + "\t\t\t" + entry1.getValue() + "\n");
+            }
+            LogInfo.logs("\tsum of distribution: %f", sum);
         }
         bw.close();
         LogInfo.end_track();

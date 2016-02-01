@@ -44,10 +44,8 @@ public class Skeleton {
         for (Map.Entry<String, Double> entry: edgeProb.entrySet()) {
             String key = skeleton + "\t" + entry.getKey();
             double _prob = prob * entry.getValue();
-            sum += _prob;
             combProb.put(key, _prob);
         }
-        LogInfo.logs(sum);
 
         /*
             sum += (_prob * _prob);
