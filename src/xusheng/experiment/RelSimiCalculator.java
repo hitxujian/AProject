@@ -69,6 +69,7 @@ public class RelSimiCalculator {
                     LogInfo.logs(edge);
                     skeletons.get(skeleton).addEdge(edge);
                 }
+                LogInfo.end_track();
             }
         }
         br.close();
