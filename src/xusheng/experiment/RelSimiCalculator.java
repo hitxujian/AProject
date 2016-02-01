@@ -132,6 +132,7 @@ public class RelSimiCalculator {
 
         double ret = 0;
         if (STR.equals("COS")) ret = cos(distribution_1, distribution_2);
+        if (STR.equals("KL")) ret = kl(distribution_1, distribution_2);
         LogInfo.logs(name_1 + "\t" + name_2 + "\t:\t" + ret + "\n");
     }
 
@@ -144,6 +145,22 @@ public class RelSimiCalculator {
         return ret;
     }
 
+    public static double kl(HashMap<String, Double> distribution_1, HashMap<String, Double> distribution_2) {
+        double ret_1 = 0, ret_2 = 0;
+        for (Map.Entry<String, Double> entry : distribution_1.entrySet()) {
+            if (distribution_2.containsKey(entry.getKey())) {
+                double p = distribution_2.get(entry.getKey());
+                double q = entry.getValue();
+                double term = p * Math.log(p / q);
+                ret_1 += term;
+                term = q * Math.log(q / p);
+                ret_2 += term;
+            }
+        }
+        double ret = 2 * ret_1 * ret_2 / (ret_1 + ret_2);
+        return ret;
+    }
+
     public static HashMap<Integer, Integer> pairs = null;
     public static void getPairs() throws IOException {
         pairs = new HashMap<>();
@@ -152,10 +169,10 @@ public class RelSimiCalculator {
         while ((line = br.readLine()) != null) {
             if (!line.startsWith("#")) continue;
             String[] spt = line.substring(1).split("\t");
-            LogInfo.logs(spt[0] + "\t" + spt[1]);
+            //LogInfo.logs(spt[0] + "\t" + spt[1]);
             pairs.put(Integer.parseInt(spt[0]), Integer.parseInt(spt[1]));
         }
         br.close();
-        LogInfo.logs("Relation Pairs Read, size: %d", pairs.size());
+        LogInfo.logs("Relation Pairs Read, size: %d, real size: 20", pairs.size());
     }
 }
