@@ -150,6 +150,7 @@ public class RelSimiCalculator {
         for (Map.Entry<String, Double> entry: distribution_1.entrySet()) {
             new_1.put(entry.getKey(), entry.getValue() / sum);
         }
+
         sum = 0;
         for (Map.Entry<String, Double> entry: distribution_2.entrySet()) {
             sum += entry.getValue() * entry.getValue();
@@ -157,7 +158,7 @@ public class RelSimiCalculator {
         sum = Math.sqrt(sum);
         HashMap<String, Double> new_2 = new HashMap<>();
         for (Map.Entry<String, Double> entry: distribution_2.entrySet()) {
-            new_1.put(entry.getKey(), entry.getValue() / sum);
+            new_2.put(entry.getKey(), entry.getValue() / sum);
         }
         return _cos(new_1, new_2);
     }
@@ -172,6 +173,27 @@ public class RelSimiCalculator {
     }
 
     public static double kl(HashMap<String, Double> distribution_1, HashMap<String, Double> distribution_2) {
+        double sum = 0;
+        for (Map.Entry<String, Double> entry: distribution_1.entrySet()) {
+            sum += entry.getValue();
+        }
+        HashMap<String, Double> new_1 = new HashMap<>();
+        for (Map.Entry<String, Double> entry: distribution_1.entrySet()) {
+            new_1.put(entry.getKey(), entry.getValue() / sum);
+        }
+
+        sum = 0;
+        for (Map.Entry<String, Double> entry: distribution_2.entrySet()) {
+            sum += entry.getValue();
+        }
+        HashMap<String, Double> new_2 = new HashMap<>();
+        for (Map.Entry<String, Double> entry: distribution_2.entrySet()) {
+            new_2.put(entry.getKey(), entry.getValue() / sum);
+        }
+        return _kl(new_1, new_2);
+    }
+
+    public static double _kl(HashMap<String, Double> distribution_1, HashMap<String, Double> distribution_2) {
         double ret_1 = 0, ret_2 = 0;
         for (Map.Entry<String, Double> entry : distribution_1.entrySet()) {
             if (distribution_2.containsKey(entry.getKey())) {
