@@ -1,5 +1,7 @@
 package xusheng.experiment;
 
+import fig.basic.LogInfo;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,10 +44,11 @@ public class Skeleton {
         for (Map.Entry<String, Double> entry: edgeProb.entrySet()) {
             String key = skeleton + "\t" + entry.getKey();
             double _prob = prob * entry.getValue();
-            sum += _prob * _prob;
+            sum += (_prob * _prob);
             tmp.put(key, _prob);
         }
         sum = Math.sqrt(sum);
+        LogInfo.logs("sum = %f", sum);
         for (Map.Entry<String, Double> entry: tmp.entrySet()) {
             combProb.put(entry.getKey(), entry.getValue() / sum);
         }
