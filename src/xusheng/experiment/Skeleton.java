@@ -43,7 +43,7 @@ public class Skeleton {
         HashMap<String, Double> tmp = new HashMap<>();
         for (Map.Entry<String, Double> entry: edgeProb.entrySet()) {
             String key = skeleton + "\t" + entry.getKey();
-            double _prob = prob * entry.getValue();
+            double _prob = 10000 * prob * entry.getValue();
             sum += (_prob * _prob);
             tmp.put(key, _prob);
         }
