@@ -48,12 +48,12 @@ public class RelSimiCalculator {
         String line = "";
         while ((line = br.readLine()) != null) {
             if (line.startsWith("==")) {
-                LogInfo.begin_track(line);
+                //LogInfo.begin_track(line);
                 double prob = Double.parseDouble(line.split(" ")[7]);
-                LogInfo.logs(prob);
+                //LogInfo.logs(prob);
                 line = br.readLine();
                 int numOfBones = Integer.parseInt(line.split(" ")[3]);
-                LogInfo.logs(numOfBones);
+                //LogInfo.logs(numOfBones);
                 String skeleton = "";
                 for (int i = 0; i<numOfBones; i++) {
                     line = br.readLine();
@@ -66,25 +66,32 @@ public class RelSimiCalculator {
 
                 while (!(line = br.readLine()).equals("")) {
                     String edge = line.substring(6);
-                    LogInfo.logs(edge);
+                    //LogInfo.logs(edge);
                     skeletons.get(skeleton).addEdge(edge);
                 }
-                LogInfo.end_track();
+                //LogInfo.end_track();
             }
         }
         br.close();
-
+        LogInfo.begin_track("Info for " + name);
+        LogInfo.logs("Size of skeletons: " + skeletons.size());
+        int cnt = 0;
         BufferedWriter bw = new BufferedWriter(new FileWriter(home + "/similarity/" + name));
         for (Map.Entry<String, Skeleton> entry: skeletons.entrySet()) {
+            cnt ++;
             // calculate the probability for each constraint
             entry.getValue().calcuEdgeProb();
             // calculate the probability for each skeleton+constraint combination
             entry.getValue().calcuCombProb(entry.getKey());
+            LogInfo.logs("Skeleton %d => numOfSchema: %d, prob: %.2f, numOfEdge: %d",
+                    cnt, entry.getValue().numOfSchema, entry.getValue().numOfSchema,
+                    entry.getValue().edgeCount.size());
             HashMap<String, Double> ret = entry.getValue().combProb;
             for (Map.Entry<String, Double> entry1: ret.entrySet())
                 bw.write(entry1.getKey() + "\t\t\t" + entry1.getValue() + "\n");
         }
         bw.close();
+        LogInfo.end_track();
     }
 
     public static void calcuSimi() throws IOException {
