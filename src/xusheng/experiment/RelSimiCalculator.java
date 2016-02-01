@@ -84,7 +84,7 @@ public class RelSimiCalculator {
             // calculate the probability for each skeleton+constraint combination
             entry.getValue().calcuCombProb(entry.getKey());
             LogInfo.logs("Skeleton %d => numOfSchema: %d, prob: %.2f, numOfEdge: %d",
-                    cnt, entry.getValue().numOfSchema, entry.getValue().numOfSchema,
+                    cnt, entry.getValue().numOfSchema, entry.getValue().prob,
                     entry.getValue().edgeCount.size());
             HashMap<String, Double> ret = entry.getValue().combProb;
             for (Map.Entry<String, Double> entry1: ret.entrySet())
