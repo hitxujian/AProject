@@ -46,16 +46,5 @@ public class Skeleton {
             double _prob = prob * entry.getValue();
             combProb.put(key, _prob);
         }
-
-        /*
-            sum += (_prob * _prob);
-            tmp.put(key, _prob);
-        }
-        sum = Math.sqrt(sum);
-        LogInfo.logs("sum = %f", sum);
-        for (Map.Entry<String, Double> entry: tmp.entrySet()) {
-            combProb.put(entry.getKey(), entry.getValue() / sum);
-        }
-        */
     }
 }

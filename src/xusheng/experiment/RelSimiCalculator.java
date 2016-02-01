@@ -141,19 +141,29 @@ public class RelSimiCalculator {
     }
 
     public static double cos(HashMap<String, Double> distribution_1, HashMap<String, Double> distribution_2) {
-        double ret = 0;
-        //
+        double sum = 0;
         for (Map.Entry<String, Double> entry: distribution_1.entrySet()) {
-            ret += entry.getValue() * entry.getValue();
+            sum += entry.getValue() * entry.getValue();
         }
-        LogInfo.logs(ret);
-        ret = 0;
+        sum = Math.sqrt(sum);
+        HashMap<String, Double> new_1 = new HashMap<>();
+        for (Map.Entry<String, Double> entry: distribution_1.entrySet()) {
+            new_1.put(entry.getKey(), entry.getValue() / sum);
+        }
+        sum = 0;
         for (Map.Entry<String, Double> entry: distribution_2.entrySet()) {
-            ret += entry.getValue() * entry.getValue();
+            sum += entry.getValue() * entry.getValue();
         }
-        LogInfo.logs(ret);
-        ret = 0;
-        //
+        sum = Math.sqrt(sum);
+        HashMap<String, Double> new_2 = new HashMap<>();
+        for (Map.Entry<String, Double> entry: distribution_2.entrySet()) {
+            new_1.put(entry.getKey(), entry.getValue() / sum);
+        }
+        return _cos(new_1, new_2);
+    }
+
+    public static double _cos(HashMap<String, Double> distribution_1, HashMap<String, Double> distribution_2) {
+        double ret = 0;
         for (Map.Entry<String, Double> entry: distribution_1.entrySet()) {
             if (distribution_2.containsKey(entry.getKey()))
                 ret += distribution_2.get(entry.getKey()) * entry.getValue();
