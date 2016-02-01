@@ -74,7 +74,7 @@ public class RelSimiCalculator {
         }
         br.close();
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(home + "/similarity" + name));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(home + "/similarity/" + name));
         for (Map.Entry<String, Skeleton> entry: skeletons.entrySet()) {
             // calculate the probability for each constraint
             entry.getValue().calcuEdgeProb();
