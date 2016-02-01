@@ -3,6 +3,7 @@ package xusheng.experiment;
 import fig.basic.LogInfo;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -121,7 +122,7 @@ public class RelSimiCalculator {
         LogInfo.end_track();
     }
 
-    public static HashSet<String> targets = new HashSet<>();
+    public static ArrayList<String> targets = new ArrayList<>();
     public static void calcuSimi() throws IOException {
         LogInfo.logs("==>Relation Similarity: ");
         getPairs();
