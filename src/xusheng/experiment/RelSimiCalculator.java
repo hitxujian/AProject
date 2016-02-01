@@ -143,7 +143,9 @@ public class RelSimiCalculator {
         BufferedReader br = new BufferedReader(new FileReader(home + "/filtered-20-EP"));
         String line;
         while ((line = br.readLine()) != null) {
+            if (!line.startsWith("#")) continue;
             String[] spt = line.substring(1).split("\t");
+            LogInfo.logs(spt[0] + "\t" + spt[1]);
             pairs.put(Integer.parseInt(spt[0]), Integer.parseInt(spt[1]));
         }
         br.close();
