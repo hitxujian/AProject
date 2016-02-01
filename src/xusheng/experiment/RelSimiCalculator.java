@@ -64,9 +64,16 @@ public class RelSimiCalculator {
                     skeletons.get(skeleton).prob += prob;
                 } else skeletons.put(skeleton, new Skeleton(prob));
 
+                boolean flag = true;
                 while (!(line = br.readLine()).equals("")) {
+                    flag = false;
                     String edge = line.substring(6);
                     //LogInfo.logs(edge);
+                    skeletons.get(skeleton).addEdge(edge);
+                }
+                // empty edge counts
+                if (flag) {
+                    String edge = "EMPTY";
                     skeletons.get(skeleton).addEdge(edge);
                 }
                 //LogInfo.end_track();

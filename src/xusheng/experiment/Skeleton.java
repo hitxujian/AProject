@@ -37,10 +37,17 @@ public class Skeleton {
     }
 
     public void calcuCombProb(String skeleton) {
+        double sum = 0;
+        HashMap<String, Double> tmp = new HashMap<>();
         for (Map.Entry<String, Double> entry: edgeProb.entrySet()) {
             String key = skeleton + "\t" + entry.getKey();
             double _prob = prob * entry.getValue();
-            combProb.put(key, _prob);
+            sum += _prob * _prob;
+            tmp.put(key, _prob);
+        }
+        sum = Math.sqrt(sum);
+        for (Map.Entry<String, Double> entry: tmp.entrySet()) {
+            combProb.put(entry.getKey(), entry.getValue() / sum);
         }
     }
 }
