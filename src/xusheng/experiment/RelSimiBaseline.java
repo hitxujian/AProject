@@ -7,8 +7,10 @@ import java.io.*;
 import java.util.ArrayList;
 
 /**
- * Created by angrymidiao on 1/29/2016.
+ * Created by Xusheng on 1/29/2016.
+ *
  */
+
 public class RelSimiBaseline {
 
     public static void main(String[] args) throws Exception {
@@ -48,6 +50,7 @@ public class RelSimiBaseline {
         }
         br.close();
         bw.close();
+        LogInfo.logs("Job finished!");
     }
 
     public static double cos(String a, String b) {
