@@ -34,7 +34,7 @@ public class Qatester {
             }
         }
         LogInfo.logs("totally %d questions appeared, %d has answers, score: %f," +
-                "precision?%.2f", total, hasAnswer, score, score/hasAnswer);
+                "precision?%f", total, hasAnswer, score, score/hasAnswer);
     }
 
     public static HashSet<String> questions = new HashSet<>();
