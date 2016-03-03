@@ -55,7 +55,7 @@ public class WebQexchanger {
     public static void main(String[] args) throws IOException {
         readQues();
         bw = new BufferedWriter(new FileWriter(dir + "/webquestions.new.test.json"));
-        bw.write("[");
+        bw.write("[\n");
         exchange("/webquestions.examples.train.80.json");
         exchange("/webquestions.examples.dev.20.json");
         exchange("/webquestions.examples.test.json");
@@ -74,12 +74,12 @@ public class WebQexchanger {
             idx ++;
         }
         bw = new BufferedWriter(new FileWriter(dir + "/webquestions.new.train.json"));
-        bw.write("[");
+        bw.write("[\n");
         for (String line: newTrain) bw.write(line + "\n");
         bw.write("]");
         bw.close();
         bw = new BufferedWriter(new FileWriter(dir + "/webquestions.new.dev.json"));
-        bw.write("[");
+        bw.write("[\n");
         for (String line: newDev) bw.write(line + "\n");
         bw.write("]");
         bw.close();
