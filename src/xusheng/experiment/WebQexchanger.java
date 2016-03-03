@@ -31,7 +31,7 @@ public class WebQexchanger {
             }
             else {
                 if (file.equals("/webquestions.examples.train.80.json")) newTrain.add(line);
-                else if (file.equals("/webquestions.examples.dev.80.json")) newDev.add(line);
+                else if (file.equals("/webquestions.examples.dev.20.json")) newDev.add(line);
                 else leftTest.add(line);
             }
         }
@@ -44,9 +44,9 @@ public class WebQexchanger {
         BufferedReader br = new BufferedReader(new FileReader(quesPath));
         String line;
         while ((line = br.readLine()) != null) {
+            line = br.readLine();
             String[] spt = line.split("\t");
             questions.add(spt[1]);
-            br.readLine();
         }
         LogInfo.logs("Questions' size: %d", questions.size());
     }
