@@ -18,7 +18,7 @@ public class PattyRelFilter {
     private static double threshold;
 
     public static boolean filter(int idx, int num) {
-        LogInfo.logs("Now for %d: %d",num, idx);
+        //LogInfo.logs("Now for %d: %d",num, idx);
         Set<String> curr = map.get(idx);
         //LogInfo.logs(curr.toString());
         for (int i=1; i<num; i++) {
