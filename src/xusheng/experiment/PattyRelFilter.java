@@ -64,7 +64,7 @@ public class PattyRelFilter {
             if (idx != prev) {
                 //LogInfo.logs("%d: %d", prev, set.size());
                 map.put(prev, set);
-                set.clear();
+                set = new HashSet<>();
                 prev = idx;
             }
             String pair = spt[1] + spt[2];
