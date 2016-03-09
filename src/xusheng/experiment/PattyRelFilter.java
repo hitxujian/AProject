@@ -73,6 +73,8 @@ public class PattyRelFilter {
         //LogInfo.logs("%d: %d", prev, set.size());
         map.put(prev, set);
         LogInfo.logs("total size: %d", map.size());
+        for (Map.Entry<Integer, Set<String>> entry: map.entrySet())
+            LogInfo.logs("%d: %s", entry.getKey(), entry.getValue().toString());
     }
 
     public static void main(String[] args) throws Exception {
