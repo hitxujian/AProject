@@ -14,7 +14,7 @@ public class PattyRelFilter {
     private static String patternFp = "/home/data/PATTY/patty-dataset-freebase/" +
             "remove-type-signature/Matt-Fb3m_med/pattern-support-dist.txt";
     private static String instanceFp = "/home/data/PATTY/patty-dataset-freebase/" +
-            "remove-type-signature/Matt-Fb3m_med/wikipedia-instances.fb_link";
+            "remove-type-signature/Matt-Fb3m_med/wikipedia-instances.txt.fb_link";
 
     public static boolean filter(int idx, int num) {
         Set<String> curr = map.get(idx);
