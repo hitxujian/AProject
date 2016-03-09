@@ -15,20 +15,21 @@ public class PattyRelFilter {
             "remove-type-signature/Matt-Fb3m_med/pattern-support-dist.txt";
     private static String instanceFp = "/home/data/PATTY/patty-dataset-freebase/" +
             "remove-type-signature/Matt-Fb3m_med/wikipedia-instances.txt.fb_link";
+    private static double threshold;
 
     public static boolean filter(int idx, int num) {
         LogInfo.logs("Now for %d: %d",num, idx);
         Set<String> curr = map.get(idx);
-        LogInfo.logs(curr.toString());
+        //LogInfo.logs(curr.toString());
         for (int i=1; i<num; i++) {
             Set<String> set = map.get(index.get(i));
-            LogInfo.logs(set.toString());
+            //LogInfo.logs(set.toString());
             int a = 0;
             for (String ele: curr)
                 if (set.contains(ele)) a++;
             int b = curr.size() + set.size() - a;
-            LogInfo.logs("%d, %d, %.2f", a, b, (double) a / b);
-            if ((double) a / b > 0.5) return false;
+            //LogInfo.logs("%d, %d, %.2f", a, b, (double) a / b);
+            if ((double) a / b > threshold) return false;
         }
         return true;
     }
@@ -73,11 +74,12 @@ public class PattyRelFilter {
         //LogInfo.logs("%d: %d", prev, set.size());
         map.put(prev, set);
         LogInfo.logs("total size: %d", map.size());
-        for (Map.Entry<Integer, Set<String>> entry: map.entrySet())
-            LogInfo.logs("%d: %s", entry.getKey(), entry.getValue().toString());
+        //for (Map.Entry<Integer, Set<String>> entry: map.entrySet())
+        //    LogInfo.logs("%d: %s", entry.getKey(), entry.getValue().toString());
     }
 
     public static void main(String[] args) throws Exception {
+        threshold = Double.parseDouble(args[0]);
         readInstanceFile();
         work();
     }
