@@ -19,8 +19,10 @@ public class PattyRelFilter {
     public static boolean filter(int idx, int num) {
         LogInfo.logs("Now for %d: %d",num, idx);
         Set<String> curr = map.get(idx);
+        LogInfo.logs(curr.toString());
         for (int i=1; i<num; i++) {
             Set<String> set = map.get(index.get(i));
+            LogInfo.logs(set.toString());
             int a = 0;
             for (String ele: curr)
                 if (set.contains(ele)) a++;
