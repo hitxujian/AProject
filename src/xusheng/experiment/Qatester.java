@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.HashSet;
 
 /**
- * Created by angrymidiao on 2/29/2016.
+ * Created by XUsheng Luo on 2/29/2016.
  */
 public class Qatester {
 
