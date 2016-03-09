@@ -17,6 +17,7 @@ public class PattyRelFilter {
             "remove-type-signature/Matt-Fb3m_med/wikipedia-instances.txt.fb_link";
 
     public static boolean filter(int idx, int num) {
+        LogInfo.logs("Now for %d: %d",num, idx);
         Set<String> curr = map.get(idx);
         for (int i=1; i<num; i++) {
             Set<String> set = map.get(index.get(i));
@@ -24,6 +25,7 @@ public class PattyRelFilter {
             for (String ele: curr)
                 if (set.contains(ele)) a++;
             int b = curr.size() + set.size() - a;
+            LogInfo.logs("%d, %d, %.2f", a, b, (double) a / b);
             if ((double) a / b > 0.5) return false;
         }
         return true;
@@ -37,7 +39,6 @@ public class PattyRelFilter {
             cnt ++;
             String[] spt = line.split(" \\| ")[0].split(" ");
             int idx = Integer.parseInt(spt[spt.length-1]);
-            LogInfo.logs("Now for %d", idx);
             index.add(idx);
             if (cnt >400 && cnt < 1000 || cnt > 1400 && cnt <3000) {
                 if (filter(idx, cnt)) {
@@ -59,7 +60,7 @@ public class PattyRelFilter {
             String[] spt = line.split("\t");
             int idx = Integer.parseInt(spt[0]);
             if (idx != prev) {
-                LogInfo.logs("%d: %d", prev, set.size());
+                //LogInfo.logs("%d: %d", prev, set.size());
                 map.put(prev, set);
                 set.clear();
                 prev = idx;
@@ -67,9 +68,9 @@ public class PattyRelFilter {
             String pair = spt[1] + spt[2];
             set.add(pair);
         }
-        LogInfo.logs("%d: %d", prev, set.size());
+        //LogInfo.logs("%d: %d", prev, set.size());
         map.put(prev, set);
-        LogInfo.logs(map.size());
+        LogInfo.logs("total size: %d", map.size());
     }
 
     public static void main(String[] args) throws Exception {
