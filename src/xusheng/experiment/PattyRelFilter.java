@@ -45,7 +45,7 @@ public class PattyRelFilter {
             index.add(idx);
             if (cnt >400 && cnt < 1000 || cnt > 1400 && cnt <3000) {
                 if (filter(idx, cnt)) {
-                    LogInfo.logs(line);
+                    LogInfo.logs(cnt + "\t" + line);
                 }
             }
         }
