@@ -35,8 +35,9 @@ public class PattyRelFilter {
         String line; int cnt = 0; index.add(0);
         while ((line = br.readLine()) != null) {
             cnt ++;
-            int idx = Integer.parseInt(line.split(" ")[5]);
-            LogInfo.logs(idx);
+            String[] spt = line.split(" \\| ")[0].split(" ");
+            int idx = Integer.parseInt(spt[spt.length-1]);
+            LogInfo.logs("Now for %d", idx);
             index.add(idx);
             if (cnt >400 && cnt < 1000 || cnt > 1400 && cnt <3000) {
                 if (filter(idx, cnt)) {
