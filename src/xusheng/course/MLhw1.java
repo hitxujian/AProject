@@ -31,6 +31,7 @@ public class MLhw1 {
             bw.write(price + "\t" + sqft_living + "\n");
         }
         LogInfo.logs(prices.size() + "\t" + sqfts.size());
+        bw.close();
     }
 
     public static void gd() {
