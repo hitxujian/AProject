@@ -1,20 +1,19 @@
 package xusheng.experiment;
 
 import fig.basic.LogInfo;
-import xusheng.word2vec.VecLoader;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Xusheng on 1/29/2016.
- *
  */
 
 public class RelSimiBaseline {
 
     public static void main(String[] args) throws Exception {
-        VecLoader.load();
+        load();
         work();
     }
 
@@ -54,7 +53,7 @@ public class RelSimiBaseline {
     }
 
     public static double cos(String a, String b) {
-        return multi(VecLoader.vectors.get(a), VecLoader.vectors.get(b));
+        return multi(vectors.get(a), vectors.get(b));
     }
 
     public static double multi(ArrayList<Double> arrA, ArrayList<Double> arrB) {
@@ -65,5 +64,25 @@ public class RelSimiBaseline {
             sum += arrA.get(i) * arrB.get(i);
         }
         return sum;
+    }
+
+    public static String googleNewsDir = "/home/xusheng/word2vec/GoogleNews-vectors-negative300.txt";
+    public static HashMap<String, ArrayList<Double>> vectors = null;
+    public static void load() throws Exception {
+        if (vectors != null) return;
+        vectors = new HashMap<>();
+        BufferedReader br = new BufferedReader(new FileReader(googleNewsDir));
+        String line = br.readLine();
+        int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            String[] spt = line.split(" ");
+            ArrayList<Double> vec = new ArrayList<>();
+            for (int i=1; i<spt.length; i++) vec.add(Double.parseDouble(spt[i]));
+            //LogInfo.logs(spt[0] + "\t" + vec.size());
+            vectors.put(spt[0], vec);
+        }
+        br.close();
+        LogInfo.logs("Google News Vectors Loaded. Size: %d", vectors.size());
     }
 }
