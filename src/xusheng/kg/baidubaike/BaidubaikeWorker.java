@@ -19,7 +19,7 @@ public class BaidubaikeWorker {
             cnt += 10000;
             String name = (cnt-10000+1) + "-" + cnt;
             for (int i=cnt-10000+1; i<=cnt; i++) {
-                String fp = root + "/data/" + name + "/" + cnt + ".html";
+                String fp = root + "/data/" + name + "/" + i + ".html";
                 LogInfo.begin_track("Entering into %s...", fp);
                 BufferedReader br = new BufferedReader(new FileReader(fp));
                 String line;
