@@ -15,7 +15,7 @@ public class BaidubaikeWorker {
     public static void extractInfobox() throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
         int cnt = 0;
-        while (cnt < 110000) {
+        while (cnt < 100000) {
             cnt += 10000;
             String name = (cnt-10000+1) + "-" + cnt;
             for (int i=cnt-10000+1; i<=cnt; i++) {
@@ -31,12 +31,16 @@ public class BaidubaikeWorker {
                     }
                     if (line.startsWith("<dt class=\"basicInfo-item name\"")) {
                         String itemName = line.split(">")[1].split("<")[0];
+                        String[] spt = itemName.split("&nbsp;");
+                        itemName = "";
+                        for (int j=0; j<spt.length; j++)
+                            itemName += spt[j];
                         LogInfo.logs(itemName);
                         br.readLine();
                         line = br.readLine();
                         String itemValue = line;
                         if (line.startsWith("<a")) {
-                            String[] spt = line.split("<.*?>");
+                            spt = line.split("<(.*?)>");
                             itemValue = "";
                             for (int j=0; j<spt.length; j++) {
                                 itemValue += spt[j];
