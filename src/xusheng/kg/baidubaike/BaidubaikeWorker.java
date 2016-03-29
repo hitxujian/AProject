@@ -40,7 +40,7 @@ public class BaidubaikeWorker {
                         line = br.readLine();
                         String itemValue = line;
                         if (line.startsWith("<a")) {
-                            spt = line.split("<(.*)>");
+                            spt = line.split("<(.+?)>");
                             itemValue = "";
                             for (int j=0; j<spt.length; j++) {
                                 itemValue += spt[j];
