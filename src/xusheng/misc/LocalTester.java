@@ -7,11 +7,7 @@ package xusheng.misc;
 public class LocalTester {
 
     public static void main(String[] args) throws Exception {
-        String a = "<a href = ;;;;>hello</a>-<a herefshdskd>hi</a>";
-        String b = "sdjsjkdfjd";
-        String[] spt = b.split("<.+?>");
-        System.out.println(spt.length);
-        for (int i=0; i<spt.length; i++)
-            System.out.println(spt[i]);
+        String a = "??";
+        System.out.print(new String(a.getBytes("ISO-8859-1"), "GBK"));
     }
 }
