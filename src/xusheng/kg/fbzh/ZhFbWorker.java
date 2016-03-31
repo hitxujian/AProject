@@ -21,7 +21,7 @@ public class ZhFbWorker {
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             String mid = spt[0].split("ns/")[1].split(">")[0];
-            String name = new String(spt[2].split("\"")[1].getBytes("ISO-8859-1"), "GBK");
+            String name = new String(spt[2].split("\"")[1].getBytes("UTF-8"), "UTF-8");
             if (!set.contains(mid)) {
                 set.add(mid);
                 LogInfo.logs("%s\t%s", mid, name);
