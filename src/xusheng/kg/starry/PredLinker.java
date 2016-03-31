@@ -68,7 +68,7 @@ public class PredLinker {
 
     public static void readData() throws IOException {
         if (!new File(fp_fb).exists()) {
-            LogInfo.logs("%s doesn't exist... start constructing...", fp_fb);
+            LogInfo.logs("%s doesn't exist. Start constructing...", fp_fb);
             Map<String, String> entMap = EntityHandler.getEntityMap();
             BufferedReader br = new BufferedReader(new FileReader(fp_fb_raw));
             File file = new File(fp_fb);

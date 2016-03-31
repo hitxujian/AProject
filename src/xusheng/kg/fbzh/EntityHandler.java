@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class EntityHandler {
 
-    private static String root = "/home/xusheng/zh-freebase";
+    private static String root = "/home/xusheng/starry";
     private static String fp = root + "/entity-name.zh";
 
     private static Map<String, String> mid2Name = null;
