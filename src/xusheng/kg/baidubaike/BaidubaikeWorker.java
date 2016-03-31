@@ -15,11 +15,11 @@ public class BaidubaikeWorker {
     public static void extractInfobox() throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
         int cnt = 0;
-        while (cnt < 100000) {
+        while (cnt < 250000) {
             cnt += 10000;
             String name = (cnt-10000+1) + "-" + cnt;
             for (int i=cnt-10000+1; i<=cnt; i++) {
-                String fp = root + "/data/" + name + "/" + i + ".html";
+                String fp = root + "/data_v2/" + name + "/" + i + ".html";
                 LogInfo.begin_track("Entering into %s...", fp);
                 BufferedReader br = new BufferedReader(new FileReader(fp));
                 String line;
