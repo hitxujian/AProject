@@ -37,10 +37,12 @@ public class PredLinker {
             if (a.charAt(i) != ' ')
                 setA.add(String.valueOf(a.charAt(i)));
         }
+        LogInfo.logs(setA.toString());
 
         for (int i=0; i<b.length(); i++)
             if (b.charAt(i) != ' ')
                 setB.add(String.valueOf(b.charAt(i)));
+        LogInfo.logs(setB.toString());
 
         double interset = 0.0;
         for (String ch : setA)
