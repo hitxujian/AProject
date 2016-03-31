@@ -22,10 +22,14 @@ public class PredLinker {
         Set<String> setB = new HashSet<>();
         for (int i=0; i<a.length(); i++) {
             if (a.charAt(i) == '(') break;
-            setA.add(String.valueOf(a.charAt(i)));
+            if (a.charAt(i) != ' ')
+                setA.add(String.valueOf(a.charAt(i)));
         }
 
-        for (int i=0; i<b.length(); i++) setB.add(String.valueOf(b.charAt(i)));
+        for (int i=0; i<b.length(); i++)
+            if (b.charAt(i) != ' ')
+                setB.add(String.valueOf(b.charAt(i)));
+
         double interset = 0.0;
         for (String ch : setA)
             if (setB.contains(ch)) interset += 1;
