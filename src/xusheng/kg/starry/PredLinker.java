@@ -20,7 +20,11 @@ public class PredLinker {
     public static boolean match(String a, String b) {
         Set<String> setA = new HashSet<>();
         Set<String> setB = new HashSet<>();
-        for (int i=0; i<a.length(); i++) setA.add(String.valueOf(a.charAt(i)));
+        for (int i=0; i<a.length(); i++) {
+            if (a.charAt(i) == '(') break;
+            setA.add(String.valueOf(a.charAt(i)));
+        }
+
         for (int i=0; i<b.length(); i++) setB.add(String.valueOf(b.charAt(i)));
         double interset = 0.0;
         for (String ch : setA)
@@ -51,7 +55,7 @@ public class PredLinker {
             LogUpgrader.showLine(cnt, 1000);
             String[] spt = task.split("\t");
             for (Map.Entry<String, List<String>> entry: fbMap.entrySet()) {
-                if (match(entry.getKey(), spt[0])) {
+                if (match(spt[0], entry.getKey())) {
                     String[] ret = search(spt[2], entry.getValue());
                     if (ret != null)
                         LogInfo.logs("%s\t%s: [%s, %s] [%s, %s]",
