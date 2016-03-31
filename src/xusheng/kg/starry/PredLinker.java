@@ -67,6 +67,9 @@ public class PredLinker {
     public static Map<String, List<String> > fbMap = null;
 
     public static void readData() throws IOException {
+        /*
+        if fb-zh.triple not exists, generate it in this run.
+         */
         if (!new File(fp_fb).exists()) {
             LogInfo.logs("%s doesn't exist. Start constructing...", fp_fb);
             Map<String, String> entMap = EntityHandler.getEntityMap();
@@ -83,6 +86,12 @@ public class PredLinker {
             LogInfo.logs("%s all good.", fp_fb);
             return;
         }
+
+        /*
+        read data
+         */
+        taskList = new ArrayList<>();
+        fbMap = new HashMap<>();
 
         File f = new File(fp_fb);
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
