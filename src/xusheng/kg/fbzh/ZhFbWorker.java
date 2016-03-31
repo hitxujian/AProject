@@ -15,13 +15,14 @@ public class ZhFbWorker {
     public static String fbzhFp = root + "/fb-mid-zh";
 
     public static void makeEIList() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fbzhFp));
+        File f = new File(fbzhFp);
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         Set<String> set = new HashSet<>();
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             String mid = spt[0].split("ns/")[1].split(">")[0];
-            String name = new String(spt[2].split("\"")[1].getBytes("UTF-8"), "UTF-8");
+            String name = spt[2].split("\"")[1];
             if (!set.contains(mid)) {
                 set.add(mid);
                 LogInfo.logs("%s\t%s", mid, name);
