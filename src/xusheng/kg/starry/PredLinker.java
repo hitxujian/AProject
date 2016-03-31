@@ -47,7 +47,7 @@ public class PredLinker {
             if (setB.contains(ch)) interset += 1;
         double perA = interset / setA.size();
         double perB = interset / setB.size();
-        if (perA > 0.6 &&  perB > 0.6) return true;
+        if (perA >= 0.5 &&  perB >= 0.5) return true;
         else return false;
     }
 
@@ -68,10 +68,11 @@ public class PredLinker {
         int cnt = 0;
         for (String task: taskList) {
             cnt ++;
-            LogUpgrader.showLine(cnt, 1000);
+            LogUpgrader.showLine(cnt, 100);
             String[] spt = task.split("\t");
             if (!isChinese(spt[0]) || !isChinese(spt[2]))
                 continue;
+            LogInfo.logs("Now for %s...", task);
             for (Map.Entry<String, List<String>> entry: fbMap.entrySet()) {
                 if (match(spt[0], entry.getKey())) {
                     String[] ret = search(spt[2], entry.getValue());
