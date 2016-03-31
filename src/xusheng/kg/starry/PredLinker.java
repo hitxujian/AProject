@@ -37,25 +37,25 @@ public class PredLinker {
             if (a.charAt(i) != ' ')
                 setA.add(String.valueOf(a.charAt(i)));
         }
-        LogInfo.logs(setA.toString());
+        //LogInfo.logs(setA.toString());
 
         for (int i=0; i<b.length(); i++)
             if (b.charAt(i) != ' ')
                 setB.add(String.valueOf(b.charAt(i)));
-        LogInfo.logs(setB.toString());
+        //LogInfo.logs(setB.toString());
 
-        double interset = 0.0;
+        double intersect = 0.0;
         for (String ch : setA)
-            if (setB.contains(ch)) interset += 1;
-        double perA = interset / setA.size();
-        double perB = interset / setB.size();
+            if (setB.contains(ch)) intersect += 1;
+        double perA = intersect / setA.size();
+        double perB = intersect / setB.size();
         if (perA >= 0.5 &&  perB >= 0.5) return true;
         else return false;
     }
 
     public static String[] search(String task, List<String> list) {
         for (String str : list) {
-            if (match(task, str)) {
+            if (match(task, str.split("\t")[1])) {
                 String[] ret = new String[2];
                 ret[0] = str.split("\t")[0];
                 ret[1] = str.split("\t")[1];
