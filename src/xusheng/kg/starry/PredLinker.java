@@ -74,7 +74,7 @@ public class PredLinker {
             String[] spt = task.split("\t");
             if (!isChinese(spt[0]) || !isChinese(spt[2]))
                 continue;
-            LogInfo.logs("Now for %s...", task);
+            //LogInfo.logs("Now for %s...", task);
             for (Map.Entry<String, List<String>> entry: fbMap.entrySet()) {
                 if (match(spt[0], entry.getKey())) {
                     String[] ret = search(spt[2], entry.getValue());
