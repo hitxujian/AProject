@@ -21,7 +21,7 @@ public class PredLinker {
         Set<String> setA = new HashSet<>();
         Set<String> setB = new HashSet<>();
         for (int i=0; i<a.length(); i++) {
-            if (a.charAt(i) == '(') break;
+            if (a.charAt(i) == '（') break;
             if (a.charAt(i) != ' ')
                 setA.add(String.valueOf(a.charAt(i)));
         }
@@ -35,7 +35,7 @@ public class PredLinker {
             if (setB.contains(ch)) interset += 1;
         double perA = interset / setA.size();
         double perB = interset / setB.size();
-        if (perA > 0.6 || perB > 0.6) return true;
+        if (perA > 0.6 &&  perB > 0.6) return true;
         else return false;
     }
 
