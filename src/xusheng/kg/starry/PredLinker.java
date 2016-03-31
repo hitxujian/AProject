@@ -17,6 +17,18 @@ public class PredLinker {
     public static String fp_fb = root + "/fb-zh.triple";
     public static String fp_bb = root + "/infobox.triple";
 
+    public static boolean isChinese(char c) {
+        return c >= 0x4E00 &&  c <= 0x9FA5;
+    }
+
+    public static boolean isChinese(String str) {
+        if (str == null) return false;
+        for (char c : str.toCharArray()) {
+            if (isChinese(c)) return true;
+        }
+        return false;
+    }
+
     public static boolean match(String a, String b) {
         Set<String> setA = new HashSet<>();
         Set<String> setB = new HashSet<>();
@@ -58,6 +70,8 @@ public class PredLinker {
             cnt ++;
             LogUpgrader.showLine(cnt, 1000);
             String[] spt = task.split("\t");
+            if (!isChinese(spt[0]) || !isChinese(spt[2]))
+                continue;
             for (Map.Entry<String, List<String>> entry: fbMap.entrySet()) {
                 if (match(spt[0], entry.getKey())) {
                     String[] ret = search(spt[2], entry.getValue());
