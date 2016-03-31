@@ -2,9 +2,8 @@ package xusheng.kg.fbzh;
 
 import fig.basic.LogInfo;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.Map;
 public class EntityHandler {
 
     private static String root = "/home/xusheng/zh-freebase";
-    private static String fp = root + "/entity-zh.index";
+    private static String fp = root + "/entity-name.zh";
 
     private static Map<String, String> mid2Name = null;
     private static List<String> entities = null;
@@ -26,7 +25,9 @@ public class EntityHandler {
             LogInfo.logs("%d Entities Read.", entities.size());
             return entities;
         }
-        BufferedReader br = new BufferedReader(new FileReader(fp));
+        entities = new ArrayList<>();
+        File f = new File(fp);
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
@@ -37,12 +38,13 @@ public class EntityHandler {
         return entities;
     }
 
-
     public static Map<String, String> getEntityMap() throws IOException {
         if (mid2Name != null) {
             return mid2Name;
         }
-        BufferedReader br = new BufferedReader(new FileReader(fp));
+        mid2Name = new HashMap<>();
+        File f = new File(fp);
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));;
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
