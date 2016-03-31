@@ -21,7 +21,7 @@ public class PredLinker {
         Set<String> setA = new HashSet<>();
         Set<String> setB = new HashSet<>();
         for (int i=0; i<a.length(); i++) {
-            if (a.charAt(i) == '（') break;
+            if (String.valueOf(a.charAt(i)).equals("（")) break;
             if (a.charAt(i) != ' ')
                 setA.add(String.valueOf(a.charAt(i)));
         }
