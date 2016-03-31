@@ -49,8 +49,10 @@ public class PredLinker {
             if (setB.contains(ch)) intersect += 1;
         double perA = intersect / setA.size();
         double perB = intersect / setB.size();
-        if (perA >= 0.5 &&  perB >= 0.5) return true;
-        else return false;
+        if (perA >= 0.5 && perB >= 0.5 && (perA + perB) >= 1.3)
+            return true;
+        else
+            return false;
     }
 
     public static String[] search(String task, List<String> list) {
@@ -79,7 +81,7 @@ public class PredLinker {
                 if (match(spt[0], entry.getKey())) {
                     String[] ret = search(spt[2], entry.getValue());
                     if (ret != null)
-                        LogInfo.logs("%s\t%s: [%s, %s] [%s, %s]",
+                        LogInfo.logs("(%s, %s) ==> [%s, %s] [%s, %s]",
                                 spt[1], ret[0], spt[0], spt[2], entry.getKey(),ret[1]);
 
                 }
