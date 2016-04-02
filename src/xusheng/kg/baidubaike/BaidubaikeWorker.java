@@ -76,6 +76,7 @@ public class BaidubaikeWorker {
                     bw.write(line + "\n");
                 }
                 br.close();
+                LogInfo.end_track();
             }
         }
         bw.close();
