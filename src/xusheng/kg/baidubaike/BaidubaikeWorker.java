@@ -85,6 +85,8 @@ public class BaidubaikeWorker {
         bw = new BufferedWriter(new FileWriter(root + "/unvisited.0402"));
         String line;
         while ((line = br.readLine()) != null) {
+            String[] spt = line.split("#viewPage");
+            if (spt.length > 1) line = spt[0];
             if (!urls.contains(line) && !todo.contains(line)) {
                 todo.add(line);
                 bw.write(line + "\n");
