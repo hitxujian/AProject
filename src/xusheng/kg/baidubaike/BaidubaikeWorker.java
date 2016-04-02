@@ -62,7 +62,7 @@ public class BaidubaikeWorker {
         Set<String> urls = new HashSet<>();
         BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/visited.0402"));
         int cnt = 0;
-        while (cnt < 260000) {
+        while (cnt < 270000) {
             cnt += 10000;
             String name = (cnt - 10000 + 1) + "-" + cnt;
             for (int i = cnt - 10000 + 1; i <= cnt; i++) {
