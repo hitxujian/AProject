@@ -17,7 +17,7 @@ public class BaidubaikeWorker {
     public static void extractInfobox() throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
         int cnt = 0;
-        while (cnt < 250000) {
+        while (cnt < 3080000) {
             cnt += 10000;
             String name = (cnt-10000+1) + "-" + cnt;
             for (int i=cnt-10000+1; i<=cnt; i++) {
@@ -97,7 +97,7 @@ public class BaidubaikeWorker {
     }
 
     public static void main(String[] args) throws IOException {
-        //extractInfobox();
-        extractURLs();
+        extractInfobox();
+        //extractURLs();
     }
 }
