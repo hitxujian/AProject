@@ -15,9 +15,10 @@ import java.util.*;
 public class BaidubaikeWorker implements Runnable{
     public static String root = "/home/xusheng/crawl";
     public static int curr = -1, end = -1, inc = 0;
-    public static BufferedWriter idxBw, infoBw;
+    //public static BufferedWriter idxBw, infoBw;
     public static Map<String, Integer> urlMap = new HashMap<>();
     public static Map<Integer, Set<String>> idNameMap = new HashMap<>();
+    public static List<String> triples = new ArrayList<>();
 
     public void run() {
         while (true) {
@@ -40,8 +41,8 @@ public class BaidubaikeWorker implements Runnable{
     }
 
     public static void multiThreadWork() throws Exception {
-        idxBw = new BufferedWriter(new FileWriter(root + "/entity.index"));
-        infoBw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
+        //idxBw = new BufferedWriter(new FileWriter(root + "/entity.index"));
+        //infoBw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
         curr = 1; end = 300;
         LogInfo.logs("Begin to Construct Article Idx and Extract Infobox...");
         int numOfThreads = 8;
@@ -50,17 +51,19 @@ public class BaidubaikeWorker implements Runnable{
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
         LogInfo.end_track();
-        idxBw.close();
-        infoBw.close();
-        // write id-name into file
+        //idxBw.close();
+        //infoBw.close();
+        // write results into files
+        writeIdx();
         writeIdxText();
+        writeTriples();
     }
 
     public static synchronized int add2Urls(String url) throws IOException{
         if (! urlMap.containsKey(url)) {
             inc ++;
             urlMap.put(url, inc);
-            idxBw.write(url + "\t" + inc + "\n");
+            //idxBw.write(url + "\t" + inc + "\n");
         }
         return urlMap.get(url);
     }
@@ -74,7 +77,7 @@ public class BaidubaikeWorker implements Runnable{
     }
 
     public static synchronized void writeTriple(String triple) throws IOException {
-        infoBw.write(triple + "\n");
+        //infoBw.write(triple);
     }
 
     public static void extractInfobox(int idx) throws Exception {
@@ -120,7 +123,7 @@ public class BaidubaikeWorker implements Runnable{
                     // if no link, then write plain text
                     } else {
                         triple = leftIdx + "\t" + itemName + "\t" + itemValue + "\n";
-                        writeTriple(triple);
+                        triples.add(triple);
                     }
                 }
             }
@@ -129,8 +132,34 @@ public class BaidubaikeWorker implements Runnable{
         LogInfo.logs("Job %s is Finished. [%s]", folderName, new Date().toString());
     }
 
+    public static void writeIdx() throws IOException {
+        LogInfo.begin_track("Now writing entity-idx into file...");
+        int cnt = 0;
+        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/entity.index"));
+        for (Map.Entry<String, Integer> entry: urlMap.entrySet()) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 10000);
+            bw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
+        }
+        bw.close();
+        LogInfo.end_track();
+    }
+
+    public static void writeTriples() throws IOException {
+        LogInfo.begin_track("Now writing infobox triple...");
+        int cnt = 0;
+        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
+        for (String str : triples) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 100000);
+            bw.write(str);
+        }
+        bw.close();
+        LogInfo.end_track();
+    }
+
     public static void writeIdxText() throws IOException {
-        LogInfo.begin_track("Now writing idx-name int file...");
+        LogInfo.begin_track("Now writing idx-name into file...");
         int cnt = 0;
         BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/entity.name"));
         for (Map.Entry<Integer, Set<String>> entry: idNameMap.entrySet()) {
