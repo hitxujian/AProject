@@ -111,7 +111,7 @@ public class BaidubaikeWorker implements Runnable{
                     spt = line.split("href=\"");
                     String href, triple = "";
                     // if meet a link in the infobox
-                    if (spt.length > 0) {
+                    if (spt.length > 1) {
                         href = spt[1].split("\">")[0];
                         int rightIdx = add2Urls(href);
                         add2AnchorTexts(rightIdx, itemValue);
