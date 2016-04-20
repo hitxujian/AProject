@@ -1,11 +1,13 @@
 package xusheng.kg.baidubaike;
 
 import fig.basic.LogInfo;
+import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -17,7 +19,8 @@ public class BaidubaikeWorker implements Runnable{
     public static String root = "/home/xusheng/crawl";
     public static int curr = -1, end = -1, inc = 0;
     public static BufferedWriter idxBw, infoBw;
-    public static HashMap<String, Integer> urlMap = new HashMap<>();
+    public static Map<String, Integer> urlMap = new HashMap<>();
+    public static Map<Integer, Set<String>> idNameMap = new HashMap<>();
 
     public void run() {
         while (true) {
@@ -39,7 +42,6 @@ public class BaidubaikeWorker implements Runnable{
         return -1;
     }
 
-
     public static void multiThreadWork() throws Exception {
         idxBw = new BufferedWriter(new FileWriter(root + "/entity.index"));
         infoBw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
@@ -53,14 +55,25 @@ public class BaidubaikeWorker implements Runnable{
         LogInfo.end_track();
         idxBw.close();
         infoBw.close();
+        // write id-name into file
+        writeIdxText();
     }
 
-    public static synchronized void add2Urls(String url) throws IOException{
+    public static synchronized int add2Urls(String url) throws IOException{
         if (! urlMap.containsKey(url)) {
             inc ++;
             urlMap.put(url, inc);
             idxBw.write(url + "\t" + inc + "\n");
         }
+        return urlMap.get(url);
+    }
+
+    public static synchronized void add2AnchorTexts(Integer id, String text) {
+        if (! idNameMap.containsKey(id)) {
+            Set<String> tmp = new HashSet<>();
+            tmp.add(text);
+            idNameMap.put(id, tmp);
+        } else idNameMap.get(id).add(text);
     }
 
     public static synchronized void writeTriple(String triple) throws IOException {
@@ -75,12 +88,14 @@ public class BaidubaikeWorker implements Runnable{
             String fp = root + "/data_v2/" + folderName + "/" + i + ".html";
             BufferedReader br = new BufferedReader(new FileReader(fp));
             String url = br.readLine().split("com")[1];
-            add2Urls(url);
+            // when meet a new url, add it to map and write it into file
+            int leftIdx = add2Urls(url);
             String line;
-            String title = null;
+            String title;
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("<title>")) {
                     title = line.split(">")[1].split("<")[0].split("_")[0];
+                    add2AnchorTexts(leftIdx, title);
                     continue;
                 }
                 if (line.startsWith("<dt class=\"basicInfo-item name\"")) {
@@ -89,7 +104,6 @@ public class BaidubaikeWorker implements Runnable{
                     itemName = "";
                     for (int j=0; j<spt.length; j++)
                         itemName += spt[j];
-                    LogInfo.logs(itemName);
                     br.readLine();
                     line = br.readLine();
                     spt = line.split("<.+?>");
@@ -97,14 +111,39 @@ public class BaidubaikeWorker implements Runnable{
                     for (int j=0; j<spt.length; j++) {
                         itemValue += spt[j];
                     }
-                    LogInfo.logs(itemValue);
-                    if (title!=null) {
-                        bw.write(title + "\t" + itemName + "\t" + itemValue + "\n");
+                    spt = line.split("href=\"");
+                    String href, triple = "";
+                    // if meet a link in the infobox
+                    if (spt.length > 0) {
+                        href = spt[1].split("\">")[0];
+                        int rightIdx = add2Urls(href);
+                        add2AnchorTexts(rightIdx, itemValue);
+                        triple  = leftIdx + "\t" + itemName + "\t" + rightIdx + "\n";
+                        writeTriple(triple);
+                    // if no link, then write plain text
+                    } else {
+                        triple = leftIdx + "\t" + itemName + "\t" + itemValue + "\n";
+                        writeTriple(triple);
                     }
                 }
             }
             br.close();
         }
+        LogInfo.end_track();
+    }
+
+    public static void writeIdxText() throws IOException {
+        LogInfo.begin_track("Now writing idx-name int file...");
+        int cnt = 0;
+        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/entity.name"));
+        for (Map.Entry<Integer, Set<String>> entry: idNameMap.entrySet()) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 10000);
+            bw.write(entry.getKey());
+            for (String str : entry.getValue()) bw.write("\t" + str);
+            bw.write("\n");
+        }
+        bw.close();
         LogInfo.end_track();
     }
 
