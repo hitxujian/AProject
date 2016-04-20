@@ -5,10 +5,7 @@ import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Xusheng Luo on 3/29/16.
@@ -50,7 +47,7 @@ public class BaidubaikeWorker implements Runnable{
         int numOfThreads = 8;
         BaidubaikeWorker workThread = new BaidubaikeWorker();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
-        LogInfo.begin_track("%d threads are running...");
+        LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
         LogInfo.end_track();
         idxBw.close();
@@ -83,7 +80,7 @@ public class BaidubaikeWorker implements Runnable{
     public static void extractInfobox(int idx) throws Exception {
         int cnt = idx * 10000;
         String folderName = (cnt-10000+1) + "-" + cnt;
-        LogInfo.begin_track("Entering into %s...", folderName);
+        LogInfo.logs("Entering into %s... [%s]", folderName, new Date().toString());
         for (int i=cnt-10000+1; i<=cnt; i++) {
             String fp = root + "/data_v2/" + folderName + "/" + i + ".html";
             BufferedReader br = new BufferedReader(new FileReader(fp));
@@ -129,7 +126,7 @@ public class BaidubaikeWorker implements Runnable{
             }
             br.close();
         }
-        LogInfo.end_track();
+        LogInfo.logs("Job %s is Finished. [%s]", folderName, new Date().toString());
     }
 
     public static void writeIdxText() throws IOException {
