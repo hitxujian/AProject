@@ -15,7 +15,7 @@ import java.util.*;
 public class BaidubaikeWorker implements Runnable{
     public static String root = "/home/xusheng/crawl";
     public static int curr = -1, end = -1, inc = 0;
-    //public static BufferedWriter idxBw, infoBw;
+    public static BufferedWriter idxBw, infoBw;
     public static Map<String, Integer> urlMap = new HashMap<>();
     public static Map<Integer, Set<String>> idNameMap = new HashMap<>();
     public static List<String> triples = new ArrayList<>();
@@ -42,7 +42,7 @@ public class BaidubaikeWorker implements Runnable{
 
     public static void multiThreadWork() throws Exception {
         //idxBw = new BufferedWriter(new FileWriter(root + "/entity.index"));
-        //infoBw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
+        infoBw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
         curr = 1; end = 300;
         LogInfo.logs("Begin to Construct Article Idx and Extract Infobox...");
         int numOfThreads = 8;
@@ -52,11 +52,11 @@ public class BaidubaikeWorker implements Runnable{
         multi.runMultiThread();
         LogInfo.end_track();
         //idxBw.close();
-        //infoBw.close();
+        infoBw.close();
         // write results into files
         writeIdx();
         writeIdxText();
-        writeTriples();
+        //writeTriples();
     }
 
     public static synchronized int add2Urls(String url) throws IOException{
@@ -77,7 +77,7 @@ public class BaidubaikeWorker implements Runnable{
     }
 
     public static synchronized void writeTriple(String triple) throws IOException {
-        //infoBw.write(triple);
+        infoBw.write(triple);
     }
 
     public static void extractInfobox(int idx) throws Exception {
@@ -123,7 +123,8 @@ public class BaidubaikeWorker implements Runnable{
                     // if no link, then write plain text
                     } else {
                         triple = leftIdx + "\t" + itemName + "\t" + itemValue + "\n";
-                        triples.add(triple);
+                        //triples.add(triple);
+                        writeTriple(triple);
                     }
                 }
             }
