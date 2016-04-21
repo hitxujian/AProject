@@ -24,6 +24,7 @@ public class BaidubaikeWorker implements Runnable{
         while (true) {
             try {
                 int idx = getCurr();
+                if (idx == -1) return;
                 extractInfobox(idx);
             } catch (Exception ex) {
                 ex.printStackTrace();
