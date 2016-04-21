@@ -95,6 +95,7 @@ public class BaidubaikeWorker implements Runnable{
             String title;
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("<title>")) {
+                    if (line.split(">").length < 2) break;
                     title = line.split(">")[1].split("<")[0].split("_")[0];
                     add2AnchorTexts(leftIdx, title);
                     continue;
@@ -167,7 +168,7 @@ public class BaidubaikeWorker implements Runnable{
         for (Map.Entry<Integer, Set<String>> entry: idNameMap.entrySet()) {
             cnt ++;
             LogUpgrader.showLine(cnt, 10000);
-            bw.write(entry.getKey());
+            bw.write(entry.getKey().toString());
             for (String str : entry.getValue()) bw.write("\t" + str);
             bw.write("\n");
         }
