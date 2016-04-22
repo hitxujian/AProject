@@ -6,7 +6,9 @@ import xusheng.util.struct.MultiThread;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Luo Xusheng on 4/21/16.
@@ -40,8 +42,50 @@ public class CandGenerator implements Runnable {
         return -1;
     }
 
+    public static boolean isChinese(char c) {
+        return c >= 0x4E00 &&  c <= 0x9FA5;
+    }
+
+    public static boolean isChinese(String str) {
+        if (str == null) return false;
+        for (char c : str.toCharArray()) {
+            if (isChinese(c)) return true;
+        }
+        return false;
+    }
+
+    public static boolean match(String a, String b) {
+        Set<String> setA = new HashSet<>();
+        Set<String> setB = new HashSet<>();
+        for (int i=0; i<a.length(); i++) {
+            if (a.charAt(i) == '(') break;
+            if (a.charAt(i) != ' ')
+                setA.add(String.valueOf(a.charAt(i)));
+        }
+        //LogInfo.logs(setA.toString());
+
+        for (int i=0; i<b.length(); i++)
+            if (b.charAt(i) != ' ')
+                setB.add(String.valueOf(b.charAt(i)));
+        //LogInfo.logs(setB.toString());
+
+        double intersect = 0.0;
+        for (String ch : setA)
+            if (setB.contains(ch)) intersect += 1;
+        double perA = intersect / setA.size();
+        double perB = intersect / setB.size();
+        if (perA >= 0.5 && perB >= 0.5 && (perA + perB) >= 1.3)
+            return true;
+        else
+            return false;
+    }
+
     public static void fuzzyMatch(int idx) {
         String fbTriple = taskList[idx];
+        String[] spt = fbTriple.split("\t");
+        if (!isChinese(spt[0]) || !isChinese(spt[2]))
+            return;
+        
 
     }
 

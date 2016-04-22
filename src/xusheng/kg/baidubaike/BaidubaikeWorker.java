@@ -178,9 +178,9 @@ public class BaidubaikeWorker implements Runnable{
 
     public static void extractURLs() throws IOException {
         Set<String> urls = new HashSet<>();
-        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/visited.0402"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/visited.0423"));
         int cnt = 0;
-        while (cnt < 270000) {
+        while (cnt < 3690000) {
             cnt += 10000;
             String name = (cnt - 10000 + 1) + "-" + cnt;
             for (int i = cnt - 10000 + 1; i <= cnt; i++) {
@@ -199,8 +199,8 @@ public class BaidubaikeWorker implements Runnable{
         }
         bw.close();
         Set<String> todo = new HashSet<>();
-        BufferedReader br = new BufferedReader(new FileReader(root + "/data_v2/todo.txt"));
-        bw = new BufferedWriter(new FileWriter(root + "/unvisited.0402"));
+        BufferedReader br = new BufferedReader(new FileReader(root + "/data_v2/unvisited.0420"));
+        bw = new BufferedWriter(new FileWriter(root + "/unvisited.0423"));
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("#viewPage");
@@ -215,6 +215,7 @@ public class BaidubaikeWorker implements Runnable{
     }
 
     public static void main(String[] args) throws Exception {
-        multiThreadWork();
+        //multiThreadWork();
+        extractURLs();
     }
 }
