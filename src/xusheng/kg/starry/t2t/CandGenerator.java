@@ -85,8 +85,6 @@ public class CandGenerator implements Runnable {
         String[] spt = fbTriple.split("\t");
         if (!isChinese(spt[0]) || !isChinese(spt[2]))
             return;
-        
-
     }
 
     public static void multiThreadWork() throws Exception {
