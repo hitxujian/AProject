@@ -1,6 +1,7 @@
 package xusheng.webquestion;
 
 import fig.basic.LogInfo;
+import xusheng.util.nlp.Lemmatizer;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -59,6 +60,7 @@ public class PattyMapper implements Runnable{
         readWebQ();
         readPattyKeyWords();
         readPattySupport();
+        Lemmatizer.initPipeline();
         bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap.txt"));
         curr = 1; end = webqMap.size();
         LogInfo.logs("Begin to Map Webquestion relations to Patty synsets " +
@@ -120,7 +122,12 @@ public class PattyMapper implements Runnable{
 
     public static double getScore(Set<String> setA, String[] listB) {
         Set<String> setB = new HashSet<>();
-        for (String str: listB) setB.add(str);
+        try {
+            for (String str: listB) setB.add(Lemmatizer.lemmatize(str));
+        } catch (Exception ex) {
+            LogInfo.logs("Lemmatizer Exception!");
+            ex.printStackTrace();
+        }
         int cnt = 0;
         for (String str: setA) {
             if (setB.contains(str)) cnt ++;
