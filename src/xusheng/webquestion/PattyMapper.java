@@ -26,6 +26,7 @@ public class PattyMapper implements Runnable{
                 if (idx == -1) return;
                 LogInfo.logs("[%d] Working for Ques. No.%d... [%s]", idx, idx, new Date().toString());
                 int ret = map(idx);
+                if (ret != -1) add(ret);
                 writeRes(idx + "\t" + ret + "\n");
                 if (ret != -1)
                     LogInfo.logs("[" + idx + "]" + "\t" + webqMap.get(idx) + "|||"
@@ -55,6 +56,11 @@ public class PattyMapper implements Runnable{
         bw.flush();
     }
 
+    public static Set<Integer> retSet = new HashSet<>();
+    public static synchronized void add(int idx) {
+        retSet.add(idx);
+    }
+
     public static BufferedWriter bw = null;
     public static void multiThreadWork() throws Exception {
         readWebQ();
@@ -70,6 +76,7 @@ public class PattyMapper implements Runnable{
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
+        LogInfo.logs("Total different patty synsets: %d", retSet.size());
         bw.close();
         LogInfo.end_track();
     }
@@ -159,10 +166,13 @@ public class PattyMapper implements Runnable{
                 maxSupp = pattySuppMap.get(candidate);
             }
         }
+        if (maxSupp < threshold) return -1;
         return retIdx;
     }
 
+    public static int threshold;
     public static void main(String[] args) throws Exception {
+        threshold = Integer.parseInt(args[0]);
         multiThreadWork();
     }
 }
