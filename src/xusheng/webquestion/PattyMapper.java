@@ -23,8 +23,11 @@ public class PattyMapper implements Runnable{
             try {
                 int idx = getCurr();
                 if (idx == -1) return;
+                LogInfo.logs("[%d] Working for Ques. No.%d... [%s]", idx, idx, new Date().toString());
                 int ret = map(idx);
                 writeRes(idx + "\t" + ret + "\n");
+                LogInfo.logs("[" + idx + "]" + "\t" + webqMap.get(idx) + "|||"
+                        + ret + "\t" + pattyMap.get(ret).toString() + "\t" + new Date().toString());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -36,7 +39,7 @@ public class PattyMapper implements Runnable{
         if (curr <= end) {
             int ret = curr;
             curr++;
-            if (curr % 10 == 0) LogInfo.logs("Current Idx: %d [%s]", curr, new Date().toString());
+            //if (curr % 10 == 0) LogInfo.logs("Current Idx: %d [%s]", curr, new Date().toString());
             return ret;
         }
         return -1;
