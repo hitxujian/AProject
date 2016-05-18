@@ -26,8 +26,12 @@ public class PattyMapper implements Runnable{
                 LogInfo.logs("[%d] Working for Ques. No.%d... [%s]", idx, idx, new Date().toString());
                 int ret = map(idx);
                 writeRes(idx + "\t" + ret + "\n");
-                LogInfo.logs("[" + idx + "]" + "\t" + webqMap.get(idx) + "|||"
+                if (ret != -1)
+                    LogInfo.logs("[" + idx + "]" + "\t" + webqMap.get(idx) + "|||"
                         + ret + "\t" + pattyMap.get(ret).toString() + "\t" + new Date().toString());
+                else
+                    LogInfo.logs("[" + idx + "]" + "\t" + webqMap.get(idx) + "|||"
+                            + ret + "\t" + "NULL" + "\t" + new Date().toString());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -47,6 +51,7 @@ public class PattyMapper implements Runnable{
 
     public static synchronized void writeRes(String ret) throws IOException{
         bw.write(ret);
+        bw.flush();
     }
 
     public static BufferedWriter bw = null;
