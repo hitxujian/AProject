@@ -4,10 +4,7 @@ import fig.basic.LogInfo;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Xusheng on 5/17/2016.
@@ -39,6 +36,7 @@ public class PattyMapper implements Runnable{
         if (curr <= end) {
             int ret = curr;
             curr++;
+            if (curr % 10 == 0) LogInfo.logs("Current Idx: %d [%s]", curr, new Date().toString());
             return ret;
         }
         return -1;
