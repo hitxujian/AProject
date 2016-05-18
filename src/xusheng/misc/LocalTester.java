@@ -7,7 +7,7 @@ package xusheng.misc;
 public class LocalTester {
 
     public static void main(String[] args) throws Exception {
-        String a = "??";
-        System.out.print(new String(a.getBytes("ISO-8859-1"), "GBK"));
+        String a = "abc";
+        System.out.print(a.substring(0, -1));
     }
 }
