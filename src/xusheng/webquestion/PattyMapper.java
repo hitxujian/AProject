@@ -100,7 +100,7 @@ public class PattyMapper implements Runnable{
         BufferedReader br = new BufferedReader(new FileReader(pattyFp));
         String line; boolean flag = true;
         while ((line = br.readLine()) != null) {
-            String[] spt = line.split("|")[0].split("==>");
+            String[] spt = line.split("\\|")[0].split("==>");
             if (flag) {
                 flag = false;
                 LogInfo.logs(spt[0].trim() + "\t" + spt[1].trim());
