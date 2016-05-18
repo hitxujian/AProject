@@ -100,12 +100,13 @@ public class PattyMapper implements Runnable{
         BufferedReader br = new BufferedReader(new FileReader(pattyFp));
         String line; boolean flag = true;
         while ((line = br.readLine()) != null) {
-            String[] spt = line.split(" | ")[0].split(" ==>   ");
+            String[] spt = line.split("|")[0].split("==>");
             if (flag) {
                 flag = false;
-                LogInfo.logs(spt[0] + "\t" + spt[1]);
+                LogInfo.logs(spt[0].trim() + "\t" + spt[1].trim());
             }
-            pattySuppMap.put(Integer.parseInt(spt[1]), Integer.parseInt(spt[0]));
+            pattySuppMap.put(Integer.parseInt(spt[1].trim()),
+                    Integer.parseInt(spt[0].trim()));
         }
         br.close();
         LogInfo.logs("patty support file read. size: %d", pattySuppMap.size());
