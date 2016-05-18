@@ -16,7 +16,8 @@ public class PattyMapper implements Runnable{
     public static String pattyFp = "/home/data/PATTY/patty-dataset-freebase/" +
             "remove-type-signature/Matt-Fb3m_med/pattern-support-dist.txt";
     public static String pattyKeyWFp = "/home/xusheng/AProject/data/patty/keywords_clean.txt";
-    public static String webqFp = "/home/xusheng/WebQ/questions.v2";
+    public static String webqFp = "/home/xusheng/WebQ/questions.lemma";
+
 
 
     public void run() {
@@ -81,15 +82,19 @@ public class PattyMapper implements Runnable{
         LogInfo.end_track();
     }
 
-    public static Map<Integer, String> webqMap = new HashMap<>();
+    public static Map<Integer, Set<String>> webqMap = new HashMap<>();
     public static void readWebQ() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(webqFp));
-        String line;
+        String line; int idx = 0;
         while ((line = br.readLine()) != null) {
-            String idx = line.split("\t")[1];
-            line = br.readLine();
-            String question = line.split("\t")[1];
-            webqMap.put(Integer.parseInt(idx), question);
+            if (line.trim().startsWith("Lemma")) {
+                Set<String> set = new HashSet<>();
+                String[] spt = line.split(", ");
+                set.add(spt[0].split("\\[")[1]);
+                for (int i=1; i<spt.length-1; i++) set.add(spt[i]);
+                idx ++;
+                webqMap.put(idx, set);
+            }
         }
         br.close();
         LogInfo.logs("webquestions read. size: %d", webqMap.size());
@@ -113,7 +118,7 @@ public class PattyMapper implements Runnable{
     public static Map<Integer, Integer> pattySuppMap = new HashMap<>();
     public static void readPattySupport() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(pattyFp));
-        String line; boolean flag = true;
+        String line; boolean flag = false;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\\|")[0].split("==>");
             if (flag) {
@@ -127,15 +132,7 @@ public class PattyMapper implements Runnable{
         LogInfo.logs("patty support file read. size: %d", pattySuppMap.size());
     }
 
-    public static double getScore(Set<String> setA, String[] listB) {
-        Set<String> setB = new HashSet<>();
-        try {
-            //for (String str: listB) setB.add(Lemmatizer.lemmatize(str));
-            for (String str: listB) setB.add(str);
-        } catch (Exception ex) {
-            LogInfo.logs("Lemmatizer Exception!");
-            ex.printStackTrace();
-        }
+    public static double getScore(Set<String> setA, Set<String> setB) {
         int cnt = 0;
         for (String str: setA) {
             if (setB.contains(str)) cnt ++;
@@ -144,14 +141,12 @@ public class PattyMapper implements Runnable{
     }
 
     public static int map(int idx) {
-        String q = webqMap.get(idx);
-        String question = q.substring(0, q.length() - 1);
-        String[] wordList = question.split(" ");
+        Set<String> qwordList = webqMap.get(idx);
         double maxScore = 0;
         Set<Integer> maxSet = new HashSet<>();
         for (Map.Entry<Integer, Set<String>> entry: pattyMap.entrySet()) {
             int pid = entry.getKey();
-            double tmp = getScore(entry.getValue(), wordList);
+            double tmp = getScore(entry.getValue(), qwordList);
             if (tmp > maxScore) {
                 maxSet.clear();
                 maxSet.add(pid);
