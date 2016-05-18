@@ -66,7 +66,7 @@ public class PattyMapper implements Runnable{
         readWebQ();
         readPattyKeyWords();
         readPattySupport();
-        Lemmatizer.initPipeline();
+        //Lemmatizer.initPipeline();
         bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap.txt"));
         curr = 1; end = webqMap.size();
         LogInfo.logs("Begin to Map Webquestion relations to Patty synsets " +
@@ -130,7 +130,8 @@ public class PattyMapper implements Runnable{
     public static double getScore(Set<String> setA, String[] listB) {
         Set<String> setB = new HashSet<>();
         try {
-            for (String str: listB) setB.add(Lemmatizer.lemmatize(str));
+            //for (String str: listB) setB.add(Lemmatizer.lemmatize(str));
+            for (String str: listB) setB.add(str);
         } catch (Exception ex) {
             LogInfo.logs("Lemmatizer Exception!");
             ex.printStackTrace();
