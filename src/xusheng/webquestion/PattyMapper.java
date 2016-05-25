@@ -133,7 +133,7 @@ public class PattyMapper implements Runnable{
     public static Map<Integer, Set<String>> pattyMap = new HashMap<>();
     public static void readPattyKeyWords() throws Exception {
         File file = new File(pattyKeyWFp);
-        if (!file.exists()) extracPattyKeyWords();
+        if (!file.exists()) extractPattyKeyWords();
         BufferedReader br = new BufferedReader(new FileReader(pattyKeyWFp));
         String line;
         while ((line = br.readLine()) != null) {
@@ -150,11 +150,10 @@ public class PattyMapper implements Runnable{
     /*
      Extract key words fro Patty Synsets
      */
-    public static void extracPattyKeyWords() throws Exception {
+    public static void extractPattyKeyWords() throws Exception {
         LogInfo.logs("Start to extract keywords for patty...");
         BufferedReader br = new BufferedReader(new FileReader(pattySrcFp));
         BufferedWriter bw = new BufferedWriter(new FileWriter(pattyKeyWFp));
-        HashMap<String, Integer> occurrence = new HashMap<>();
         String line;
         int cnt = 0;
         br.readLine();
@@ -163,11 +162,12 @@ public class PattyMapper implements Runnable{
             int idx = Integer.parseInt(spt[0]);
             String pattern = spt[1];
             String[] relations = pattern.split(";\\$");
+            HashMap<String, Integer> occurrence = new HashMap<>();
             for (int i=0; i<relations.length; i++) {
                 String relation = Lemmatizer.lemmatize(relations[i]);
                 String[] words = relation.split(" ");
                 for (int j=0; j<words.length; j++) {
-                    if (words[j].startsWith("-") || stopSet.contains(words[j])
+                    if (words[j].startsWith("[") || stopSet.contains(words[j])
                             || words[j].equals(""))
                         continue;
                     if (!occurrence.containsKey(words[j]))
