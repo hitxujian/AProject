@@ -21,6 +21,7 @@ public class PattyMapper implements Runnable{
     public static String pattySuppFp = pattyFp + "/pattern-support-dist.txt";
     public static String pattySrcFp = pattyFp + "/wikipedia-patterns.txt";
     public static String pattyKeyWFp = "/home/xusheng/AProject/data/patty/keywords_v2.txt";
+    public static String pattySynsetFp = "/home/xusheng/AProject/data/patty/synsets.txt";
     public static String webqFp = "/home/xusheng/WebQ/questions.lemma";
     public static String stopWFile = "/home/xusheng/AProject/data/misc/stop.simple";
 
@@ -30,12 +31,12 @@ public class PattyMapper implements Runnable{
                 int idx = getCurr();
                 if (idx == -1) return;
                 LogInfo.logs("[%d] Working for Ques. No.%d... [%s]", idx, idx, new Date().toString());
-                int ret = map(idx);
+                int ret = map_v2(idx);
                 if (ret != -1) add(ret);
                 writeRes(idx + "\t" + ret + "\n");
                 if (ret != -1)
                     LogInfo.logs("[" + idx + "]" + "\t" + webqMap.get(idx) + "|||"
-                        + ret + "\t" + pattyMap.get(ret).toString() + "\t" + new Date().toString());
+                        + ret + "\t" + pattySynsets.get(ret).toString() + "\t" + new Date().toString());
                 else
                     LogInfo.logs("[" + idx + "]" + "\t" + webqMap.get(idx) + "|||"
                             + ret + "\t" + "NULL" + "\t" + new Date().toString());
@@ -72,7 +73,7 @@ public class PattyMapper implements Runnable{
         Lemmatizer.initPipeline();
         stopSet = StopWordLoader.getStopSet(stopWFile);
         readWebQ();
-        readPattyKeyWords();
+        readPattySynsets();
         readPattySupport();
         bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap.txt"));
         curr = 1; end = webqMap.size();
@@ -147,8 +148,25 @@ public class PattyMapper implements Runnable{
         LogInfo.logs("patty key words read. size: %d", pattyMap.size());
     }
 
+    public static Map<Integer, List<String>> pattySynsets = new HashMap<>();
+    public static void readPattySynsets() throws Exception {
+        File file = new File(pattySynsetFp);
+        if (!file.exists()) getPattySynsetFile();
+        BufferedReader br = new BufferedReader(new FileReader(pattySynsetFp));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            int idx = Integer.parseInt(spt[0]);
+            List<String> tmp = new ArrayList<>();
+            for (int i=1; i<spt.length; i++) tmp.add(spt[i]);
+            pattySynsets.put(idx, tmp);
+        }
+        br.close();
+        LogInfo.logs("Patty Synsets read. size: %d", pattySynsets.size());
+    }
+
     /*
-     Extract key words fro Patty Synsets
+     Extract key words for Patty Synsets
      */
     public static void extractPattyKeyWords() throws Exception {
         LogInfo.logs("Start to extract keywords for patty...");
@@ -193,6 +211,40 @@ public class PattyMapper implements Runnable{
         }
     }
 
+    public static void getPattySynsetFile() throws Exception {
+        LogInfo.logs("Start to extract synset info. for patty...");
+        BufferedReader br = new BufferedReader(new FileReader(pattySrcFp));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(pattySynsetFp));
+        String line;
+        int cnt = 0;
+        br.readLine();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            bw.write(spt[0]);
+            String pattern = spt[1];
+            String[] relations = pattern.split(";\\$");
+            for (String str : relations) {
+                String[] words = str.split(" ");
+                String newWords = "";
+                for (int i = 0; i < words.length; i++) {
+                    if (words[i].startsWith("[") || stopSet.contains(words[i])
+                            || words[i].equals(" ") || words[i].equals(""))
+                        continue;
+                    newWords += (" " + words[i]);
+                }
+                newWords = newWords.substring(1, newWords.length());
+                String relation = Lemmatizer.lemmatize(newWords);
+                bw.write("\t" + relation);
+            }
+            bw.write("\n");
+            cnt ++;
+            LogUpgrader.showLine(cnt, 10000);
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Done. size: %d", cnt);
+    }
+
     /*
      Read Patty Support file
      */
@@ -213,7 +265,11 @@ public class PattyMapper implements Runnable{
         LogInfo.logs("patty support file read. size: %d", pattySuppMap.size());
     }
 
-    public static double getScore(Set<String> setA, Set<String> setB) {
+    /*
+     version 1: based on keywords
+     version 2: based on synsets
+     */
+    public static double getScore_v1(Set<String> setA, Set<String> setB) {
         int cnt = 0;
         for (String str: setA) {
             if (setB.contains(str)) cnt ++;
@@ -221,7 +277,7 @@ public class PattyMapper implements Runnable{
         return (double) cnt / setA.size();
     }
 
-    public static int map(int idx) {
+    public static int map_v1(int idx) {
         if (! webqMap.containsKey(idx))
             return -1;
         Set<String> qwordList = webqMap.get(idx);
@@ -229,7 +285,49 @@ public class PattyMapper implements Runnable{
         Set<Integer> maxSet = new HashSet<>();
         for (Map.Entry<Integer, Set<String>> entry: pattyMap.entrySet()) {
             int pid = entry.getKey();
-            double tmp = getScore(entry.getValue(), qwordList);
+            double tmp = getScore_v1(entry.getValue(), qwordList);
+            if (tmp > maxScore) {
+                maxSet.clear();
+                maxSet.add(pid);
+                maxScore = tmp;
+            } else if (tmp == maxScore)
+                maxSet.add(pid);
+        }
+        if (maxScore < simScoreTh) return -1;
+        int maxSupp = 0, retIdx = -1;
+        for (int candidate: maxSet) {
+            if (pattySuppMap.get(candidate) > maxSupp) {
+                retIdx = candidate;
+                maxSupp = pattySuppMap.get(candidate);
+            }
+        }
+        if (maxSupp < suppTh) return -1;
+        return retIdx;
+    }
+
+    public static double getScore_v2(List<String> relations, Set<String> qwords) {
+        double max = 0;
+        for (String relation: relations) {
+            String[] spt = relation.split(" ");
+            int intersect = 0;
+            for (String str: spt)
+                if (qwords.contains(str)) intersect ++;
+            int union = spt.length + qwords.size() - intersect;
+            double score = (double) intersect / union; // Jaccard Similarity
+            if (score > max) max = score;
+        }
+        return max;
+    }
+
+    public static int map_v2(int idx) {
+        if (! webqMap.containsKey(idx))
+            return -1;
+        Set<String> qwordList = webqMap.get(idx);
+        double maxScore = 0;
+        Set<Integer> maxSet = new HashSet<>();
+        for (Map.Entry<Integer, List<String>> entry: pattySynsets.entrySet()) {
+            int pid = entry.getKey();
+            double tmp = getScore_v2(entry.getValue(), qwordList);
             if (tmp > maxScore) {
                 maxSet.clear();
                 maxSet.add(pid);
@@ -245,13 +343,15 @@ public class PattyMapper implements Runnable{
                 maxSupp = pattySuppMap.get(candidate);
             }
         }
-        if (maxSupp < threshold) return -1;
+        if (maxSupp < suppTh) return -1;
         return retIdx;
     }
 
-    public static int threshold;
+    public static int suppTh;
+    public static double simScoreTh;
     public static void main(String[] args) throws Exception {
-        threshold = Integer.parseInt(args[0]);
+        suppTh = Integer.parseInt(args[0]);
+        simScoreTh = Double.parseDouble(args[1]);
         multiThreadWork();
     }
 }
