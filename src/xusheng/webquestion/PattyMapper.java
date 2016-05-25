@@ -30,7 +30,7 @@ public class PattyMapper implements Runnable{
             try {
                 int idx = getCurr();
                 if (idx == -1) return;
-                LogInfo.logs("[%d] Working for Ques. No.%d... [%s]", idx, idx, new Date().toString());
+                //LogInfo.logs("[%d] Working for Ques. No.%d... [%s]", idx, idx, new Date().toString());
                 int ret = map_v2(idx);
                 if (ret != -1) add(ret);
                 writeRes(idx + "\t" + ret + "\n");
@@ -75,8 +75,10 @@ public class PattyMapper implements Runnable{
         readWebQ();
         readPattySynsets();
         readPattySupport();
-        bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap.txt"));
-        curr = 1; end = webqMap.size();
+        curr = numOfWebq - 999; end = numOfWebq;
+        if (numOfWebq > webqMap.size()) end = webqMap.size();
+        bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap_" +
+               curr + "-" + end +  ".txt"));
         LogInfo.logs("Begin to Map Webquestion relations to Patty synsets " +
                 "from %d to %d...", curr, end);
         int numOfThreads = 8;
@@ -348,11 +350,12 @@ public class PattyMapper implements Runnable{
         return retIdx;
     }
 
-    public static int suppTh;
+    public static int suppTh, numOfWebq;
     public static double simScoreTh;
     public static void main(String[] args) throws Exception {
         suppTh = Integer.parseInt(args[0]);
         simScoreTh = Double.parseDouble(args[1]);
+        numOfWebq = Integer.parseInt(args[2]);
         multiThreadWork();
     }
 }
