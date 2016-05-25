@@ -1,7 +1,10 @@
 package xusheng.webquestion;
 
 import fig.basic.LogInfo;
+import xusheng.util.log.LogUpgrader;
 import xusheng.util.nlp.Lemmatizer;
+import xusheng.util.nlp.StopWordLoader;
+import xusheng.util.struct.MapHelper;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -13,12 +16,13 @@ import java.util.*;
  */
 
 public class PattyMapper implements Runnable{
-    public static String pattyFp = "/home/data/PATTY/patty-dataset-freebase/" +
-            "remove-type-signature/Matt-Fb3m_med/pattern-support-dist.txt";
-    public static String pattyKeyWFp = "/home/xusheng/AProject/data/patty/keywords_clean.txt";
+    public static String pattyFp = "/home/data/PATTY/patty-dataset-freebase" +
+            "/remove-type-signature";
+    public static String pattySuppFp = pattyFp + "/pattern-support-dist.txt";
+    public static String pattySrcFp = pattyFp + "/wikipedia-patterns.txt";
+    public static String pattyKeyWFp = "/home/xusheng/AProject/data/patty/keywords_v2.txt";
     public static String webqFp = "/home/xusheng/WebQ/questions.lemma";
-
-
+    public static String stopWFile = "/home/xusheng/AProject/data/misc/stop.simple";
 
     public void run() {
         while (true) {
@@ -63,11 +67,13 @@ public class PattyMapper implements Runnable{
     }
 
     public static BufferedWriter bw = null;
+    public static Set<String> stopSet = null;
     public static void multiThreadWork() throws Exception {
         readWebQ();
         readPattyKeyWords();
         readPattySupport();
-        //Lemmatizer.initPipeline();
+        stopSet = StopWordLoader.getStopSet(stopWFile);
+        Lemmatizer.initPipeline();
         bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap.txt"));
         curr = 1; end = webqMap.size();
         LogInfo.logs("Begin to Map Webquestion relations to Patty synsets " +
@@ -82,26 +88,52 @@ public class PattyMapper implements Runnable{
         LogInfo.end_track();
     }
 
+    /*
+     Read WebQuestions
+     */
     public static Map<Integer, Set<String>> webqMap = new HashMap<>();
-    public static void readWebQ() throws IOException {
+    public static void readWebQ() throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(webqFp));
         String line; int idx = 0;
         while ((line = br.readLine()) != null) {
-            if (line.trim().startsWith("Lemma")) {
+            /*if (line.trim().startsWith("Lemma")) {
                 Set<String> set = new HashSet<>();
                 String[] spt = line.split(", ");
                 set.add(spt[0].split("\\[")[1]);
                 for (int i=1; i<spt.length-1; i++) set.add(spt[i]);
                 idx ++;
                 webqMap.put(idx, set);
+            }*/
+            if (line.trim().startsWith("Extracting")) {
+                idx ++;
+                line = br.readLine();
+                while (! line.trim().startsWith("Extracting")) {
+                    if (line.trim().startsWith("<")) {
+                        String relation = line.trim().split(", ")[1];
+                        String[] spt = relation.split(" ");
+                        String tmp = spt[0];
+                        for (int i=1; i<spt.length; i++) tmp += (" " + spt[i]);
+                        spt = Lemmatizer.lemmatize(tmp).split(" ");
+                        Set<String> set = new HashSet<>();
+                        for (int i=0; i<spt.length; i++) set.add(spt[i]);
+                        webqMap.put(idx, set);
+                    }
+                    line = br.readLine();
+                }
             }
         }
         br.close();
         LogInfo.logs("webquestions read. size: %d", webqMap.size());
+
     }
 
+    /*
+     Read PattyKeyWords todo: need to reconsider keywords filtering
+     */
     public static Map<Integer, Set<String>> pattyMap = new HashMap<>();
-    public static void readPattyKeyWords() throws IOException {
+    public static void readPattyKeyWords() throws Exception {
+        File file = new File(pattyKeyWFp);
+        if (!file.exists()) extracPattyKeyWords();
         BufferedReader br = new BufferedReader(new FileReader(pattyKeyWFp));
         String line;
         while ((line = br.readLine()) != null) {
@@ -115,9 +147,58 @@ public class PattyMapper implements Runnable{
         LogInfo.logs("patty key words read. size: %d", pattyMap.size());
     }
 
+    /*
+     Extract key words fro Patty Synsets
+     */
+    public static void extracPattyKeyWords() throws Exception {
+        LogInfo.logs("Start to extract keywords for patty...");
+        BufferedReader br = new BufferedReader(new FileReader(pattySrcFp));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(pattyKeyWFp));
+        HashMap<String, Integer> occurrence = new HashMap<>();
+        String line;
+        int cnt = 0;
+        br.readLine();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            int idx = Integer.parseInt(spt[0]);
+            String pattern = spt[1];
+            String[] relations = pattern.split(";\\$");
+            for (int i=0; i<relations.length; i++) {
+                String relation = Lemmatizer.lemmatize(relations[i]);
+                String[] words = relation.split(" ");
+                for (int j=0; j<words.length; j++) {
+                    if (words[j].startsWith("-") || stopSet.contains(words[j])
+                            || words[j].equals(""))
+                        continue;
+                    if (!occurrence.containsKey(words[j]))
+                        occurrence.put(words[j], 1);
+                    else {
+                        int tmp = occurrence.get(words[j]) + 1;
+                        occurrence.put(words[j], tmp);
+                    }
+                }
+            }
+            ArrayList<Map.Entry<String, Integer>> sorted = MapHelper.sort(occurrence);
+            int i=0;
+            HashSet<String> keywords = new HashSet<>();
+            while (i<8 && i<sorted.size()) {
+                keywords.add(sorted.get(i).getKey());
+                i++;
+            }
+            bw.write(String.valueOf(idx));
+            for (String str: keywords) bw.write("\t" + str);
+            bw.write("\n");
+            cnt ++;
+            if (LogUpgrader.showLine(cnt, 10000)) LogInfo.logs(keywords);
+        }
+    }
+
+    /*
+     Read Patty Support file
+     */
     public static Map<Integer, Integer> pattySuppMap = new HashMap<>();
     public static void readPattySupport() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(pattyFp));
+        BufferedReader br = new BufferedReader(new FileReader(pattySuppFp));
         String line; boolean flag = false;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\\|")[0].split("==>");
@@ -141,6 +222,8 @@ public class PattyMapper implements Runnable{
     }
 
     public static int map(int idx) {
+        if (! webqMap.containsKey(idx))
+            return -1;
         Set<String> qwordList = webqMap.get(idx);
         double maxScore = 0;
         Set<Integer> maxSet = new HashSet<>();
