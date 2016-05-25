@@ -232,6 +232,7 @@ public class PattyMapper implements Runnable{
                         continue;
                     newWords += (" " + words[i]);
                 }
+                if (newWords.length() < 2) continue;
                 newWords = newWords.substring(1, newWords.length());
                 String relation = Lemmatizer.lemmatize(newWords);
                 bw.write("\t" + relation);
