@@ -70,10 +70,10 @@ public class PattyMapper implements Runnable{
     public static Set<String> stopSet = null;
     public static void multiThreadWork() throws Exception {
         Lemmatizer.initPipeline();
+        stopSet = StopWordLoader.getStopSet(stopWFile);
         readWebQ();
         readPattyKeyWords();
         readPattySupport();
-        stopSet = StopWordLoader.getStopSet(stopWFile);
         bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap.txt"));
         curr = 1; end = webqMap.size();
         LogInfo.logs("Begin to Map Webquestion relations to Patty synsets " +
