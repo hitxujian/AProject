@@ -97,8 +97,9 @@ public class PattyMapper implements Runnable{
     public static Map<Integer, Set<String>> webqMap = new HashMap<>();
     public static void readWebQ() throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(webqFp));
-        String line; int idx = 0;
-        while ((line = br.readLine()) != null) {
+        String line = br.readLine();
+        int idx = 0;
+        while (line != null) {
             /*if (line.trim().startsWith("Lemma")) {
                 Set<String> set = new HashSet<>();
                 String[] spt = line.split(", ");
@@ -122,6 +123,7 @@ public class PattyMapper implements Runnable{
                         webqMap.put(idx, set);
                     }
                     line = br.readLine();
+                    if (line == null) break;
                 }
             }
         }
@@ -265,7 +267,7 @@ public class PattyMapper implements Runnable{
                     Integer.parseInt(spt[0].trim()));
         }
         br.close();
-        LogInfo.logs("patty support file read. size: %d", pattySuppMap.size());
+        LogInfo.logs("Patty Support File read. size: %d", pattySuppMap.size());
     }
 
     /*
