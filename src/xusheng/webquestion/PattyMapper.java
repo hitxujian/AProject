@@ -167,8 +167,8 @@ public class PattyMapper implements Runnable{
                 String relation = Lemmatizer.lemmatize(relations[i]);
                 String[] words = relation.split(" ");
                 for (int j=0; j<words.length; j++) {
-                    if (words[j].startsWith("[") || stopSet.contains(words[j])
-                            || words[j].equals(""))
+                    if (words[j].startsWith("[[") || stopSet.contains(words[j])
+                            || words[j].equals("") || words[j].startsWith("-"))
                         continue;
                     if (!occurrence.containsKey(words[j]))
                         occurrence.put(words[j], 1);
