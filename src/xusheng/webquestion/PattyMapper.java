@@ -99,6 +99,9 @@ public class PattyMapper implements Runnable{
         BufferedReader br = new BufferedReader(new FileReader(webqFp));
         String line = br.readLine();
         int idx = 0;
+        while (!line.trim().startsWith("Extracting")) {
+            line = br.readLine();
+        }
         while (line != null) {
             /*if (line.trim().startsWith("Lemma")) {
                 Set<String> set = new HashSet<>();
