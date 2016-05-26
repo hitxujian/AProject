@@ -152,7 +152,7 @@ public class PattyMapper implements Runnable{
         br.close();
         LogInfo.logs("webquestions-relations read. size: %d", webqMap.size());
         for (Map.Entry<Integer, Set<String>> entry: webqMap.entrySet()) {
-            bw.write(entry.getKey());
+            bw.write(entry.getKey().toString());
             for (String str: entry.getValue()) bw.write("\t" + str);
             bw.write("\n");
         }
