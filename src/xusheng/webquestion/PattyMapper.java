@@ -23,6 +23,7 @@ public class PattyMapper implements Runnable{
     public static String pattyKeyWFp = "/home/xusheng/AProject/data/patty/keywords_v2.txt";
     public static String pattySynsetFp = "/home/xusheng/AProject/data/patty/synsets.txt";
     public static String webqFp = "/home/xusheng/WebQ/questions.lemma";
+    public static String webqRelFp = "/home/xusheng/WebQ/questions.relation";
     public static String stopWFile = "/home/xusheng/AProject/data/misc/stop.simple";
 
     public void run() {
@@ -96,7 +97,24 @@ public class PattyMapper implements Runnable{
      */
     public static Map<Integer, Set<String>> webqMap = new HashMap<>();
     public static void readWebQ() throws Exception {
+        File file = new File(webqRelFp);
+        if (! file.exists()) extractQuesRel();
+        else {
+            BufferedReader br = new BufferedReader(new FileReader(webqRelFp));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] spt = line.split("\t");
+                Set<String> set = new HashSet<>();
+                for (int i=1; i<spt.length; i++) set.add(spt[i]);
+                webqMap.put(Integer.parseInt(spt[0]), set);
+            }
+            LogInfo.logs("webquestions-relations read. size: %d", webqMap.size());
+        }
+    }
+
+    public static void extractQuesRel() throws Exception{
         BufferedReader br = new BufferedReader(new FileReader(webqFp));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(webqRelFp));
         String line = br.readLine();
         int idx = 0;
         while (!line.trim().startsWith("Extracting")) {
@@ -132,8 +150,13 @@ public class PattyMapper implements Runnable{
             }
         }
         br.close();
-        LogInfo.logs("webquestions read. size: %d", webqMap.size());
-
+        LogInfo.logs("webquestions-relations read. size: %d", webqMap.size());
+        for (Map.Entry<Integer, Set<String>> entry: webqMap.entrySet()) {
+            bw.write(entry.getKey());
+            for (String str: entry.getValue()) bw.write("\t" + str);
+            bw.write("\n");
+        }
+        LogInfo.logs("webquestions-relations write AT %s", webqRelFp);
     }
 
     /*
