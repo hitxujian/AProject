@@ -156,6 +156,7 @@ public class PattyMapper implements Runnable{
             for (String str: entry.getValue()) bw.write("\t" + str);
             bw.write("\n");
         }
+        bw.close();
         LogInfo.logs("webquestions-relations write AT %s", webqRelFp);
     }
 
@@ -240,6 +241,8 @@ public class PattyMapper implements Runnable{
             cnt ++;
             if (LogUpgrader.showLine(cnt, 10000)) LogInfo.logs(keywords);
         }
+        br.close();
+        bw.close();
     }
 
     public static void getPattySynsetFile() throws Exception {
