@@ -76,7 +76,7 @@ public class PattyMapper implements Runnable{
         readWebQ();
         readPattySynsets();
         readPattySupport();
-        curr = numOfWebq - 999; end = numOfWebq;
+        curr = numOfWebq - 799; end = numOfWebq;
         if (numOfWebq > webqMap.size()) end = webqMap.size();
         bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap_" +
                curr + "-" + end +  ".txt"));
