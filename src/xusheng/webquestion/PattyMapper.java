@@ -77,7 +77,7 @@ public class PattyMapper implements Runnable{
         readPattySynsets();
         readPattySupport();
         curr = numOfWebq - 799; end = numOfWebq;
-        if (numOfWebq > webqMap.size()) end = webqMap.size();
+        if (numOfWebq > 5810) end = 5810;
         bw = new BufferedWriter(new FileWriter("/home/xusheng/WebQ/webqPattyMap_" +
                curr + "-" + end +  ".txt"));
         LogInfo.logs("Begin to Map Webquestion relations to Patty synsets " +
