@@ -124,6 +124,7 @@ public class PattyMapper implements Runnable{
                         Set<String> set = new HashSet<>();
                         for (int i=0; i<spt.length; i++) set.add(spt[i]);
                         webqMap.put(idx, set);
+                        LogInfo.logs(idx + "\t" + set.toString());
                     }
                     line = br.readLine();
                     if (line == null) break;
