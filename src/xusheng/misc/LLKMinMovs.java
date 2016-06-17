@@ -70,7 +70,7 @@ public class LLKMinMovs {
 
     // Left overlap cost
     public static int Lcost(int i, int l, int k) {
-        if (l == -1) return -L;
+        if (l == -1) return L;
         int pos = 0, neg = 0;
         for (int j=l+k; j<=i; j+=k) {
             if (x[j] >=  x0[j]) pos ++;
@@ -81,7 +81,7 @@ public class LLKMinMovs {
 
     // Right overlap cost
     public static int Rcost(int i, int r, int k) {
-        if (r == -1) return -L;
+        if (r == -1) return L;
         int num = 0;
         for (int j=r; j>=i+k; j-=k) num ++;
         return num;
