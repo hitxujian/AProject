@@ -21,10 +21,11 @@ public class LLKMinMovs {
     public static String inputFp = root + "/input.txt";
 
     public static int n, L, K, R;
-    public static int[] x = new int[n+2];
-    public static int[] x0 = new int[n+2];
+    public static int[] x = new int[n+2],
+                        xs = new int[n+2],
+                        x0 = new int[n+2];
 
-    public static int[] work() {
+    public static void work() {
         x[0] = -R; x[n+1] = L + R;
         for (int k =1; k<=K; k++) {
             // At the beginning of each iteration, record it's initial position
@@ -36,7 +37,7 @@ public class LLKMinMovs {
                     int r = findOverLap(i, k, "Right");
                     if (l == -1 && r == -1) {
                         LogInfo.logs("Cannot find any overlap. No solution. ");
-                        return null;
+                        return;
                     }
                     if (Lcost(i, l, k) < Rcost(i, r, k))
                         moveByLeft(l, i, k, Ldist(l, i, k));
@@ -45,7 +46,6 @@ public class LLKMinMovs {
                 }
             }
         }
-        return x;
     }
 
     // Check whether [x[i] + R, x[i+k] - R] is k-line covered
@@ -121,6 +121,11 @@ public class LLKMinMovs {
         else return y;
     }
 
+    public static int abs(int x) {
+        if (x > 0) return x;
+        else return -x;
+    }
+
     public static void readData() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(inputFp));
         String line = br.readLine();
@@ -132,14 +137,29 @@ public class LLKMinMovs {
         while ((line = br.readLine()) != null) {
             spt = line.split("\t");
             for (int i=0; i<spt.length; i++)
-                x[i+1] = Integer.parseInt(spt[i]);
+                xs[i+1] = x[i+1] = Integer.parseInt(spt[i]);
         }
         br.close();
         LogInfo.logs("Input data loaded.");
     }
 
+    public static void printRet() {
+        String initX = "";
+        for (int i=1; i<=n; i++) initX += (xs[i] + "\t");
+        LogInfo.logs(initX);
+        String finalX = "";
+        for (int i=1; i<=n; i++) finalX += (x[i] + "\t");
+        LogInfo.logs(finalX);
+        int totalDis = 0;
+        for (int i=1; i<=n; i++) {
+            totalDis += abs(x[i] - xs[i]);
+        }
+        LogInfo.logs("Total movements: %d", totalDis);
+    }
+
     public static void main(String[] args) throws IOException {
         readData();
         work();
+        printRet();
     }
 }
