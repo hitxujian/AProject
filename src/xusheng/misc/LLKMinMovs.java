@@ -21,9 +21,7 @@ public class LLKMinMovs {
     public static String inputFp = root + "/input.txt";
 
     public static int n, L, K, R;
-    public static int[] x = new int[n+2],
-                        xs = new int[n+2],
-                        x0 = new int[n+2];
+    public static int[] x, xs, x0;
 
     public static void work() {
         x[0] = -R; x[n+1] = L + R;
@@ -134,6 +132,9 @@ public class LLKMinMovs {
         L = Integer.parseInt(spt[1]);
         K = Integer.parseInt(spt[2]);
         R = Integer.parseInt(spt[3]);
+        x = new int[n+2];
+        xs = new int[n+2];
+        x0 = new int[n+2];
         while ((line = br.readLine()) != null) {
             spt = line.split("\t");
             for (int i=0; i<spt.length; i++)
