@@ -61,7 +61,7 @@ public class LLKMinMovs {
         if (dir.equals("Left")) left = true;
         if (left) i -= k;
         else i += k;
-        while (i >= 0 && i+k <= n+1 ) {
+        while (i >= 0 && i+k <= n+1) {
             if (x[i+k]-R < x[i]+R) return i; // "=" means exactly k-line covered
             if (left) i -= k;
             else i += k;

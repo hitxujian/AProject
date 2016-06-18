@@ -9,13 +9,7 @@ import java.util.*;
 public class LocalTester {
 
     public static void main(String[] args) throws Exception {
-        Set<Integer> set = new HashSet<>();
-        while (set.size() < 10) {
-            int num = (int) (Math.random() * (20+1));
-            set.add(num);
-        }
-        List<Integer> list = new ArrayList<>(set);
-        Collections.sort(list);
-        System.out.println(list.toString());
+        double x = 1.73;
+        System.out.print((int) x);
     }
 }
