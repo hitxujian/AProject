@@ -59,8 +59,8 @@ public class AHGB {
         }
         // find the nearest grid of a sensor, update the distance
         for (int i=1; i<=n; i++) {
-            int xPos = (int) x[i] / (2*R) + 1;
-            int yPos = (int) y[i] / (2*R) + 1;
+            int xPos = ((int) x[i] / (2*R)) * 2 + 1;
+            int yPos = ((int) y[i] / (2*R)) * 2 + 1;
             double dist = findDist(xPos*R, yPos*R, x[i], y[i]);
             LogInfo.logs(xPos + "\t" + yPos);
             if (dist < grids.get(new Pair<>(xPos, yPos)))
