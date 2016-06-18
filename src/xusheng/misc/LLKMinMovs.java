@@ -156,7 +156,10 @@ public class LLKMinMovs {
                 xs[i+1] = x[i+1] = Integer.parseInt(spt[i]);
         }
         br.close();
-        LogInfo.logs("Input data loaded.");
+        LogInfo.begin_track("Input data loaded");
+        LogInfo.logs("n = %d, L = %d, K = %d, R = %d", n, L, K, R);
+        printX();
+        LogInfo.end_track();
     }
 
     public static void printRet() {
