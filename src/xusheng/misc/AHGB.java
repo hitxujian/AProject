@@ -30,9 +30,9 @@ public class AHGB {
 
     public static void constructGrid() {
         int nl = L / (2 * R);
-        int maxY = 0;
+        double maxY = 0;
         for (int i=1; i<=n; i++)
-            if (maxY < i)
+            if (maxY < y[i]) maxY = y[i];
     }
 
     public static void main(String[] args) throws IOException {
