@@ -105,7 +105,7 @@ public class AHGB {
                     // generate x positions
                     Set<Integer> set = new HashSet<>();
                     while (set.size() < n) {
-                        int num = (int) (Math.random() * (L + 1));
+                        int num = (int) (Math.random() * (L-1)) + 1;
                         set.add(num);
                     }
                     List<Integer> list = new ArrayList<>(set);
@@ -116,7 +116,7 @@ public class AHGB {
                     // generate y positions
                     set = new HashSet<>();
                     while (set.size() < n) {
-                        int num = (int) (Math.random() * (L + 1));
+                        int num = (int) (Math.random() * (L-1)) + 1;
                         set.add(num);
                     }
                     list = new ArrayList<>(set);
