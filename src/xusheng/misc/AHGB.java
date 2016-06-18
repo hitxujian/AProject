@@ -36,11 +36,26 @@ public class AHGB {
             }
             if (verbose) LogInfo.logs(str);
         }
-        Hungarian(edges);
+        Hungarian(edges, tarRow);
+
     }
 
     // row: barriers/ column: sensors
-    public static void Hungarian(double[][] matrix) {
+    public static void Hungarian(double[][] matrix, int tarRow) {
+        Set<Integer> set = new HashSet<>();
+        for (int i=0; i<nl; i++) {
+            double minCost = 2*L*L;
+            int minIdx = 0;
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] < minCost && !set.contains(j+1)) {
+                    minCost = matrix[i][j];
+                    minIdx = j+1;
+                }
+            }
+            y[minIdx] = (2 * tarRow + 1) * R;
+            x[minIdx] = (2 * i + 1) * R;
+            set.add(minIdx);
+        }
         return;
     }
 
@@ -142,6 +157,26 @@ public class AHGB {
         for (int j=1; j<=n-1; j++) str += ("(" + x[j] + "," + y[j] + ")\t");
         str += ("(" + x[n] + "," + y[n] + ")]");
         LogInfo.logs(str);
+    }
+
+    public static void printRet() {
+        if (verbose) LogInfo.logs("Final Result:");
+        String initX = "[";
+        for (int i=1; i<n; i++)
+            initX += ("(" + xs[i]+ "," + ys[i] + ")\t");
+        initX += ("(" + xs[n] + "," + ys[n] + ")]");
+        LogInfo.logs(initX);
+
+        String finalX = "[";
+        for (int i=1; i<n; i++)
+            finalX += ("(" + x[i]+ "," + y[i] + ")\t");
+        finalX += ("(" + x[n] + "," + y[n] + ")]");
+        LogInfo.logs(finalX);
+        int totalDis = 0;
+        for (int i=1; i<=n; i++) {
+            totalDis += Math.sqrt((x[i]-xs[i])*(x[i]-xs[i]) + (y[i]-ys[i])*(y[i]-ys[i]));
+        }
+        LogInfo.logs("Total movements: %.2f", totalDis);
     }
 
     public static boolean verbose = false;
