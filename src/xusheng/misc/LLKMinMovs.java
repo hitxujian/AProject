@@ -101,7 +101,7 @@ public class LLKMinMovs {
         LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d):", r, k, i, k);
         printX();
         for (int j=r; j>=i+k; j--)
-            x[j] -= dist;
+            x[j] += dist;
         printX();
     }
 
