@@ -18,16 +18,14 @@ import java.util.*;
  */
 
 public class LLKMinMovs {
-    public static String root = "/home/xusheng";
-    public static String inputFp = root + "/input.txt";
 
     public static int n, L, K, R;
     public static int[] x, xs, x0;
 
-    public static void work() {
+    public static void weakDetect() {
         x[0] = -R; x[n+1] = L + R;
         for (int k =1; k<=K; k++) {
-            LogInfo.begin_track("Starting round K=%d", k);
+            if (verbose) LogInfo.begin_track("Starting round K=%d", k);
             // At the beginning of each iteration, record it's initial position
             for (int i=0; i<=n+1; i++) x0[i] = x[i];
 
@@ -45,8 +43,9 @@ public class LLKMinMovs {
                         moveByRight(i, r, k, -Rdist(i, r, k));
                 }
             }
-            LogInfo.end_track();
+            if (verbose) LogInfo.end_track();
         }
+        printRet();
     }
 
     // Check whether [x[i] + R, x[i+k] - R] is k-line covered
@@ -55,7 +54,6 @@ public class LLKMinMovs {
             return true;
         return false;
     }
-
 
     // Find the nearest overlap
     public static int findOverLap(int i, int k, String dir) {
@@ -91,19 +89,19 @@ public class LLKMinMovs {
     }
 
     public static void moveByLeft(int l, int i, int k, int dist) {
-        LogInfo.logs("Use left overlap(%d, %d) to fill gap(%d, %d) by dist = %d", l, k, i, k, dist);
-        printX();
+        if (verbose) LogInfo.logs("Use left overlap(%d, %d) to fill gap(%d, %d) by dist = %d", l, k, i, k, dist);
+        if (verbose) printX();
         for (int j=l+k; j<=i; j++)
             x[j] += dist;
-        printX();
+        if (verbose) printX();
     }
 
     public static void moveByRight(int i, int r, int k, int dist) {
-        LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d) by dist = %d:", r, k, i, k, dist);
-        printX();
+        if (verbose) LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d) by dist = %d:", r, k, i, k, dist);
+        if (verbose) printX();
         for (int j=r; j>=i+k; j--)
             x[j] += dist;
-        printX();
+        if (verbose) printX();
     }
 
     // Left overlap shift distance. Need to consider the effect shift window
@@ -123,8 +121,6 @@ public class LLKMinMovs {
         return Math.min(x[i+k]-x[i]-2*R, x[r]-x[r+k]+2*R);
     }
 
-
-
     public static void printX() {
         String str = "[";
         for (int j=1; j<=n-1; j++) str += (x[j] + "\t");
@@ -132,39 +128,46 @@ public class LLKMinMovs {
         LogInfo.logs(str);
     }
 
-    public static void autoTest(int k) {
-        int cnt = 0;
+    public static void autoTest(int k, int cals) {
+        int settingCnt = 0;
         R = 20;
         K = k;
         for (L = 200; L <=800; L+= 200) {
             for (double rate=1.25; rate<=2; rate+=0.25) {
-                //if (K > k) return;
-                n = (int) (rate * L * K / (2 * R)) + 1;
-                x = new int[n+2];
-                xs = new int[n+2];
-                x0 = new int[n+2];
-                Set<Integer> set = new HashSet<>();
-                while (set.size() < n) {
-                    int num = (int) (Math.random() * (L+1));
-                    set.add(num);
+                LogInfo.begin_track("Testing data setting %d", settingCnt);
+                LogInfo.logs("n = %d, L = %d, K = %d, R = %d, redundancy rate: %f", n, L, K, R, rate);
+                settingCnt ++;
+                long stTime = System.currentTimeMillis();
+                for (int numCnt=0; numCnt<cals; numCnt++) {
+                    n = (int) (rate * L * K / (2 * R)) + 1;
+                    x = new int[n + 2];
+                    xs = new int[n + 2];
+                    x0 = new int[n + 2];
+                    Set<Integer> set = new HashSet<>();
+                    while (set.size() < n) {
+                        int num = (int) (Math.random() * (L + 1));
+                        set.add(num);
+                    }
+                    List<Integer> list = new ArrayList<>(set);
+                    Collections.sort(list);
+                    for (int i = 0; i < n; i++)
+                        xs[i + 1] = x[i + 1] = list.get(i);
+                    if (verbose) {
+                        LogInfo.logs("data #%d:", numCnt);
+                        printX();
+                    }
+                    weakDetect();
                 }
-                List<Integer> list = new ArrayList<>(set);
-                Collections.sort(list);
-                for (int i=0; i<n; i++)
-                    xs[i+1] = x[i+1] = list.get(i);
-                cnt ++;
-                LogInfo.begin_track("Testing data #%d", cnt);
-                LogInfo.logs("n = %d, L = %d, K = %d, R = %d", n, L, K, R);
-                printX();
-                work();
-                printRet();
+                long edTime = System.currentTimeMillis();
+                long time = edTime - stTime;
+                LogInfo.logs("Time: %d, [n = %d, L = %d, K = %d, R = %d, redundancy rate: %f]", time, n, L, K, R, rate);
                 LogInfo.end_track();
             }
         }
 
     }
 
-    public static void readData() throws IOException {
+    public static void readData(String inputFp) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(inputFp));
         String line = br.readLine();
         String spt[] = line.split("\t");
@@ -188,7 +191,7 @@ public class LLKMinMovs {
     }
 
     public static void printRet() {
-        LogInfo.logs("Final Result:");
+        if (verbose) LogInfo.logs("Final Result:");
         String initX = "[";
         for (int i=1; i<n; i++) initX += (xs[i] + "\t");
         initX += (xs[n] + "]");
@@ -204,14 +207,17 @@ public class LLKMinMovs {
         LogInfo.logs("Total movements: %d", totalDis);
     }
 
+    public static boolean verbose = false;
     public static void main(String[] args) throws IOException {
         if (args[0].equals("AUTO")) {
-            autoTest(Integer.parseInt(args[1]));
+            int k = Integer.parseInt(args[1]);
+            int cals = Integer.parseInt(args[2]);
+            if (args[3].equals("verbose=1")) verbose = true;
+            autoTest(k, cals);
         }
         else {
-            readData();
-            work();
-            printRet();
+            readData(args[0]);
+            weakDetect();
         }
     }
 }
