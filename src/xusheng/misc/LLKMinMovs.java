@@ -101,6 +101,7 @@ public class LLKMinMovs {
     public static void moveByRight(int i, int r, int k, int dist) {
         LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d) by dist = %d:", r, k, i, k, dist);
         printX();
+        if (r < i+k) r = i+k;
         for (int j=r; j>=i+k; j--)
             x[j] += dist;
         printX();
