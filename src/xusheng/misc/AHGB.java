@@ -37,7 +37,7 @@ public class AHGB {
             if (verbose) LogInfo.logs(str);
         }
         Hungarian(edges, tarRow);
-
+        printRet();
     }
 
     // row: barriers/ column: sensors
