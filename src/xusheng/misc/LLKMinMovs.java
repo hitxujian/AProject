@@ -139,7 +139,7 @@ public class LLKMinMovs {
                 n = (int) (rate * L * K / (2 * R)) + 1;
                 LogInfo.logs("n = %d, L = %d, K = %d, R = %d, redundancy rate: %.2f", n, L, K, R, rate);
                 long stTime = System.currentTimeMillis();
-                for (int numCnt=0; numCnt<cals; numCnt++) {
+                for (int numCnt=1; numCnt<=cals; numCnt++) {
                     x = new int[n + 2];
                     xs = new int[n + 2];
                     x0 = new int[n + 2];
