@@ -90,7 +90,7 @@ public class LLKMinMovs {
     }
 
     public static void moveByLeft(int l, int i, int k, int dist) {
-        LogInfo.logs("Use left overlap(%d, %d) to fill gap(%d, %d)", l, k, i, k);
+        LogInfo.logs("Use left overlap(%d, %d) to fill gap(%d, %d) by dist = %d", l, k, i, k, dist);
         printX();
         for (int j=l+k; j<=i; j++)
             x[j] += dist;
@@ -98,7 +98,7 @@ public class LLKMinMovs {
     }
 
     public static void moveByRight(int i, int r, int k, int dist) {
-        LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d):", r, k, i, k);
+        LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d) by dist = %d:", r, k, i, k, dist);
         printX();
         for (int j=r; j>=i+k; j--)
             x[j] += dist;
@@ -165,7 +165,7 @@ public class LLKMinMovs {
         for (int i=1; i<n; i++) initX += (xs[i] + "\t");
         initX += (xs[n] + "]");
         LogInfo.logs(initX);
-        String finalX = "";
+        String finalX = "[";
         for (int i=1; i<n; i++) finalX += (x[i] + "\t");
         finalX += (x[n] + "]");
         LogInfo.logs(finalX);
