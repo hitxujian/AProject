@@ -172,7 +172,7 @@ public class AHGB {
             finalX += ("(" + x[i]+ "," + y[i] + ")\t");
         finalX += ("(" + x[n] + "," + y[n] + ")]");
         LogInfo.logs(finalX);
-        int totalDis = 0;
+        double totalDis = 0;
         for (int i=1; i<=n; i++) {
             totalDis += Math.sqrt((x[i]-xs[i])*(x[i]-xs[i]) + (y[i]-ys[i])*(y[i]-ys[i]));
         }
