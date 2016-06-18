@@ -135,7 +135,7 @@ public class LLKMinMovs {
     public static void autoTest() {
         int cnt = 0;
         R = 20;
-        for (L = 200; L <=600; L+= 200) {
+        for (L = 200; L <=800; L+= 200) {
             for (K=1; K<=10; K++) {
                 for (double rate=1.25; rate<=2; rate+=0.25) {
                     n = (int) (rate * L * K / (2 * R)) + 1;
