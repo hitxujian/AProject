@@ -132,13 +132,13 @@ public class LLKMinMovs {
         LogInfo.logs(str);
     }
 
-    public static void autoTest() {
+    public static void autoTest(int k) {
         int cnt = 0;
         R = 20;
-        for (L = 200; L <=800; L+= 200) {
-            for (K=1; K<=10; K++) {
+        for (K=1; K<=10; K++) {
+             for (L = 200; L <=800; L+= 200) {
                 for (double rate=1.25; rate<=2; rate+=0.25) {
-                    if (K == 2) return;
+                    if (K > k) return;
                     n = (int) (rate * L * K / (2 * R)) + 1;
                     x = new int[n+2];
                     xs = new int[n+2];
@@ -206,7 +206,7 @@ public class LLKMinMovs {
 
     public static void main(String[] args) throws IOException {
         if (args[0].equals("AUTO")) {
-            autoTest();
+            autoTest(Integer.parseInt(args[1]));
         }
         else {
             readData();
