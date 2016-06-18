@@ -65,6 +65,7 @@ public class AHGB {
             int xPos = (int) x[i] / R;
             int yPos = (int) y[i] / R;
             double dist = findDist(xPos*R, yPos*R, x[i], y[i]);
+            LogInfo.logs(xPos + "\t" + yPos);
             if (dist < grids.get(new Pair<>(xPos, yPos)))
                 grids.put(new Pair<>(xPos, yPos), dist);
         }
@@ -150,6 +151,9 @@ public class AHGB {
 
     public static boolean verbose = false;
     public static void main(String[] args) throws IOException {
-        autoTest(1, 1);
+        int k = Integer.parseInt(args[0]);
+        int cals = Integer.parseInt(args[1]);
+        if (args[2].equals("verbose=1")) verbose = true;
+        autoTest(k, cals);
     }
 }
