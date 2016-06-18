@@ -161,7 +161,7 @@ public class LLKMinMovs {
                 }
                 long edTime = System.currentTimeMillis();
                 long time = edTime - stTime;
-                LogInfo.logs("Time: %dms, [n = %d, L = %d, K = %d, R = %d, redundancy rate: %.2 f]", time, n, L, K, R, rate);
+                LogInfo.logs("Time: %dms, [n = %d, L = %d, K = %d, R = %d, redundancy rate: %.2f]", time, n, L, K, R, rate);
                 LogInfo.end_track();
             }
         }
