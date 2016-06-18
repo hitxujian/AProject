@@ -61,12 +61,12 @@ public class LLKMinMovs {
     public static int findOverLap(int i, int k, String dir) {
         boolean left = false;
         if (dir.equals("Left")) left = true;
-        if (left) i--;
-        else i++;
+        if (left) i -= k;
+        else i += k;
         while (i >= 0 && i+k <= n+1 ) {
             if (x[i+k]-R < x[i]+R) return i; // "=" means exactly k-line covered
-            if (left) i--;
-            else i++;
+            if (left) i -= k;
+            else i += k;
         }
         return -1;
     }
@@ -101,7 +101,6 @@ public class LLKMinMovs {
     public static void moveByRight(int i, int r, int k, int dist) {
         LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d) by dist = %d:", r, k, i, k, dist);
         printX();
-        if (r < i+k) r = i+k;
         for (int j=r; j>=i+k; j--)
             x[j] += dist;
         printX();
