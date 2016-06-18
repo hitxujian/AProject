@@ -31,7 +31,7 @@ public class AHGB {
         for (int i=0; i<nl; i++) {
             String str = "";
             for (int j = 0; j < n; j++) {
-                edges[i][j] = findDist((2 * tarRow + 1) * R, (2 * i + 1) * R, x[j + 1], y[j + 1]);
+                edges[i][j] = findDist((2 * i + 1) * R, (2 * tarRow + 1) * R, x[j + 1], y[j + 1]);
                 str += (edges[i][j] + "\t");
             }
             if (verbose) LogInfo.logs(str);
@@ -49,7 +49,6 @@ public class AHGB {
     public static int HGBS() {
         nw = nl = L / (2 * R);
         double maxDist = Math.sqrt(2*L*L);
-        LogInfo.logs("nl: %d, nw: %d, maxDist: %.2f", nl, nw, maxDist);
         grids = new HashMap<>();
         for (int i=0; i<nw; i++) {
             for (int j=0; j<nl; j++) {
@@ -62,7 +61,6 @@ public class AHGB {
             int xPos = ((int) x[i] / (2*R)) * 2 + 1;
             int yPos = ((int) y[i] / (2*R)) * 2 + 1;
             double dist = findDist(xPos*R, yPos*R, x[i], y[i]);
-            LogInfo.logs(xPos + "\t" + yPos);
             if (dist < grids.get(new Pair<>(xPos, yPos)))
                 grids.put(new Pair<>(xPos, yPos), dist);
         }
