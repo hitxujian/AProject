@@ -138,6 +138,7 @@ public class LLKMinMovs {
         for (L = 200; L <=800; L+= 200) {
             for (K=1; K<=10; K++) {
                 for (double rate=1.25; rate<=2; rate+=0.25) {
+                    if (K == 2) return;
                     n = (int) (rate * L * K / (2 * R)) + 1;
                     x = new int[n+2];
                     xs = new int[n+2];
@@ -158,7 +159,6 @@ public class LLKMinMovs {
                     work();
                     printRet();
                     LogInfo.end_track();
-                    if (cnt == 1) return;
                 }
             }
         }
