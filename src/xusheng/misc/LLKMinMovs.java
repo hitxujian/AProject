@@ -153,14 +153,15 @@ public class LLKMinMovs {
                     for (int i = 0; i < n; i++)
                         xs[i + 1] = x[i + 1] = list.get(i);
                     if (verbose) {
-                        LogInfo.logs("data #%d:", numCnt);
+                        LogInfo.begin_track("Data #%d:", numCnt);
                         printX();
                     }
                     weakDetect();
+                    if (verbose) LogInfo.end_track();
                 }
                 long edTime = System.currentTimeMillis();
                 long time = edTime - stTime;
-                LogInfo.logs("Time: %d, [n = %d, L = %d, K = %d, R = %d, redundancy rate: %f]", time, n, L, K, R, rate);
+                LogInfo.logs("Time: %dms, [n = %d, L = %d, K = %d, R = %d, redundancy rate: %f]", time, n, L, K, R, rate);
                 LogInfo.end_track();
             }
         }
