@@ -26,6 +26,7 @@ public class LLKMinMovs {
     public static void work() {
         x[0] = -R; x[n+1] = L + R;
         for (int k =1; k<=K; k++) {
+            LogInfo.begin_track("Starting round K=%d", k);
             // At the beginning of each iteration, record it's initial position
             for (int i=0; i<=n+1; i++) x0[i] = x[i];
 
@@ -43,6 +44,7 @@ public class LLKMinMovs {
                         moveByRight(i, r, k, -Rdist(i, r, k));
                 }
             }
+            LogInfo.end_track();
         }
     }
 
@@ -88,13 +90,19 @@ public class LLKMinMovs {
     }
 
     public static void moveByLeft(int l, int i, int k, int dist) {
+        LogInfo.logs("Use left overlap(%d, %d) to fill gap(%d, %d)", l, k, i, k);
+        printX();
         for (int j=l+k; j<=i; j++)
             x[j] += dist;
+        printX();
     }
 
     public static void moveByRight(int i, int r, int k, int dist) {
+        LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d):", r, k, i, k);
+        printX();
         for (int j=r; j>=i+k; j--)
             x[j] -= dist;
+        printX();
     }
 
     // Left overlap shift distance. Need to consider the effect shift window
@@ -124,6 +132,13 @@ public class LLKMinMovs {
         else return -x;
     }
 
+    public static void printX() {
+        String str = "[";
+        for (int i=1; i<=n-1; i++) str += (x[i] + "\t");
+        str += (x[n] + "]");
+        LogInfo.logs(str);
+    }
+
     public static void readData() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(inputFp));
         String line = br.readLine();
@@ -145,11 +160,14 @@ public class LLKMinMovs {
     }
 
     public static void printRet() {
-        String initX = "";
-        for (int i=1; i<=n; i++) initX += (xs[i] + "\t");
+        LogInfo.logs("Final Result:");
+        String initX = "[";
+        for (int i=1; i<n; i++) initX += (xs[i] + "\t");
+        initX += (xs[n] + "]");
         LogInfo.logs(initX);
         String finalX = "";
-        for (int i=1; i<=n; i++) finalX += (x[i] + "\t");
+        for (int i=1; i<n; i++) finalX += (x[i] + "\t");
+        finalX += (x[n] + "]");
         LogInfo.logs(finalX);
         int totalDis = 0;
         for (int i=1; i<=n; i++) {
