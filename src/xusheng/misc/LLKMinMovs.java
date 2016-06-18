@@ -5,6 +5,7 @@ import fig.basic.LogInfo;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by Xusheng on 6/8/16.
@@ -108,29 +109,21 @@ public class LLKMinMovs {
     // Left overlap shift distance. Need to consider the effect shift window
     // to maintain the current coverage level.
     public static int Ldist(int l, int i, int k) {
-        int tmp = min(x[i+k]-x[i]-2*R, x[l]-x[l+k]+2*R);
+        int tmp = Math.min(x[i+k]-x[i]-2*R, x[l]-x[l+k]+2*R);
         int minShift = L;
         for (int j=l+k; j<=i; j+=k) {
             if (x[j] < x0[j] && (x0[j] - x[j]) < minShift)
                 minShift = x0[j] - x[j];
         }
-        return min(tmp, minShift);
+        return Math.min(tmp, minShift);
     }
 
     // Right overlap shift distance
     public static int Rdist(int i, int r, int k) {
-        return min(x[i+k]-x[i]-2*R, x[r]-x[r+k]+2*R);
+        return Math.min(x[i+k]-x[i]-2*R, x[r]-x[r+k]+2*R);
     }
 
-    public static int min(int x, int y) {
-        if (x < y) return x;
-        else return y;
-    }
 
-    public static int abs(int x) {
-        if (x > 0) return x;
-        else return -x;
-    }
 
     public static void printX() {
         String str = "[";
@@ -146,8 +139,22 @@ public class LLKMinMovs {
             for (K=1; K<=10; K++) {
                 for (double rate=1.25; rate<=2; rate+=0.25) {
                     n = (int) (rate * L * K / (2 * R)) + 1;
+                    x = new int[n+2];
+                    xs = new int[n+2];
+                    x0 = new int[n+2];
+                    Set<Integer> set = new HashSet<>();
+                    while (set.size() < n) {
+                        int num = (int) (Math.random() * (L+1));
+                        set.add(num);
+                    }
+                    List<Integer> list = new ArrayList<>(set);
+                    Collections.sort(list);
+                    for (int i=0; i<n; i++)
+                        xs[i+1] = x[i+1] = list.get(i);
                     cnt ++;
                     LogInfo.begin_track("Testing data #%d", cnt);
+                    LogInfo.logs("n = %d, L = %d, K = %d, R = %d", n, L, K, R);
+                    printX();
                     work();
                     printRet();
                     LogInfo.end_track();
@@ -192,7 +199,7 @@ public class LLKMinMovs {
         LogInfo.logs(finalX);
         int totalDis = 0;
         for (int i=1; i<=n; i++) {
-            totalDis += abs(x[i] - xs[i]);
+            totalDis += Math.abs(x[i] - xs[i]);
         }
         LogInfo.logs("Total movements: %d", totalDis);
     }
