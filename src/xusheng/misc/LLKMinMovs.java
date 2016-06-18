@@ -136,33 +136,33 @@ public class LLKMinMovs {
     public static void autoTest(int k) {
         int cnt = 0;
         R = 20;
-        for (K=1; K<=10; K++) {
-             for (L = 200; L <=800; L+= 200) {
-                for (double rate=1.25; rate<=2; rate+=0.25) {
-                    if (K > k) return;
-                    n = (int) (rate * L * K / (2 * R)) + 1;
-                    x = new int[n+2];
-                    xs = new int[n+2];
-                    x0 = new int[n+2];
-                    Set<Integer> set = new HashSet<>();
-                    while (set.size() < n) {
-                        int num = (int) (Math.random() * (L+1));
-                        set.add(num);
-                    }
-                    List<Integer> list = new ArrayList<>(set);
-                    Collections.sort(list);
-                    for (int i=0; i<n; i++)
-                        xs[i+1] = x[i+1] = list.get(i);
-                    cnt ++;
-                    LogInfo.begin_track("Testing data #%d", cnt);
-                    LogInfo.logs("n = %d, L = %d, K = %d, R = %d", n, L, K, R);
-                    printX();
-                    work();
-                    printRet();
-                    LogInfo.end_track();
+        K = k;
+        for (L = 200; L <=800; L+= 200) {
+            for (double rate=1.25; rate<=2; rate+=0.25) {
+                //if (K > k) return;
+                n = (int) (rate * L * K / (2 * R)) + 1;
+                x = new int[n+2];
+                xs = new int[n+2];
+                x0 = new int[n+2];
+                Set<Integer> set = new HashSet<>();
+                while (set.size() < n) {
+                    int num = (int) (Math.random() * (L+1));
+                    set.add(num);
                 }
+                List<Integer> list = new ArrayList<>(set);
+                Collections.sort(list);
+                for (int i=0; i<n; i++)
+                    xs[i+1] = x[i+1] = list.get(i);
+                cnt ++;
+                LogInfo.begin_track("Testing data #%d", cnt);
+                LogInfo.logs("n = %d, L = %d, K = %d, R = %d", n, L, K, R);
+                printX();
+                work();
+                printRet();
+                LogInfo.end_track();
             }
         }
+
     }
 
     public static void readData() throws IOException {
