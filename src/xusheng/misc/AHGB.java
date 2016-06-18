@@ -23,7 +23,7 @@ public class AHGB {
 
     public static void strongDetect() {
         int tarRow = HGBS();
-        if (verbose) LogInfo.logs("Target row position: %d", tarRow);
+        LogInfo.logs("Target row position: %d", tarRow);
 
         // construct the bipartite graph
         edges = new double[nl][n];
@@ -73,8 +73,8 @@ public class AHGB {
         }
         // find the nearest grid of a sensor, update the distance
         for (int i=1; i<=n; i++) {
-            int xPos = ((int) x[i] / (2*R)) * 2 + 1;
-            int yPos = ((int) y[i] / (2*R)) * 2 + 1;
+            int xPos = ((int) ((x[i]-1)/(2*R)))*2+1;
+            int yPos = ((int) ((y[i]-1)/(2*R)))*2+1;
             double dist = findDist(xPos*R, yPos*R, x[i], y[i]);
             if (dist < grids.get(new Pair<>(xPos, yPos)))
                 grids.put(new Pair<>(xPos, yPos), dist);
