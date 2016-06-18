@@ -53,6 +53,8 @@ public class AHGB {
             if (maxY < y[i]) maxY = y[i];
         nw = (int) (maxY / (2 * R)) + 1;
         double maxDist = Math.sqrt(L*L + maxY*maxY);
+
+        LogInfo.logs("nl: %d, nw: %d, maxDist: %.2f", nl, nw, maxDist);
         grids = new HashMap<>();
         for (int i=0; i<nw; i++) {
             for (int j=0; j<nl; j++) {
