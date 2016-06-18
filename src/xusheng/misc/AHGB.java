@@ -47,13 +47,8 @@ public class AHGB {
     // Select the Horizontal Grid Barrier
     public static Map<Pair<Integer, Integer>, Double> grids;
     public static int HGBS() {
-        nl = L / (2 * R);
-        double maxY = 0;
-        for (int i=1; i<=n; i++)
-            if (maxY < y[i]) maxY = y[i];
-        nw = (int) (maxY / (2 * R)) + 1;
-        double maxDist = Math.sqrt(L*L + maxY*maxY);
-
+        nw = nl = L / (2 * R);
+        double maxDist = Math.sqrt(2*L*L);
         LogInfo.logs("nl: %d, nw: %d, maxDist: %.2f", nl, nw, maxDist);
         grids = new HashMap<>();
         for (int i=0; i<nw; i++) {
@@ -64,8 +59,8 @@ public class AHGB {
         }
         // find the nearest grid of a sensor, update the distance
         for (int i=1; i<=n; i++) {
-            int xPos = (int) x[i] / R;
-            int yPos = (int) y[i] / R;
+            int xPos = (int) x[i] / (2*R) + 1;
+            int yPos = (int) y[i] / (2*R) + 1;
             double dist = findDist(xPos*R, yPos*R, x[i], y[i]);
             LogInfo.logs(xPos + "\t" + yPos);
             if (dist < grids.get(new Pair<>(xPos, yPos)))
