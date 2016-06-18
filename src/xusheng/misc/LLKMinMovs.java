@@ -134,7 +134,7 @@ public class LLKMinMovs {
 
     public static void printX() {
         String str = "[";
-        for (int i=1; i<=n-1; i++) str += (x[i] + "\t");
+        for (int j=1; j<=n-1; j++) str += (x[j] + "\t");
         str += (x[n] + "]");
         LogInfo.logs(str);
     }
