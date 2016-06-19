@@ -200,7 +200,7 @@ public class AHGB {
         for (int i=1; i<=n; i++) {
             totalDis += Math.sqrt((x[i]-xs[i])*(x[i]-xs[i]) + (y[i]-ys[i])*(y[i]-ys[i]));
         }
-        LogInfo.logs("Total movements: %.0f", totalDis);
+        LogInfo.logs("Total movements: %.2f", totalDis);
     }
 
     public static boolean verbose = false;
