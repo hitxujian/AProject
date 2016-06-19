@@ -3,6 +3,8 @@ package xusheng.misc;
 import fig.basic.LogInfo;
 import fig.basic.Pair;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -60,8 +62,8 @@ public class AHGB {
             LogInfo.logs("[%s]", str);
             LogInfo.end_track();
         }
-        //printRet();
-        printRet4Draw();
+        printRet();
+        //printRet4Draw();
     }
 
     // row: barriers/ column: sensors
@@ -236,11 +238,44 @@ public class AHGB {
         LogInfo.logs("Total movements: %.2f", totalDis);
     }
 
+    public static void readData(String inputFp) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(inputFp));
+        String line = br.readLine();
+        String spt[] = line.split("\t");
+        n = Integer.parseInt(spt[0]);
+        L = Integer.parseInt(spt[1]);
+        K = Integer.parseInt(spt[2]);
+        R = Integer.parseInt(spt[3]);
+        x = new double[n+2];
+        xs = new double[n+2];
+        y = new double[n+2];
+        ys = new double[n+2];
+        line = br.readLine();
+        spt = line.split("\t");
+        for (int i=0; i<spt.length; i++)
+            xs[i+1] = x[i+1] = Double.parseDouble(spt[i]);
+        line = br.readLine();
+        spt = line.split("\t");
+        for (int i=0; i<spt.length; i++)
+            ys[i+1] = y[i+1] = Double.parseDouble(spt[i]);
+        br.close();
+        LogInfo.begin_track("Input data loaded");
+        LogInfo.logs("n = %d, L = %d, K = %d, R = %d", n, L, K, R);
+        printXY();
+        LogInfo.end_track();
+    }
+
     public static boolean verbose = false;
     public static void main(String[] args) throws IOException {
-        int k = Integer.parseInt(args[0]);
-        int cals = Integer.parseInt(args[1]);
-        if (args[2].equals("verbose=1")) verbose = true;
-        autoTest(k, cals);
+        if (!args[0].equals("AUTO")) {
+            if (args[1].equals("verbose=1")) verbose = true;
+            readData(args[0]);
+            strongDetect();
+        } else {
+            int k = Integer.parseInt(args[1]);
+            int cals = Integer.parseInt(args[2]);
+            if (args[3].equals("verbose=1")) verbose = true;
+            autoTest(k, cals);
+        }
     }
 }
