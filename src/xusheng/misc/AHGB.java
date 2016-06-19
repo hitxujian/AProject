@@ -26,6 +26,7 @@ public class AHGB {
 
     public static void strongDetect() {
         used = new HashSet<>();
+        nw = nl = L / (2 * R);
         for (int k=1; k<=K; k++) {
             LogInfo.begin_track("Starting round K = %d", k);
             // Select the Horizontal Grid Barrier
@@ -89,7 +90,6 @@ public class AHGB {
     // Select the Horizontal Grid Barrier
     public static Map<Pair<Integer, Integer>, Double> grids;
     public static int HGBS() {
-        nw = nl = L / (2 * R);
         double maxDist = Math.sqrt(2*L*L);
         grids = new HashMap<>();
         for (int i=0; i<nw; i++) {
