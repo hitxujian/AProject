@@ -36,12 +36,13 @@ public class AHGB {
             }
             if (verbose) LogInfo.logs(str);
         }
+        naive(edges, tarRow);
         Hungarian(edges, tarRow);
         printRet();
     }
 
     // row: barriers/ column: sensors
-    public static void Hungarian(double[][] matrix, int tarRow) {
+    public static void naive(double[][] matrix, int tarRow) {
         Set<Integer> set = new HashSet<>();
         for (int i=0; i<nl; i++) {
             double minCost = 2*L*L;
@@ -57,6 +58,10 @@ public class AHGB {
             set.add(minIdx);
         }
         return;
+    }
+
+    public static void Hungarian(double[][] matrix, int tarRow) {
+
     }
 
     // Select the Horizontal Grid Barrier
