@@ -60,7 +60,8 @@ public class AHGB {
             LogInfo.logs("[%s]", str);
             LogInfo.end_track();
         }
-        printRet();
+        //printRet();
+        printRet4Draw();
     }
 
     // row: barriers/ column: sensors
@@ -181,6 +182,38 @@ public class AHGB {
         for (int j=1; j<=n-1; j++) str += ("(" + x[j] + "," + y[j] + ")\t");
         str += ("(" + x[n] + "," + y[n] + ")]");
         LogInfo.logs(str);
+    }
+
+    public static void printRet4Draw() {
+        String initX = "";
+        for (int i=1; i<n; i++)
+            initX += xs[i] + "\t";
+        initX += xs[n];
+        LogInfo.logs(initX);
+
+        String initY = "";
+        for (int i=1; i<n; i++)
+            initY += ys[i] + "\t";
+        initY += ys[n];
+        LogInfo.logs(initY);
+
+        String finalX = "";
+        for (int i=1; i<n; i++)
+            finalX += x[i] + "\t";
+        finalX += x[n];
+        LogInfo.logs(finalX);
+
+        String finalY = "";
+        for (int i=1; i<n; i++)
+            finalY += y[i] + "\t";
+        finalY += y[n];
+        LogInfo.logs(finalY);
+
+        double totalDis = 0;
+        for (int i=1; i<=n; i++) {
+            totalDis += Math.sqrt((x[i]-xs[i])*(x[i]-xs[i]) + (y[i]-ys[i])*(y[i]-ys[i]));
+        }
+        LogInfo.logs("Total movements: %.2f", totalDis);
     }
 
     public static void printRet() {
