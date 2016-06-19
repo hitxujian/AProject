@@ -64,8 +64,8 @@ public class AHGB {
             LogInfo.logs("[%s]", str);
             LogInfo.end_track();
         }
-        printRet();
-        //printRet4Draw();
+        //printRet();
+        printRet4Draw();
     }
 
     // row: barriers/ column: sensors
