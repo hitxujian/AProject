@@ -26,7 +26,7 @@ public class AHGB {
         LogInfo.logs("Target row position: %d", tarRow);
 
         // construct the bipartite graph
-        edges = new double[n][n];
+        edges = new double[nl][n];
         if (verbose) LogInfo.logs("Edge Matrix: ");
         for (int i=0; i<nl; i++) {
             String str = "";
