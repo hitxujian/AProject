@@ -130,7 +130,7 @@ public class LLKMinMovs {
             else str += (x[j] + "(-) & ");
             dist += Math.abs(x[j] - xs[j]);
         }
-        str += String.valueOf(dist);
+        str += String.valueOf(dist) + " \\\\";
         LogInfo.logs(str);
     }
 
