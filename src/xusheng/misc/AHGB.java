@@ -20,35 +20,45 @@ public class AHGB {
     public static int n, L, K, R, nl, nw;
     public static double[] x, xs, y, ys;
     public static double[][] edges;
+    public static Set<Integer> used = new HashSet<>();
 
     public static void strongDetect() {
-        int tarRow = HGBS();
-        LogInfo.logs("Target row position: %d", tarRow);
+        for (int k=1; k<=K; k++) {
+            LogInfo.begin_track("Starting round K = %d", k);
+            // Select the Horizontal Grid Barrier
+            int tarRow = HGBS();
+            LogInfo.logs("Target row position: %d @ K = %d", tarRow, k);
 
-        // construct the bipartite graph
-        edges = new double[nl][n];
-        if (verbose) LogInfo.logs("Edge Matrix: ");
-        for (int i=0; i<nl; i++) {
-            String str = "";
-            for (int j = 0; j < n; j++) {
-                edges[i][j] = findDist((2 * i + 1) * R, (2 * tarRow + 1) * R, x[j + 1], y[j + 1]);
-                String tmp = String.format("%.2f", edges[i][j]);
-                str += (tmp + "\t");
+            // Construct the bipartite graph
+            edges = new double[nl][n];
+            if (verbose) LogInfo.logs("Edge Matrix @ K = %d: ", k);
+            for (int i = 0; i < nl; i++) {
+                String str = "";
+                for (int j = 0; j < n; j++) {
+                    if (! used.contains(j+1))
+                        edges[i][j] = findDist((2 * i + 1) * R, (2 * tarRow + 1) * R, x[j + 1], y[j + 1]);
+                    else
+                        edges[i][j] = 2 * L * L;
+                    String tmp = String.format("%.2f", edges[i][j]);
+                    str += (tmp + "\t");
+                }
+                if (verbose) LogInfo.logs(str);
             }
-            if (verbose) LogInfo.logs(str);
+            //naive(edges, tarRow);
+            Hungarian hungarian = new Hungarian(edges);
+            int[] ret = hungarian.execute();
+            LogInfo.logs("Matching result by Hungarian Algo. @ K = %d: ", k);
+            String str = "";
+            for (int i = 0; i < ret.length; i++) {
+                str += ret[i] + "\t";
+                int sidx = ret[i];
+                x[sidx + 1] = (2 * i + 1) * R;
+                y[sidx + 1] = (2 * tarRow + 1) * R;
+                used.add(sidx + 1);
+            }
+            LogInfo.logs("[%s]", str);
+            LogInfo.end_track();
         }
-        //naive(edges, tarRow);
-        Hungarian hungarian = new Hungarian(edges);
-        int[] ret = hungarian.execute();
-        LogInfo.logs("Matching result by Hungarian Algo.: ");
-        String str = "";
-        for (int i=0; i<ret.length; i++) {
-            str += ret[i] + "\t";
-            int sidx = ret[i];
-            x[sidx+1] = (2*i+1)*R;
-            y[sidx+1] = (2*tarRow+1)*R;
-        }
-        LogInfo.logs("[%s]", str);
         printRet();
     }
 
@@ -83,15 +93,16 @@ public class AHGB {
                 grids.put(idxPair, maxDist);
             }
         }
-        // find the nearest grid of a sensor, update the distance
+        // Find the nearest grid of a sensor, update the distance
         for (int i=1; i<=n; i++) {
+            if (used.contains(i)) continue;
             int xPos = ((int) ((x[i]-1)/(2*R)))*2+1;
             int yPos = ((int) ((y[i]-1)/(2*R)))*2+1;
             double dist = findDist(xPos*R, yPos*R, x[i], y[i]);
             if (dist < grids.get(new Pair<>(xPos, yPos)))
                 grids.put(new Pair<>(xPos, yPos), dist);
         }
-        //find the minimum 1-barrier position
+        // Find the minimum 1-barrier position
         int minRow = 0;
         double minSum = maxDist*nl;
         for (int i=0; i<nw; i++) {
@@ -127,7 +138,7 @@ public class AHGB {
                     y = new double[n + 2];
                     ys = new double[n + 2];
 
-                    // generate x positions
+                    // Generate x positions
                     Set<Integer> set = new HashSet<>();
                     while (set.size() < n) {
                         int num = (int) (Math.random() * (L-1)) + 1;
@@ -138,7 +149,7 @@ public class AHGB {
                     for (int i = 0; i < n; i++)
                         xs[i + 1] = x[i + 1] = list.get(i);
 
-                    // generate y positions
+                    // Generate y positions
                     set = new HashSet<>();
                     while (set.size() < n) {
                         int num = (int) (Math.random() * (L-1)) + 1;
