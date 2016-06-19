@@ -28,18 +28,19 @@ public class AHGB {
         // construct the bipartite graph
         edges = new double[n][n];
         if (verbose) LogInfo.logs("Edge Matrix: ");
-        for (int i=0; i<n; i++) {
+        for (int i=0; i<nl; i++) {
             String str = "";
             for (int j = 0; j < n; j++) {
-                if (i<n) edges[i][j] = findDist((2 * i + 1) * R, (2 * tarRow + 1) * R, x[j + 1], y[j + 1]);
-                else edges[i][j] = 0;
+                edges[i][j] = findDist((2 * i + 1) * R, (2 * tarRow + 1) * R, x[j + 1], y[j + 1]);
                 str += (edges[i][j] + "\t");
             }
             if (verbose) LogInfo.logs(str);
         }
-        naive(edges, tarRow);
-        Hungarian(edges, tarRow);
-        printRet();
+        //naive(edges, tarRow);
+        Hungarian hungarian = new Hungarian(edges);
+        int[] ret = hungarian.execute();
+        LogInfo.logs(ret);
+        //printRet();
     }
 
     // row: barriers/ column: sensors
@@ -59,90 +60,6 @@ public class AHGB {
             set.add(minIdx);
         }
         return;
-    }
-
-    public static void Hungarian(double[][] matrix, int tarRow) {
-        // subtract from rows
-        for (int i=0; i<n; i++) {
-            double min = findRowMin(matrix[i]);
-            for (int j=0; j<n; j++) matrix[i][j] -= min;
-        }
-        // subtract from columns
-        for (int j=0; j<n; j++) {
-            double min = findColMin(matrix, j);
-            for (int i=0; i<n; i++) matrix[i][j] -= min;
-        }
-        // cover zeros with minimum lines
-        double[][] tmp = Arrays.copyOf(matrix, matrix.length);
-        int numOfLines = 0;
-        while (true) {
-            int row;
-            while ((row = hasZeros(tmp)) != -1) {
-                numOfLines++;
-                if (row < n) {
-                    for (int j = 0; j < n; j++)
-                        if (tmp[row][j] == 0) tmp[row][j] = -1;
-                } else {
-                    row -= n;
-                    for (int i = 0; i < n; i++)
-                        if (tmp[i][row] == 0) tmp[i][row] = -1;
-                }
-            }
-            if (numOfLines == n) {
-                moveX(tmp);
-                break;
-            }
-        }
-
-    }
-
-    public static void moveX(double[][] tmp) {
-        for (int i=0; i<nl; i++) {
-            for (int j=0; j<n; j++) {
-                if (tmp[i][j] == -1) {
-
-                }
-            }
-        }
-    }
-
-    public static int hasZeros(double[][] tmp) {
-        int maxNum = 0;
-        int idx = -1;
-        boolean flag = true;
-        int[] rowZeros = new int[n];
-        int[] colZeros = new int[n];
-        for (int i=0; i<n; i++)
-            for (int j=0; j<n; j++)
-                if (tmp[i][j]==0) {
-                    flag = false;
-                    rowZeros[i] ++;
-                    colZeros[j] ++;
-                    if (rowZeros[i] > maxNum) {
-                        maxNum = rowZeros[i];
-                        idx = i;
-                    }
-                    if (colZeros[j] > maxNum) {
-                        maxNum = colZeros[j];
-                        idx = j + n;
-                    }
-                }
-        if (flag) return -1;
-        else return idx;
-    }
-
-    public static double findRowMin(double[] arr) {
-        double min = 2 * L * L;
-        for (int j=0; j<n; j++)
-            if (arr[j] < min) min = arr[j];
-        return min;
-    }
-
-    public static double findColMin(double[][] matrix, int pos) {
-        double min = 2 * L * L;
-        for (int i=0; i<n; i++)
-            if (matrix[i][pos] < min) min = matrix[i][pos];
-        return min;
     }
 
     // Select the Horizontal Grid Barrier
