@@ -32,14 +32,17 @@ public class AHGB {
             String str = "";
             for (int j = 0; j < n; j++) {
                 edges[i][j] = findDist((2 * i + 1) * R, (2 * tarRow + 1) * R, x[j + 1], y[j + 1]);
-                str += (edges[i][j] + "\t");
+                String tmp = String.format("%.2f", edges[i][j]);
+                str += (tmp + "\t");
             }
             if (verbose) LogInfo.logs(str);
         }
         //naive(edges, tarRow);
         Hungarian hungarian = new Hungarian(edges);
         int[] ret = hungarian.execute();
-        LogInfo.logs(ret);
+        String str = "";
+        for (int i=0; i<ret.length; i++) str += ret[i] + "\t";
+        LogInfo.logs(str);
         //printRet();
     }
 
