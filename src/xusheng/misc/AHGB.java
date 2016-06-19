@@ -29,7 +29,8 @@ public class AHGB {
         for (int k=1; k<=K; k++) {
             LogInfo.begin_track("Starting round K = %d", k);
             // Select the Horizontal Grid Barrier
-            int tarRow = HGBS();
+            //int tarRow = HGBS();
+            int tarRow = 1;
             LogInfo.logs("Target row position: %d @ K = %d", tarRow, k);
 
             // Construct the bipartite graph
