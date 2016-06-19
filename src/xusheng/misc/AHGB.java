@@ -40,10 +40,16 @@ public class AHGB {
         //naive(edges, tarRow);
         Hungarian hungarian = new Hungarian(edges);
         int[] ret = hungarian.execute();
+        LogInfo.logs("Matching result by Hungarian Algo.: ");
         String str = "";
-        for (int i=0; i<ret.length; i++) str += ret[i] + "\t";
-        LogInfo.logs(str);
-        //printRet();
+        for (int i=0; i<ret.length; i++) {
+            str += ret[i] + "\t";
+            int sidx = ret[i];
+            x[sidx+1] = (2*i+1)*R;
+            y[sidx+1] = (2*tarRow+1)*R;
+        }
+        LogInfo.logs("[%s]", str);
+        printRet();
     }
 
     // row: barriers/ column: sensors
