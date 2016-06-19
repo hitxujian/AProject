@@ -20,9 +20,10 @@ public class AHGB {
     public static int n, L, K, R, nl, nw;
     public static double[] x, xs, y, ys;
     public static double[][] edges;
-    public static Set<Integer> used = new HashSet<>();
+    public static Set<Integer> used;
 
     public static void strongDetect() {
+        used = new HashSet<>();
         for (int k=1; k<=K; k++) {
             LogInfo.begin_track("Starting round K = %d", k);
             // Select the Horizontal Grid Barrier
