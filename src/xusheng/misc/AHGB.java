@@ -175,14 +175,14 @@ public class AHGB {
         if (verbose) LogInfo.logs("Final Result:");
         String initX = "[";
         for (int i=1; i<n; i++)
-            initX += ("(" + xs[i]+ "," + ys[i] + ")\t");
-        initX += ("(" + xs[n] + "," + ys[n] + ")]");
+            initX += ("(" + String.format("%.2f",xs[i])+ "," + String.format("%.2f",ys[i]) + ")\t");
+        initX += ("(" + String.format("%.2f",xs[n]) + "," + String.format("%.2f",ys[n]) + ")]");
         LogInfo.logs(initX);
 
         String finalX = "[";
         for (int i=1; i<n; i++)
-            finalX += ("(" + x[i]+ "," + y[i] + ")\t");
-        finalX += ("(" + x[n] + "," + y[n] + ")]");
+            finalX += ("(" + String.format("%.2f",x[i])+ "," + String.format("%.2f",y[i]) + ")\t");
+        finalX += ("(" + String.format("%.2f",x[n]) + "," + String.format("%.2f",y[n]) + ")]");
         LogInfo.logs(finalX);
         double totalDis = 0;
         for (int i=1; i<=n; i++) {
