@@ -97,8 +97,12 @@ public class AHGB {
     }
 
     public static void moveX(double[][] tmp) {
-        for (int j=0; j<n; j++) {
+        for (int i=0; i<nl; i++) {
+            for (int j=0; j<n; j++) {
+                if (tmp[i][j] == -1) {
 
+                }
+            }
         }
     }
 

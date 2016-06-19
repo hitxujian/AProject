@@ -125,9 +125,12 @@ public class LLKMinMovs {
         String str = "";
         int dist = 0;
         for (int j=1; j<=n; j++) {
-            if (x[j] >= xs[j])
+            if (x[j] > xs[j])
                 str += (x[j] + "(+) & ");
-            else str += (x[j] + "(-) & ");
+            else if (x[j] < xs[j])
+                str += (x[j] + "(-) & ");
+            else
+                str += (x[j] + " & ");
             dist += Math.abs(x[j] - xs[j]);
         }
         str += String.valueOf(dist) + " \\\\";
