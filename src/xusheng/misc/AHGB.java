@@ -175,20 +175,20 @@ public class AHGB {
         if (verbose) LogInfo.logs("Final Result:");
         String initX = "[";
         for (int i=1; i<n; i++)
-            initX += ("(" + String.format("%.2f",xs[i])+ "," + String.format("%.2f",ys[i]) + ")\t");
-        initX += ("(" + String.format("%.2f",xs[n]) + "," + String.format("%.2f",ys[n]) + ")]");
+            initX += ("(" + String.format("%.0f",xs[i])+ "," + String.format("%.0f",ys[i]) + ")\t");
+        initX += ("(" + String.format("%.0f",xs[n]) + "," + String.format("%.0f",ys[n]) + ")]");
         LogInfo.logs(initX);
 
         String finalX = "[";
         for (int i=1; i<n; i++)
-            finalX += ("(" + String.format("%.2f",x[i])+ "," + String.format("%.2f",y[i]) + ")\t");
-        finalX += ("(" + String.format("%.2f",x[n]) + "," + String.format("%.2f",y[n]) + ")]");
+            finalX += ("(" + String.format("%.0f",x[i])+ "," + String.format("%.0f",y[i]) + ")\t");
+        finalX += ("(" + String.format("%.0f",x[n]) + "," + String.format("%.0f",y[n]) + ")]");
         LogInfo.logs(finalX);
         double totalDis = 0;
         for (int i=1; i<=n; i++) {
             totalDis += Math.sqrt((x[i]-xs[i])*(x[i]-xs[i]) + (y[i]-ys[i])*(y[i]-ys[i]));
         }
-        LogInfo.logs("Total movements: %.2f", totalDis);
+        LogInfo.logs("Total movements: %.0f", totalDis);
     }
 
     public static boolean verbose = false;
