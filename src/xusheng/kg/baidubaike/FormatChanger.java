@@ -12,7 +12,7 @@ public class FormatChanger {
     public static void RecoverInfoTriple() throws IOException {
         BkEntityIdxReader.initializeFromIdx2Name();
         BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baidubaike/infobox.triple"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/starry/baidubaike/infobox.triple.raw"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/starry/baidubaike/infobox.triple.raw.clean"));
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
@@ -26,12 +26,12 @@ public class FormatChanger {
             }
             if (leftName != null && rightName != null)
                 bw.write(leftName + "\t" + spt[1] + "\t" + rightName + "\n");
-            else if (leftName == null && rightName == null)
+            /*else if (leftName == null && rightName == null)
                 bw.write(line + "\n");
             else if (leftName != null)
                 bw.write(leftName + "\t" + spt[1] + "\t" + spt[2] + "\n");
             else
-                bw.write(spt[0] + "\t" + spt[1] + "\t" + rightName + "\n");
+                bw.write(spt[0] + "\t" + spt[1] + "\t" + rightName + "\n");*/
         }
         br.close();
         bw.close();
