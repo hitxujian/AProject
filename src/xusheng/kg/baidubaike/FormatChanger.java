@@ -32,6 +32,6 @@ public class FormatChanger {
     }
 
     public static void main(String[] args) throws IOException {
-
+        RecoverInfoTriple();
     }
 }
