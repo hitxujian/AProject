@@ -17,12 +17,13 @@ public class SplitDataSampler {
         String line;
         int cnt = 0;
         while ((line = br.readLine()) != null) {
-            cnt ++;
             if (cnt > 150) break;
             String[] spt = line.split("\t");
-            if (spt[1].equals(relation))
+            if (spt[1].equals(relation)) {
+                cnt++;
                 if (cnt <= 100) bwTr.write(spt[0] + "\t" + spt[2] + "\t1\n");
                 else bwTe.write(spt[0] + "\t" + spt[2] + "\t1\n");
+            }
         }
         br.close();
         bwTr.close();
@@ -36,12 +37,13 @@ public class SplitDataSampler {
         String line;
         int cnt = 0;
         while ((line = br.readLine()) != null) {
-            cnt ++;
             if (cnt > 750) break;
             String[] spt = line.split("\t");
-            if (spt[1].equals(relation))
-                if (cnt <= 500) bwTr.write(spt[0] + "\t" + spt[2] + "\t1\n");
-                else bwTe.write(spt[0] + "\t" + spt[2] + "\t1\n");
+            if (spt[1].equals(relation)) {
+                cnt ++;
+                if (cnt <= 500) bwTr.write(spt[0] + "\t" + spt[2] + "\t-1\n");
+                else bwTe.write(spt[0] + "\t" + spt[2] + "\t-1\n");
+            }
         }
         br.close();
         bwTr.close();
