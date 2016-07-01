@@ -30,8 +30,7 @@ public class AHGB {
         for (int k=1; k<=K; k++) {
             LogInfo.begin_track("Starting round K = %d", k);
             // Select the Horizontal Grid Barrier
-            //int tarRow = HGBS();
-            int tarRow = 1;
+            int tarRow = HGBS();
             LogInfo.logs("Target row position: %d @ K = %d", tarRow, k);
 
             // Construct the bipartite graph
@@ -64,8 +63,8 @@ public class AHGB {
             LogInfo.logs("[%s]", str);
             LogInfo.end_track();
         }
-        //printRet();
-        printRet4Draw();
+        printRet();
+        //printRet4Draw();
     }
 
     // row: barriers/ column: sensors

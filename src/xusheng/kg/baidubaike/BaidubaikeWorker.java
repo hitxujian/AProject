@@ -10,6 +10,7 @@ import java.util.*;
 /**
  * Created by Xusheng Luo on 3/29/16.
  * Usage: process raw baidubaike htms using multi threads working.
+ * During the extracting procedure, the entities are indexed in the mean time.
  */
 
 public class BaidubaikeWorker implements Runnable{
