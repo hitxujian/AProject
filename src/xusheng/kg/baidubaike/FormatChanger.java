@@ -16,8 +16,14 @@ public class FormatChanger {
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            String leftName = BkEntityIdxReader.getName(Integer.parseInt(spt[0]));
-            String rightName = BkEntityIdxReader.getName(Integer.parseInt(spt[2]));
+            String leftName = null;
+            String rightName = null;
+            try {
+                leftName = BkEntityIdxReader.getName(Integer.parseInt(spt[0]));
+                rightName = BkEntityIdxReader.getName(Integer.parseInt(spt[2]));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             if (leftName != null && rightName != null)
                 bw.write(leftName + "\t" + spt[1] + "\t" + rightName + "\n");
             else if (leftName == null && rightName == null)
