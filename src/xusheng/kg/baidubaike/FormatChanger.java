@@ -22,7 +22,7 @@ public class FormatChanger {
                 leftName = BkEntityIdxReader.getName(Integer.parseInt(spt[0]));
                 rightName = BkEntityIdxReader.getName(Integer.parseInt(spt[2]));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //ex.printStackTrace();
             }
             if (leftName != null && rightName != null)
                 bw.write(leftName + "\t" + spt[1] + "\t" + rightName + "\n");
