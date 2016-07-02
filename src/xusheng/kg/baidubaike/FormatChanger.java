@@ -9,6 +9,7 @@ import java.io.*;
  */
 public class FormatChanger {
 
+    // recover the index-replaced files with original names or strings
     public static void RecoverInfoTriple() throws IOException {
         BkEntityIdxReader.initializeFromIdx2Name();
         BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baidubaike/infobox.triple"));
