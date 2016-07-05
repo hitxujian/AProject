@@ -45,7 +45,7 @@ public class FormatChanger {
     public static void generateDictFile() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baidubaike/entity.index"));
         BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/pra/examples/graphs/baike/kb_svo" +
-                "node_dict.tsv"));
+                "/node_dict.tsv"));
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
@@ -55,9 +55,10 @@ public class FormatChanger {
         bw.close();
 
         Set<String> edges = new HashSet<>();
-        br = new BufferedReader(new FileReader("/home/xusheng/starry/baidubaike/infobox.triple"));
+        File f = new File("/home/xusheng/starry/baidubaike/infobox.triple");
+        br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         bw = new BufferedWriter(new FileWriter("/home/xusheng/pra/examples/graphs/baike/kb_svo" +
-                "edge_dict.tsv"));
+                "/edge_dict.tsv"));
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             edges.add(spt[1]);
