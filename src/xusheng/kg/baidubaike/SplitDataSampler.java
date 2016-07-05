@@ -51,7 +51,7 @@ public class SplitDataSampler {
     }
 
     public static void main(String[] args) throws IOException {
-        getPositiveData("女儿");
-        getNegativeData("儿子");
+        getPositiveData("");
+        getNegativeData("");
     }
 }

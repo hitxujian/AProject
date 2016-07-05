@@ -31,10 +31,7 @@ public class AHGB {
             LogInfo.begin_track("Starting round K = %d", k);
             // Select the Horizontal Grid Barrier
             int tarRow = HGBS();
-<<<<<<< Updated upstream
-=======
-            //int tarRow = 1;
->>>>>>> Stashed changes
+
             LogInfo.logs("Target row position: %d @ K = %d", tarRow, k);
 
             // Construct the bipartite graph
