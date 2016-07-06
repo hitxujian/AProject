@@ -1,6 +1,10 @@
 package xusheng.kg.baidubaike;
 
+import fig.basic.LogInfo;
+
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Xusheng on 7/1/2016.
@@ -38,7 +42,40 @@ public class FormatChanger {
         bw.close();
     }
 
+    // generate node_dict.tsv & edge_dict.tsv
+    public static void generateDictFile() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baidubaike/entity.index"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/pra/examples/graphs/baike/kb_svo" +
+                "/node_dict.tsv"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            bw.write(spt[1] + "\t" + spt[0] + "\n");
+        }
+        br.close();
+        bw.close();
+
+        Set<String> edges = new HashSet<>();
+        File f = new File("/home/xusheng/starry/baidubaike/infobox.triple");
+        br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+        f = new File("/home/xusheng/pra/examples/graphs/baike/kb_svo/edge_dict.tsv");
+        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            edges.add(spt[1]);
+        }
+        br.close();
+        int cnt = 0;
+        for (String edge: edges) {
+            cnt ++;
+            bw.write(cnt + "\t" + edge + "\n");
+        }
+        bw.close();
+        LogInfo.logs("Total number of eades: %d", edges.size());
+    }
+
     public static void main(String[] args) throws IOException {
-        RecoverInfoTriple();
+        //RecoverInfoTriple();
+        generateDictFile();
     }
 }

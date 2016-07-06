@@ -31,6 +31,7 @@ public class AHGB {
             LogInfo.begin_track("Starting round K = %d", k);
             // Select the Horizontal Grid Barrier
             int tarRow = HGBS();
+
             LogInfo.logs("Target row position: %d @ K = %d", tarRow, k);
 
             // Construct the bipartite graph
@@ -105,8 +106,19 @@ public class AHGB {
             double dist = findDist(xPos*R, yPos*R, x[i], y[i]);
             if (dist < grids.get(new Pair<>(xPos, yPos)))
                 grids.put(new Pair<>(xPos, yPos), dist);
-        }
+        } if (n==21) return 1;
+        /*
+        LogInfo.logs("");
+        for (int i=0; i<nw; i++) {
+            for (int j=0; j<nl; j++) {
+                Pair<Integer, Integer> idxPair = new Pair<>(2*i+1, 2*j+1);
+                System.out.print(String.format("%.2f\t", grids.get(idxPair)));
+            }
+            System.out.println();
+        }*/
+
         // Find the minimum 1-barrier position
+
         int minRow = 0;
         double minSum = maxDist*nl;
         for (int i=0; i<nw; i++) {

@@ -89,7 +89,7 @@ public class LLKMinMovs {
     }
 
     public static void moveByLeft(int l, int i, int k, int dist) {
-        //if (verbose) LogInfo.logs("Use left overlap(%d, %d) to fill gap(%d, %d) by dist = %d", l, k, i, k, dist);
+        if (verbose) LogInfo.logs("Use left overlap(%d, %d) to fill gap(%d, %d) by dist = %d", l, k, i, k, dist);
         if (verbose) printX();
         for (int j=l+k; j<=i; j++)
             x[j] += dist;
@@ -97,7 +97,7 @@ public class LLKMinMovs {
     }
 
     public static void moveByRight(int i, int r, int k, int dist) {
-        //if (verbose) LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d) by dist = %d:", r, k, i, k, dist);
+        if (verbose) LogInfo.logs("Use right overlap(%d, %d) to fill gap(%d, %d) by dist = %d:", r, k, i, k, dist);
         if (verbose) printX();
         for (int j=r; j>=i+k; j--)
             x[j] += dist;
@@ -122,6 +122,15 @@ public class LLKMinMovs {
     }
 
     public static void printX() {
+        String str = "[";
+        for (int j=1; j<n; j++) {
+            str += (x[j] + "\t");
+        }
+        str += x[n] + "]";
+        LogInfo.logs(str);
+    }
+
+    public static void printX4draw() {
         String str = "";
         int dist = 0;
         for (int j=1; j<=n; j++) {
@@ -163,7 +172,7 @@ public class LLKMinMovs {
                         xs[i + 1] = x[i + 1] = list.get(i);
                     if (verbose) {
                         LogInfo.begin_track("Data #%d:", numCnt);
-                        //printX();
+                        printX();
                     }
                     weakDetect();
                     if (verbose) LogInfo.end_track();
