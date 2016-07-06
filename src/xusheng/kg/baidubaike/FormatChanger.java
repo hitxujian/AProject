@@ -3,7 +3,9 @@ package xusheng.kg.baidubaike;
 import fig.basic.LogInfo;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -74,8 +76,38 @@ public class FormatChanger {
         LogInfo.logs("Total number of eades: %d", edges.size());
     }
 
+    public static String svoFile = "/home/xusheng/pra/examples/graphs/baike/kb_svo";
+    public static void generateEdgeDictFile() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(svoFile + "/node_dict.tsv"));
+        String line;
+        Map<String, String> nodeMap = new HashMap<>();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            nodeMap.put(spt[1], spt[0]);
+        }
+        br.close();
+        br = new BufferedReader(new FileReader(svoFile + "/edge_dict.tsv"));
+        Map<String, String> edgeMap = new HashMap<>();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            edgeMap.put(spt[1], spt[0]);
+        }
+        br.close();
+        br = new BufferedReader(new FileReader("/home/xusheng/pra/examples/relation_metadata/baike/labeled_edges.tsv"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(svoFile + "/graph_chi/edges.tsv"));
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            if (nodeMap.containsKey(spt[0]) && nodeMap.containsKey(spt[2]) && edgeMap.containsKey(spt[1])) {
+                bw.write(nodeMap.get(spt[0]) + "\t" + edgeMap.get(spt[1]) + "\t" + nodeMap.get(spt[2]) + "\n");
+            }
+        }
+        br.close();
+        bw.close();
+    }
+
     public static void main(String[] args) throws IOException {
         //RecoverInfoTriple();
-        generateDictFile();
+        //generateDictFile();
+        generateEdgeDictFile();
     }
 }
