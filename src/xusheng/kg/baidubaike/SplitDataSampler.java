@@ -12,7 +12,7 @@ public class SplitDataSampler {
     public static String splitFp = "/home/xusheng/pra/examples/splits/baike_split_with_negatives";
 
     public static void getPositiveData(String relation) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fp + "/edge.tsv"));
+        BufferedReader br = new BufferedReader(new FileReader(fp + "/edges.tsv"));
         BufferedWriter bwTr = new BufferedWriter(new FileWriter(splitFp + "/女儿/training.tsv"));
         BufferedWriter bwTe = new BufferedWriter(new FileWriter(splitFp + "/女儿/testing.tsv"));
         String line;
@@ -34,7 +34,7 @@ public class SplitDataSampler {
     }
 
     public static void getNegativeData(String relation) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fp + "/edge.tsv"));
+        BufferedReader br = new BufferedReader(new FileReader(fp + "/edges.tsv"));
         BufferedWriter bwTr = new BufferedWriter(new FileWriter(splitFp + "/女儿/training.tsv", true));
         BufferedWriter bwTe = new BufferedWriter(new FileWriter(splitFp + "/女儿/testing.tsv", true));
         String line;
