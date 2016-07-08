@@ -16,7 +16,7 @@ import java.util.Map;
  */
 
 public class BkEntIdxReader {
-    public static String path = "/home/xusheng/pra/examples/graphs/kb_svo/node_dict.tsv";
+    public static String path = "/home/xusheng/pra/examples/graphs/baike/kb_svo/node_dict.tsv";
     public static Map<String, Integer> name2Idx = null;
     public static Map<Integer, String> idx2Name = null;
 

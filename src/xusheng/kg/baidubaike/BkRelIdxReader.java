@@ -15,7 +15,7 @@ import java.util.Map;
  */
 
 public class BkRelIdxReader {
-    public static String path = "/home/xusheng/pra/examples/graphs/kb_svo/edge_dict.tsv";
+    public static String path = "/home/xusheng/pra/examples/graphs/baike/kb_svo/edge_dict.tsv";
 
     public static Map<String, Integer> name2Idx = null;
     public static Map<Integer, String> idx2Name = null;
