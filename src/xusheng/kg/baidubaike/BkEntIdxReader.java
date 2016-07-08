@@ -15,8 +15,8 @@ import java.util.Map;
  * Note that index is from 1 to N and Name is Href style.
  */
 
-public class BkEntityIdxReader {
-    public static String path = "/home/xusheng/starry/baidubaike/entity.index";
+public class BkEntIdxReader {
+    public static String path = "/home/xusheng/pra/examples/graphs/kb_svo/node_dict.tsv";
     public static Map<String, Integer> name2Idx = null;
     public static Map<Integer, String> idx2Name = null;
 
@@ -40,8 +40,8 @@ public class BkEntityIdxReader {
             cnt ++;
             LogUpgrader.showLine(cnt, 100000);
             String[] spt = line.split("\t");
-            name2Idx.put(spt[0], Integer.parseInt(spt[1]));
-            idx2Name.put(Integer.parseInt(spt[1]), spt[0]);
+            name2Idx.put(spt[1], Integer.parseInt(spt[0]));
+            idx2Name.put(Integer.parseInt(spt[0]), spt[1]);
         }
         br.close();
         LogInfo.logs("BaiduBaike Entity-Idx(Both Sides) Read. Size: %d", cnt);
@@ -56,7 +56,7 @@ public class BkEntityIdxReader {
             cnt ++;
             LogUpgrader.showLine(cnt, 100000);
             String[] spt = line.split("\t");
-            name2Idx.put(spt[0], Integer.parseInt(spt[1]));
+            name2Idx.put(spt[1], Integer.parseInt(spt[0]));
         }
         br.close();
         LogInfo.logs("BaiduBaike Entity-Idx(Name to Idx) Read. Size: %d", cnt);
@@ -71,7 +71,7 @@ public class BkEntityIdxReader {
             cnt ++;
             LogUpgrader.showLine(cnt, 100000);
             String[] spt = line.split("\t");
-            idx2Name.put(Integer.parseInt(spt[1]), spt[0]);
+            idx2Name.put(Integer.parseInt(spt[0]), spt[1]);
         }
         br.close();
         LogInfo.logs("BaiduBaike Entity-Idx(Idx to Name) Read. Size: %d", cnt);

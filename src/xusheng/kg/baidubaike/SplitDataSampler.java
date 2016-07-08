@@ -8,12 +8,13 @@ import java.io.*;
  */
 
 public class SplitDataSampler {
-    public static String fp = "/home/xusheng/starry/baidubaike";
+    public static String fp = "/home/xusheng/pra/examples/graphs/baike/kb_svo/graph_chi";
+    public static String splitFp = "/home/xusheng/pra/examples/splits/baike_split_with_negatives";
 
     public static void getPositiveData(String relation) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fp + "/infobox.triple"));
-        BufferedWriter bwTr = new BufferedWriter(new FileWriter(fp + "/training.tsv"));
-        BufferedWriter bwTe = new BufferedWriter(new FileWriter(fp + "/testing.tsv"));
+        BufferedReader br = new BufferedReader(new FileReader(fp + "/edge.tsv"));
+        BufferedWriter bwTr = new BufferedWriter(new FileWriter(splitFp + "/女儿/training.tsv"));
+        BufferedWriter bwTe = new BufferedWriter(new FileWriter(splitFp + "/女儿/testing.tsv"));
         String line;
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -21,8 +22,10 @@ public class SplitDataSampler {
             String[] spt = line.split("\t");
             if (spt[1].equals(relation)) {
                 cnt++;
-                if (cnt <= 100) bwTr.write(spt[0] + "\t" + spt[2] + "\t1\n");
-                else bwTe.write(spt[0] + "\t" + spt[2] + "\t1\n");
+                if (cnt <= 100) bwTr.write(BkEntIdxReader.getName(Integer.parseInt(spt[0])) + "\t"
+                        + BkEntIdxReader.getName(Integer.parseInt(spt[2])) + "\t1\n");
+                else bwTe.write(BkEntIdxReader.getName(Integer.parseInt(spt[0])) + "\t"
+                        + BkEntIdxReader.getName(Integer.parseInt(spt[2])) + "\t1\n");
             }
         }
         br.close();
@@ -31,9 +34,9 @@ public class SplitDataSampler {
     }
 
     public static void getNegativeData(String relation) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fp + "/infobox.triple"));
-        BufferedWriter bwTr = new BufferedWriter(new FileWriter(fp + "/training.tsv", true));
-        BufferedWriter bwTe = new BufferedWriter(new FileWriter(fp + "/testing.tsv", true));
+        BufferedReader br = new BufferedReader(new FileReader(fp + "/edge.tsv"));
+        BufferedWriter bwTr = new BufferedWriter(new FileWriter(splitFp + "/女儿/training.tsv", true));
+        BufferedWriter bwTe = new BufferedWriter(new FileWriter(splitFp + "/女儿/testing.tsv", true));
         String line;
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -41,8 +44,10 @@ public class SplitDataSampler {
             String[] spt = line.split("\t");
             if (spt[1].equals(relation)) {
                 cnt ++;
-                if (cnt <= 500) bwTr.write(spt[0] + "\t" + spt[2] + "\t-1\n");
-                else bwTe.write(spt[0] + "\t" + spt[2] + "\t-1\n");
+                if (cnt <= 500) bwTr.write(BkEntIdxReader.getName(Integer.parseInt(spt[0])) + "\t"
+                        + BkEntIdxReader.getName(Integer.parseInt(spt[2])) + "\t-1\n");
+                else bwTe.write(BkEntIdxReader.getName(Integer.parseInt(spt[0])) + "\t"
+                        + BkEntIdxReader.getName(Integer.parseInt(spt[2])) + "\t-1\n");
             }
         }
         br.close();
@@ -51,7 +56,9 @@ public class SplitDataSampler {
     }
 
     public static void main(String[] args) throws IOException {
-        getPositiveData("");
-        getNegativeData("");
+        BkEntIdxReader.initializeFromIdx2Name();
+        BkRelIdxReader.initializeFromIdx2Name();
+        getPositiveData("84358");
+        getNegativeData("57559");
     }
 }

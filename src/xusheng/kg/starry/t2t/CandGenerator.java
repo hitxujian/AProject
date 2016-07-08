@@ -1,7 +1,7 @@
 package xusheng.kg.starry.t2t;
 
 import fig.basic.LogInfo;
-import xusheng.kg.baidubaike.BkEntityIdxReader;
+import xusheng.kg.baidubaike.BkEntIdxReader;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -133,7 +133,7 @@ public class CandGenerator implements Runnable {
     public static Map<Integer, String> BkId2Name = new HashMap<>();
 
     public static void readBkData() throws IOException {
-        BkEntityIdxReader.initializeFromName2Idx();
+        BkEntIdxReader.initializeFromName2Idx();
         BufferedReader br = new BufferedReader(new FileReader(bkPath + "/entity.name"));
         String line;
         while ((line = br.readLine()) != null) {
