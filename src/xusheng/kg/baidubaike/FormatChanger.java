@@ -76,8 +76,9 @@ public class FormatChanger {
         LogInfo.logs("Total number of eades: %d", edges.size());
     }
 
+    // generate edge.tsv
     public static String svoFile = "/home/xusheng/pra/examples/graphs/baike/kb_svo";
-    public static void generateEdgeDictFile() throws IOException {
+    public static void generateEdgeFile() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(svoFile + "/node_dict.tsv"));
         String line;
         Map<String, String> nodeMap = new HashMap<>();
@@ -105,9 +106,25 @@ public class FormatChanger {
         bw.close();
     }
 
+    // change node_dict.tsv's format
+    public static void reOrder() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(svoFile + "/node_dict.tsv"));
+        String[] nodes = new String[3004119];
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            nodes[Integer.parseInt(spt[0])] = spt[1];
+        }
+        br.close();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(svoFile + "/node_dict.tsv.new"));
+        for (int i=1; i<=3004118; i++) bw.write(i + "\t" + nodes[i] + "\n");
+        bw.close();
+    }
+
     public static void main(String[] args) throws IOException {
         //RecoverInfoTriple();
         //generateDictFile();
-        generateEdgeDictFile();
+        //generateEdgeFile();
+        reOrder();
     }
 }
