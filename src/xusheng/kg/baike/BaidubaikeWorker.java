@@ -1,4 +1,4 @@
-package xusheng.kg.baidubaike;
+package xusheng.kg.baike;
 
 import fig.basic.LogInfo;
 import xusheng.util.log.LogUpgrader;
@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * Created by Xusheng Luo on 3/29/16.
- * Usage: process raw baidubaike htms using multi threads working.
+ * Usage: process raw baike htms using multi threads working.
  * During the extracting procedure, the entities are indexed in the mean time.
  */
 

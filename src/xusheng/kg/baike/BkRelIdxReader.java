@@ -1,4 +1,4 @@
-package xusheng.kg.baidubaike;
+package xusheng.kg.baike;
 
 import fig.basic.LogInfo;
 import xusheng.util.log.LogUpgrader;

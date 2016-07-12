@@ -1,4 +1,4 @@
-package xusheng.kg.baidubaike;
+package xusheng.kg.baike;
 
 import fig.basic.LogInfo;
 
@@ -18,8 +18,8 @@ public class FormatChanger {
     // recover the index-replaced files with original names or strings
     public static void RecoverInfoTriple() throws IOException {
         BkEntIdxReader.initializeFromIdx2Name();
-        BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baidubaike/infobox.triple"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/starry/baidubaike/infobox.triple.raw.clean"));
+        BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baike/infobox.triple"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/starry/baike/infobox.triple.raw.clean"));
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
@@ -46,7 +46,7 @@ public class FormatChanger {
 
     // generate node_dict.tsv & edge_dict.tsv
     public static void generateDictFile() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baidubaike/entity.index"));
+        BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baike/entity.index"));
         BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/pra/examples/graphs/baike/kb_svo" +
                 "/node_dict.tsv"));
         String line;
@@ -58,7 +58,7 @@ public class FormatChanger {
         bw.close();
 
         Set<String> edges = new HashSet<>();
-        File f = new File("/home/xusheng/starry/baidubaike/infobox.triple");
+        File f = new File("/home/xusheng/starry/baike/infobox.triple");
         br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         f = new File("/home/xusheng/pra/examples/graphs/baike/kb_svo/edge_dict.tsv");
         bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
