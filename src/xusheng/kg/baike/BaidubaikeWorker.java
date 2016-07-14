@@ -102,11 +102,11 @@ public class BaidubaikeWorker implements Runnable{
             // control the starting position of content
             boolean _StartKeepContent = false;
             while ((line = br.readLine()) != null) {
-                if (line.startsWith("<span class=\"description\">"))
+                if (!_StartKeepContent && line.startsWith("<span class=\"description\">"))
                     _StartKeepContent = true;
                 if (_StartKeepContent) {
                     for (char c : line.toCharArray()) {
-                        if (isChinese(c)) content.append(c);
+                        if (isChinese(c) && c!='\n') content.append(c);
                         numOfChar++;
                         if (numOfChar % 100 == 0) content.append("\n");
                     }

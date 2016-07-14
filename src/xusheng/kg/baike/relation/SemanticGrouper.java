@@ -1,5 +1,7 @@
 package xusheng.kg.baike.relation;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 /**
@@ -10,11 +12,15 @@ import java.io.IOException;
 public class SemanticGrouper implements Runnable{
 
     public static String rootFp = "/home/xusheng/starry/baidubaike";
+    public static String relFp = rootFp + "/infobox.text";
+
 
     public void run() {
         while (true) {
             try {
+                if (assignRels()) {
 
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -29,6 +35,11 @@ public class SemanticGrouper implements Runnable{
             return ret;
         }
         return -1;
+    }
+
+    public static boolean assignRels() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(relFp));
+        return false;
     }
 
     public static void multiThreadWork() throws Exception {
