@@ -106,9 +106,11 @@ public class BaidubaikeWorker implements Runnable{
                     _StartKeepContent = true;
                 if (_StartKeepContent) {
                     for (char c : line.toCharArray()) {
-                        if (isChinese(c) && c!='\n') content.append(c);
-                        numOfChar++;
-                        if (numOfChar % 100 == 0) content.append("\n");
+                        if (isChinese(c) && c!='\n') {
+                            content.append(c);
+                            numOfChar++;
+                            if (numOfChar % 100 == 0) content.append("\n");
+                        }
                     }
                 }
                 if (line.startsWith("<title>")) {
@@ -160,7 +162,7 @@ public class BaidubaikeWorker implements Runnable{
                             for (int j=1; j<spt.length; j++) {
                                 String[] sptt = spt[j].split("\">");
                                 href = sptt[0];
-                                String thisText = sptt[1].split("<\\a>")[0];
+                                String thisText = sptt[1].split("</a>")[0];
                                 int rightIdx = add2Urls(href);
                                 add2AnchorTexts(rightIdx, thisText);
                             }
