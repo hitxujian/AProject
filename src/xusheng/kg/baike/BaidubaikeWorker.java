@@ -16,7 +16,7 @@ import java.util.*;
 public class BaidubaikeWorker implements Runnable{
     public static String root = "/home/xusheng/crawl";
     public static int curr = -1, end = -1, inc = 0;
-    public static BufferedWriter idxBw, infoBw;
+    public static BufferedWriter textBw, infoBw;
     public static Map<String, Integer> urlMap = new HashMap<>();
     public static Map<Integer, Set<String>> idNameMap = new HashMap<>();
     public static List<String> triples = new ArrayList<>();
@@ -43,8 +43,8 @@ public class BaidubaikeWorker implements Runnable{
     }
 
     public static void multiThreadWork() throws Exception {
-        //idxBw = new BufferedWriter(new FileWriter(root + "/entity.index"));
-        infoBw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
+        infoBw = new BufferedWriter(new FileWriter(root + "/infobox.url"));
+        textBw = new BufferedWriter(new FileWriter(root + "/infobox.text"));
         curr = 1; end = 300;
         LogInfo.logs("Begin to Construct Article Idx and Extract Infobox...");
         int numOfThreads = 8;
@@ -53,12 +53,11 @@ public class BaidubaikeWorker implements Runnable{
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
         LogInfo.end_track();
-        //idxBw.close();
+        textBw.close();
         infoBw.close();
         // write results into files
         writeIdx();
         writeIdxText();
-        //writeTriples();
     }
 
     public static synchronized int add2Urls(String url) throws IOException{
@@ -78,14 +77,20 @@ public class BaidubaikeWorker implements Runnable{
         } else idNameMap.get(id).add(text);
     }
 
-    public static synchronized void writeTriple(String triple) throws IOException {
-        infoBw.write(triple);
+    public static synchronized void writeTriple(String triple, BufferedWriter bw) throws IOException {
+        bw.write(triple);
+    }
+
+    public static boolean isChinese(char c) {
+        return c >= 0x4E00 &&  c <= 0x9FA5;
     }
 
     public static void extractInfobox(int idx) throws Exception {
         int cnt = idx * 10000;
         String folderName = (cnt-10000+1) + "-" + cnt;
         LogInfo.logs("Entering into %s... [%s]", folderName, new Date().toString());
+        StringBuffer content = new StringBuffer();
+        int numOfChar = 0;
         for (int i=cnt-10000+1; i<=cnt; i++) {
             String fp = root + "/data_v2/" + folderName + "/" + i + ".html";
             BufferedReader br = new BufferedReader(new FileReader(fp));
@@ -93,8 +98,19 @@ public class BaidubaikeWorker implements Runnable{
             // when meet a new url, add it to map and write it into file
             int leftIdx = add2Urls(url);
             String line;
-            String title;
+            String title = "";
+            // control the starting position of content
+            boolean _StartKeepContent = false;
             while ((line = br.readLine()) != null) {
+                if (line.startsWith("<span class=\"description\">"))
+                    _StartKeepContent = true;
+                if (_StartKeepContent) {
+                    for (char c : line.toCharArray()) {
+                        if (isChinese(c)) content.append(c);
+                        numOfChar++;
+                        if (numOfChar % 100 == 0) content.append("\n");
+                    }
+                }
                 if (line.startsWith("<title>")) {
                     if (line.split(">").length < 2) break;
                     title = line.split(">")[1].split("<")[0].split("_")[0];
@@ -102,37 +118,66 @@ public class BaidubaikeWorker implements Runnable{
                     continue;
                 }
                 if (line.startsWith("<dt class=\"basicInfo-item name\"")) {
+                    //------- deal with relation -------
                     String itemName = line.split(">")[1].split("<")[0];
                     String[] spt = itemName.split("&nbsp;");
                     itemName = "";
                     for (int j=0; j<spt.length; j++)
                         itemName += spt[j];
+                    //------- deal with object -------
                     br.readLine();
                     line = br.readLine();
                     spt = line.split("<.+?>");
+                    // get the plain text of object
                     String itemValue = "";
                     for (int j=0; j<spt.length; j++) {
                         itemValue += spt[j];
                     }
                     spt = line.split("href=\"");
                     String href, triple = "";
-                    // if meet a link in the infobox
-                    if (spt.length > 1) {
+                    /*
+                        write to "infobox.url"
+                     */
+                    // if meet a link in the object
+                    if (spt.length == 2 && line.startsWith("<a") && line.endsWith("a>")) {
                         href = spt[1].split("\">")[0];
                         int rightIdx = add2Urls(href);
                         add2AnchorTexts(rightIdx, itemValue);
-                        triple  = leftIdx + "\t" + itemName + "\t" + rightIdx + "\n";
-                        writeTriple(triple);
-                    // if no link, then write plain text
+                        triple  = url + "\t" + itemName + "\t" + href + "\n";
+                        writeTriple(triple, infoBw);
+                    // if no link or part of link, then write plain text
                     } else {
-                        triple = leftIdx + "\t" + itemName + "\t" + itemValue + "\n";
-                        //triples.add(triple);
-                        writeTriple(triple);
+                        /*
+                            Here is a problem need to consider later:
+                            If there is only part of object text is linked,
+                            should we make use of it?
+                            now we just keep it in entity.name file
+                         */
+                        triple = url + "\t" + itemName + "\t" + itemValue + "\n";
+                        writeTriple(triple, infoBw);
+                        // add to entity.name to record alias
+                        if (spt.length > 2) {
+                            for (int j=1; j<spt.length; j++) {
+                                String[] sptt = spt[j].split("\">");
+                                href = sptt[0];
+                                String thisText = sptt[1].split("<\\a>")[0];
+                                int rightIdx = add2Urls(href);
+                                add2AnchorTexts(rightIdx, thisText);
+                            }
+                        }
                     }
+                    /*
+                        write to "infobox.text
+                     */
+                    triple = title + "\t" + itemName + "\n";
+                    writeTriple(triple, textBw);
                 }
             }
             br.close();
         }
+        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/content/" + idx + ".txt"));
+        bw.write(content.toString());
+        bw.close();
         LogInfo.logs("Job %s is Finished. [%s]", folderName, new Date().toString());
     }
 
@@ -143,7 +188,7 @@ public class BaidubaikeWorker implements Runnable{
         for (Map.Entry<String, Integer> entry: urlMap.entrySet()) {
             cnt ++;
             LogUpgrader.showLine(cnt, 10000);
-            bw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
+            bw.write(entry.getValue() + "\t" + entry.getKey() + "\n");
         }
         bw.close();
         LogInfo.end_track();
@@ -216,7 +261,7 @@ public class BaidubaikeWorker implements Runnable{
     }
 
     public static void main(String[] args) throws Exception {
-        //multiThreadWork();
-        extractURLs();
+        multiThreadWork();
+        //extractURLs();
     }
 }
