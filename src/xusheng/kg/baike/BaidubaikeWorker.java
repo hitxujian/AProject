@@ -169,7 +169,7 @@ public class BaidubaikeWorker implements Runnable{
                     /*
                         write to "infobox.text
                      */
-                    triple = title + "\t" + itemName + "\n";
+                    triple = title + "\t" + itemName + "\t" + itemValue + "\n";
                     writeTriple(triple, textBw);
                 }
             }
