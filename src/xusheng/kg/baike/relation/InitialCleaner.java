@@ -4,7 +4,9 @@ import fig.basic.LogInfo;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Xusheng on 7/13/2016.
@@ -26,6 +28,28 @@ public class InitialCleaner {
             if (isChinese(c)) return true;
         }
         return false;
+    }
+
+    public static void generateEdgeDict() throws IOException {
+        File f = new File(relFp + "/infobox.url");
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+        f = new File(relFp + "/edge_dict.tsv");
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+        String line;
+        int idx = 0;
+        Set<String> set = new HashSet<>();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            String rel = spt[1];
+            if (!set.contains(rel)) {
+                idx ++;
+                set.add(rel);
+                bw.write(idx + "\t" + rel + "\n");
+            }
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("edge_dict.tsv is generated. Size: %d", set.size());
     }
 
     public static void removeMarks() throws IOException {
@@ -79,6 +103,7 @@ public class InitialCleaner {
     }
 
     public static void main(String[] args) throws IOException {
+        generateEdgeDict();
         removeMarks();
         group();
     }
