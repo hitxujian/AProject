@@ -94,7 +94,9 @@ public class BaidubaikeWorker implements Runnable{
         for (int i=cnt-10000+1; i<=cnt; i++) {
             String fp = root + "/data_v2/" + folderName + "/" + i + ".html";
             BufferedReader br = new BufferedReader(new FileReader(fp));
-            String url = br.readLine().split("com")[1];
+            String[] tmp = br.readLine().split("com");
+            if (tmp.length < 2) continue;
+            String url = tmp[1];
             // when meet a new url, add it to map and write it into file
             int leftIdx = add2Urls(url);
             String line;
