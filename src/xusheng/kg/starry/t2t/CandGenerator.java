@@ -1,7 +1,7 @@
 package xusheng.kg.starry.t2t;
 
 import fig.basic.LogInfo;
-import xusheng.kg.baike.BkEntIdxReader;
+import xusheng.kg.baidubaike.BkEntIdxReader;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class CandGenerator implements Runnable {
     public static String root = "/home/xusheng/starry";
-    public static String fbPath = root + "/freebase", bkPath = root + "/baike";
+    public static String fbPath = root + "/freebase", bkPath = root + "/baidubaike";
     public static int curr = -1, end = -1;
     public static BufferedWriter bw = null;
 
