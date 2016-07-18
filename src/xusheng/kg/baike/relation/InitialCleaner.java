@@ -66,16 +66,13 @@ public class InitialCleaner {
             String idx = line.split("\t")[0];
             String rel = line.split("\t")[1];
             String newRel = "";
-            if (rel.equals("EMPTY")) {
+            if (rel.equals("EMPTY"))
                 newRel = rel;
-                bw.write(idx + "\t" + newRel + "\n");
-                continue;
-            }
-            for (char c: rel.toCharArray()) {
+            else for (char c: rel.toCharArray()) {
                 if (isChinese(c)) newRel += c;
                 if (newRel.equals("")) newRel = "EMPTY";
-                bw.write(idx + "\t" + newRel + "\n");
             }
+            bw.write(idx + "\t" + newRel + "\n");
         }
         br.close();
         bw.close();
@@ -120,7 +117,7 @@ public class InitialCleaner {
         inr_0.initializeFromName2Idx();
         inr_x.initializeFromIdx2Name();
         BufferedReader br = new BufferedReader(new FileReader(relFp + "/infobox.text"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(relFp + "./infobox.text.v1"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(relFp + "/infobox.text.v1"));
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
