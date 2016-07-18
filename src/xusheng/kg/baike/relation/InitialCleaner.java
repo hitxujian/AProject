@@ -127,11 +127,15 @@ public class InitialCleaner {
             String obj = getChinese(spt[2]);
             if (subj.equals("") || obj.equals("")) continue;
             if (spt[1].equals("")) spt[1] = "EMPTY";
+            /* debug
             Integer idx = inr_0.getIdx(spt[1]);
             if (idx == null) LogInfo.logs(spt[1]);
             String name = inr_x.getName(idx);
             if (name == null) LogInfo.logs(idx + "\t" + spt[1]);
-            String triple = subj + "\t" + name + "\t" + obj + "\n";
+            */
+            String triple = subj + "\t" + inr_x.getName(inr_0.getIdx(spt[1]))
+                    + "\t" + obj + "\n";
+            // remove duplicates
             if (!set.contains(triple)) bw.write(triple);
         }
         bw.close();
