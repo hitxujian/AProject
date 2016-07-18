@@ -43,7 +43,7 @@ public class SemanticGrouper implements Runnable{
     public static Map<Integer, StringBuffer> rel2BOW = new HashMap<>();
     public static void multiThreadWork() throws Exception {
         readRelEpMap();
-        curr = 1; end = 200;
+        curr = 1; end = 204;
         LogInfo.logs("Begin to construct vector rep. of relations...");
         int numOfThreads = 8;
         SemanticGrouper workThread = new SemanticGrouper();
@@ -59,6 +59,7 @@ public class SemanticGrouper implements Runnable{
     public static void work(int idx) throws Exception {
         int ed = idx * 1000;
         int st = ed - 1000 + 1;
+        if (ed > numOfRel) ed = numOfRel;
         LogInfo.logs("Working for relation %d to %d... [%s]", st, ed, new Date().toString());
         //------ construct first word TO subj & subj TO rel+obj index --------
         Map<String, List<String>> ch2str = new HashMap<>(),
@@ -149,9 +150,9 @@ public class SemanticGrouper implements Runnable{
         // todo:
         // infobox.text.v1 should be cleaned up, both entities should contain
         // only chineses words without any marks!!! and relations should be replaced by index.
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "infobox.text.v1"));
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/infobox.text.v1"));
         String line;
-        relTasks = new List[numOfRel];
+        relTasks = new List[numOfRel+1];
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             relTasks[Integer.parseInt(spt[1])].add(spt[0] + "\t" + spt[2]);
