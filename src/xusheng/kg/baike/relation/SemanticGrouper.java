@@ -1,6 +1,7 @@
 package xusheng.kg.baike.relation;
 
 import fig.basic.LogInfo;
+import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -43,7 +44,7 @@ public class SemanticGrouper implements Runnable{
     public static Map<Integer, StringBuffer> rel2BOW = new HashMap<>();
     public static void multiThreadWork() throws Exception {
         readRelEpMap();
-        curr = 1; end = 204; // todo: 204
+        curr = 1; end = numOfRel / 1000 + 1;
         LogInfo.logs("Begin to construct vector rep. of relations...");
         int numOfThreads = 8;
         SemanticGrouper workThread = new SemanticGrouper();
@@ -90,6 +91,8 @@ public class SemanticGrouper implements Runnable{
             // release memory
             relTasks[i].clear();
         }
+        LogInfo.logs("[%d, %d]: ch-str index done. Size: %d, %d. [%s]",
+                st, ed, ch2str.size(), subj2robj.size(), new Date().toString());
         //------- scan one pass of all the passages ---------
         // todo: 300
         for (int i=1; i<300; i++) {
@@ -112,7 +115,7 @@ public class SemanticGrouper implements Runnable{
                 }
             }
         }
-        LogInfo.logs("Relation %d to %d finished. %s", st, ed, new Date().toString());
+        LogInfo.logs("[%d, %d]: Passage scanning finished. [%s]", st, ed, new Date().toString());
     }
 
     // add wordsInBetween to the raw vector of a specific relation
@@ -164,9 +167,11 @@ public class SemanticGrouper implements Runnable{
         // infobox.text.v1 should be cleaned up, both entities should contain
         // only chineses words without any marks!!! and relations should be replaced by index.
         BufferedReader br = new BufferedReader(new FileReader(rootFp + "/infobox.text.v1"));
-        String line;
+        String line; int cnt = 0;
         relTasks = new List[numOfRel+1];
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 1000000);
             String[] spt = line.split("\t");
             int idx = Integer.parseInt(spt[1]);
             if (relTasks[idx] == null) relTasks[idx] = new ArrayList<>();
