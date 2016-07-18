@@ -136,7 +136,10 @@ public class InitialCleaner {
             String triple = subj + "\t" + inr_x.getName(inr_0.getIdx(spt[1]))
                     + "\t" + obj + "\n";
             // remove duplicates
-            if (!set.contains(triple)) bw.write(triple);
+            if (!set.contains(triple)) {
+                set.add(triple);
+                bw.write(triple);
+            }
         }
         bw.close();
         LogInfo.logs("infobox.text.v1 written.");

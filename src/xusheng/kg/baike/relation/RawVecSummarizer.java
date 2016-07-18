@@ -17,5 +17,12 @@ public class RawVecSummarizer {
 
     public static void summary() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(rootFp + "/raw_vectors"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            int relIdx = Integer.parseInt(spt[0]);
+            String rawVec = spt[1];
+
+        }
     }
 }
