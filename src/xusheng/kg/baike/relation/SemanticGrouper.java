@@ -98,8 +98,7 @@ public class SemanticGrouper implements Runnable{
                 LogInfo.logs("[%d, %d]: %d passages scanned. [%s]", st, ed, i, new Date().toString());
             StringBuffer passage = passages[i];
             for (int j = 0; j < passage.length(); j++) {
-                LogInfo.logs("[%d, %d]: %s", st, ed, passage.charAt(j));
-                if (ch2str.containsKey(passage.charAt(j))) {
+                if (ch2str.containsKey(String.valueOf(passage.charAt(j)))) {
                     LogInfo.logs("[%d, %d]: %s", st, ed, passage.charAt(j));
                     List<String> candSubj = ch2str.get(passage.charAt(j));
                     for (String subj : candSubj) {
