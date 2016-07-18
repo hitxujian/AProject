@@ -1,7 +1,6 @@
 package xusheng.kg.baike.relation;
 
 import fig.basic.LogInfo;
-import sun.rmi.runtime.Log;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MultiThread;
 
