@@ -96,6 +96,8 @@ public class SemanticGrouper implements Runnable{
                 st, ed, ch2str.size(), subj2robj.size(), new Date().toString());
         //------- scan one pass of all the passages ---------
         for (int i=0; i<300; i++) {
+            if (i!=0 && i % 50 ==0)
+                LogInfo.logs("[%d, %d]: %d passages scanned. [%s]", st, ed, new Date().toString());
             StringBuffer passage = passages[i];
             for (int j = 0; j < passage.length(); j++) {
                 if (ch2str.containsKey(passage.charAt(j))) {
