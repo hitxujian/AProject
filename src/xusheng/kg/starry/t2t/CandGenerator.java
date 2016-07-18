@@ -1,7 +1,7 @@
 package xusheng.kg.starry.t2t;
 
 import fig.basic.LogInfo;
-import xusheng.kg.baidubaike.BkEntIdxReader;
+import xusheng.kg.baike.BkEntIdxReader;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
