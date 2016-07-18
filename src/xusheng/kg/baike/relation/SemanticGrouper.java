@@ -45,9 +45,9 @@ public class SemanticGrouper implements Runnable{
     public static void multiThreadWork() throws Exception {
         readRelEpMap();
         readPassages();
-        curr = 1; end = numOfRel / 1000 + 1;
+        curr = 1; end = numOfRel / 10000 + 1;
         LogInfo.logs("Begin to construct vector rep. of relations...");
-        int numOfThreads = 8;
+        int numOfThreads = 19;
         SemanticGrouper workThread = new SemanticGrouper();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
 
@@ -63,8 +63,8 @@ public class SemanticGrouper implements Runnable{
 
     public static int numOfNull = 0;
     public static void work(int idx) throws Exception {
-        int ed = idx * 1000;
-        int st = ed - 1000 + 1;
+        int ed = idx * 10000;
+        int st = ed - 10000 + 1;
         if (ed > numOfRel) ed = numOfRel;
         LogInfo.logs("Working for relation %d to %d... [%s]", st, ed, new Date().toString());
         //------ construct first word TO subj & subj TO rel+obj index --------
@@ -96,8 +96,8 @@ public class SemanticGrouper implements Runnable{
                 st, ed, ch2str.size(), subj2robj.size(), new Date().toString());
         //------- scan one pass of all the passages ---------
         for (int i=1; i<300; i++) {
-            if (i % 50 ==0)
-                LogInfo.logs("[%d, %d]: %d passages scanned. [%s]", st, ed, new Date().toString());
+            if (i % 10 ==0)
+                LogInfo.logs("[%d, %d]: %d passages scanned. [%s]", st, ed, i, new Date().toString());
             StringBuffer passage = passages[i];
             for (int j = 0; j < passage.length(); j++) {
                 if (ch2str.containsKey(passage.charAt(j))) {
