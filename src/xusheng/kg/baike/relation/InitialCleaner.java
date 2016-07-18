@@ -121,6 +121,7 @@ public class InitialCleaner {
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
+            if (spt.length < 3) continue;
             bw.write(getChinese(spt[0]) + "\t" + inr_x.getName(inr_0.getIdx(spt[1]))
                         + "\t" + getChinese(spt[2]) + "\n");
         }
