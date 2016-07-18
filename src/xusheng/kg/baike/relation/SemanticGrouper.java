@@ -48,7 +48,7 @@ public class SemanticGrouper implements Runnable{
         constructIdx();
         curr = 1; end = 300;
         LogInfo.logs("Begin to construct vector rep. of relations...");
-        int numOfThreads = 20;
+        int numOfThreads = 27;
         SemanticGrouper workThread = new SemanticGrouper();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
 
