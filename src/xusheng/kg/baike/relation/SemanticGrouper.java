@@ -45,6 +45,7 @@ public class SemanticGrouper implements Runnable{
     public static void multiThreadWork() throws Exception {
         readRelEpMap();
         readPassages();
+        constructIdx();
         curr = 1; end = 300;
         LogInfo.logs("Begin to construct vector rep. of relations...");
         int numOfThreads = 20;
@@ -116,33 +117,7 @@ public class SemanticGrouper implements Runnable{
 
     // each thread works for all relations on one passage
     public static void work4pas(int idx) throws Exception {
-        int st = 1;
-        int ed = numOfRel;
         LogInfo.logs("Working for passage %d... [%s]", idx, new Date().toString());
-        //------ construct first word TO subj & subj TO rel+obj index --------
-        Map<String, List<String>> ch2str = new HashMap<>(),
-                subj2robj = new HashMap<>();
-        for (int i=st; i<=ed; i++) {
-            if (relTasks[i] == null) {
-                numOfNull ++;
-                continue;
-            }
-            List<String> triples4OneRel = relTasks[i];
-            for (String triple : triples4OneRel) {
-                String[] spt = triple.split("\t");
-                String subj = spt[0], robj = String.valueOf(i) + "\t" + spt[1];
-                String ch = subj.substring(0,1);
-                if (!ch2str.containsKey(ch))
-                    ch2str.put(ch, new ArrayList<>());
-                ch2str.get(ch).add(subj);
-                if (!subj2robj.containsKey(subj))
-                    subj2robj.put(subj, new ArrayList<>());
-                subj2robj.get(subj).add(robj);
-            }
-        }
-        LogInfo.logs("[%d]: ch-str index done. Size: %d, %d. [%s]",
-                idx, ch2str.size(), subj2robj.size(), new Date().toString());
-
         //------- scan one pass of the passage ---------
         StringBuffer passage = passages[idx];
         int j = 0;
@@ -166,6 +141,35 @@ public class SemanticGrouper implements Runnable{
             j++;
         }
         LogInfo.logs("[%d]: Passage scanning finished. [%s]", idx, new Date().toString());
+    }
+
+    public static Map<String, List<String>> ch2str = new HashMap<>(),
+            subj2robj = new HashMap<>();
+    public static void constructIdx() {
+        //------ construct first word TO subj & subj TO rel+obj index --------
+        int st = 1;
+        int ed = numOfRel;
+        for (int i=st; i<=ed; i++) {
+            if (relTasks[i] == null) {
+                numOfNull ++;
+                continue;
+            }
+            List<String> triples4OneRel = relTasks[i];
+            for (String triple : triples4OneRel) {
+                String[] spt = triple.split("\t");
+                String subj = spt[0], robj = String.valueOf(i) + "\t" + spt[1];
+                String ch = subj.substring(0,1);
+                if (!ch2str.containsKey(ch))
+                    ch2str.put(ch, new ArrayList<>());
+                ch2str.get(ch).add(subj);
+                if (!subj2robj.containsKey(subj))
+                    subj2robj.put(subj, new ArrayList<>());
+                subj2robj.get(subj).add(robj);
+            }
+            relTasks[i].clear();
+        }
+        LogInfo.logs("ch-str index done. Size: %d, %d. [%s]",
+                ch2str.size(), subj2robj.size(), new Date().toString());
     }
 
     // add wordsInBetween to the raw vector of a specific relation
