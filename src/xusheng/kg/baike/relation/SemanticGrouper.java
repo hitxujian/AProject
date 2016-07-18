@@ -80,7 +80,6 @@ public class SemanticGrouper implements Runnable{
                 String[] spt = triple.split("\t");
                 String subj = spt[0], robj = String.valueOf(i) + "\t" + spt[1];
                 String ch = subj.substring(0,1);
-                LogInfo.logs(ch + "\t" + subj + "\t" + triple);
                 if (!ch2str.containsKey(ch))
                     ch2str.put(ch, new ArrayList<>());
                 ch2str.get(ch).add(subj);
