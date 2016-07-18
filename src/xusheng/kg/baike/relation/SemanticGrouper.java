@@ -52,7 +52,8 @@ public class SemanticGrouper implements Runnable{
         multi.runMultiThread();
         LogInfo.end_track();
         LogInfo.begin_track("Start to generate relation embedding... Size: %d", rel2BOW.size());
-
+        postProcessing();
+        LogInfo.end_track();
     }
 
     public static void work(int idx) throws Exception {
@@ -125,7 +126,7 @@ public class SemanticGrouper implements Runnable{
             bw.write(entry.getKey().toString() + "\t" + entry.getValue().toString() + "\n");
         }
         bw.close();
-        LogInfo.logs("");
+        LogInfo.logs("Raw vectors written. Size: %d", rel2BOW.size());
     }
 
     // -------- pre-processing --------
