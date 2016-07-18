@@ -1,8 +1,8 @@
 package xusheng.kg.baike.relation;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import fig.basic.LogInfo;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,16 +24,38 @@ public class RawVecSummarizer {
         int chIdx = 0;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            int relIdx = Integer.parseInt(spt[0]);
-
             String rawVec = spt[1];
             for (char ch: rawVec.toCharArray()) {
                 if (!charSet.containsKey(ch)) {
-                    chIdx ++;
                     charSet.put(String.valueOf(ch), chIdx);
+                    chIdx ++;
                 }
-
             }
         }
+        LogInfo.logs("Char set created. Size: %d", charSet.size());
+
+        br = new BufferedReader(new FileReader(rootFp + "/raw_vectors"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/real_vectors"));
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            String rawVec = spt[1];
+            double[] realvec = new double[charSet.size()];
+            int relIdx = Integer.parseInt(spt[0]);
+            int total = 0;
+            for (char ch: rawVec.toCharArray()) {
+                int idx = charSet.get(ch);
+                realvec[idx] ++;
+                total ++;
+            }
+            bw.write(relIdx);
+            for (int i=0; i<charSet.size(); i++) {
+                realvec[i] /= total;
+                bw.write(" " + realvec[i]);
+            }
+            bw.write("\n");
+        }
+        br.close();
+        bw.close();
+        LogInfo.logs("Real vectors generated.");
     }
 }

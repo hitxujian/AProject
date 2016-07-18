@@ -1,6 +1,7 @@
 package xusheng.kg.baike.relation;
 
 import fig.basic.LogInfo;
+import sun.rmi.runtime.Log;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MultiThread;
 
@@ -80,14 +81,13 @@ public class SemanticGrouper implements Runnable{
                 String[] spt = triple.split("\t");
                 String subj = spt[0], robj = String.valueOf(i) + "\t" + spt[1];
                 String ch = subj.substring(0,1);
-                if (!ch2str.containsKey(ch)) {
+                LogInfo.logs(ch + "\t" + subj + "\t" + triple);
+                if (!ch2str.containsKey(ch))
                     ch2str.put(ch, new ArrayList<>());
-                    ch2str.get(ch).add(subj);
-                }
-                if (!subj2robj.containsKey(subj)) {
+                ch2str.get(ch).add(subj);
+                if (!subj2robj.containsKey(subj))
                     subj2robj.put(subj, new ArrayList<>());
-                    subj2robj.get(subj).add(robj);
-                }
+                subj2robj.get(subj).add(robj);
             }
             // release memory
             relTasks[i].clear();
@@ -95,7 +95,6 @@ public class SemanticGrouper implements Runnable{
         LogInfo.logs("[%d, %d]: ch-str index done. Size: %d, %d. [%s]",
                 st, ed, ch2str.size(), subj2robj.size(), new Date().toString());
         //------- scan one pass of all the passages ---------
-        boolean flag = true;
         for (int i=1; i<300; i++) {
             if (i % 10 ==0)
                 LogInfo.logs("[%d, %d]: %d passages scanned. [%s]", st, ed, i, new Date().toString());
@@ -106,10 +105,7 @@ public class SemanticGrouper implements Runnable{
                     for (String subj : candSubj) {
                         if (j + subj.length() <= passage.length() &&
                                 passage.substring(j, j + subj.length()).equals(subj)) {
-                            if (flag) {
-                                flag = false;
-                                LogInfo.logs(subj + " ||| " + passage.subSequence(j, j+subj.length()+lenOfwIn));
-                            }
+                            LogInfo.logs(subj + " ||| " + passage.subSequence(j, j+subj.length()+lenOfwIn));
                             extendVector(passage.substring(j + subj.length(), j + subj.length() + lenOfwIn),
                                     subj2robj.get(subj));
                         }
@@ -122,6 +118,7 @@ public class SemanticGrouper implements Runnable{
 
     // add wordsInBetween to the raw vector of a specific relation
     public static void extendVector(String text, List<String> target) {
+
         for (String str: target) {
             String[] spt = str.split("\t");
             int idx = Integer.parseInt(spt[0]);
@@ -134,7 +131,9 @@ public class SemanticGrouper implements Runnable{
     }
 
     public static synchronized void modifyRel2BOW(int idx, String str) {
-        if (!rel2BOW.containsKey(idx)) rel2BOW.put(idx, new StringBuffer());
+        LogInfo.logs("Extend vector for rel. %d", idx);
+        if (!rel2BOW.containsKey(idx))
+            rel2BOW.put(idx, new StringBuffer());
         rel2BOW.get(idx).append(str);
     }
 
