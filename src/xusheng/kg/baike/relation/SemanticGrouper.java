@@ -101,10 +101,9 @@ public class SemanticGrouper implements Runnable{
                 if (ch2str.containsKey(String.valueOf(passage.charAt(j)))) {
                     List<String> candSubj = ch2str.get(String.valueOf(passage.charAt(j)));
                     for (String subj : candSubj) {
-                        //LogInfo.logs("[%d, %d]: %s ||| %s", st, ed, subj, passage.substring(j, j + subj.length()));
                         if (j + subj.length() <= passage.length() &&
                                 passage.substring(j, j + subj.length()).equals(subj)) {
-                            LogInfo.logs(subj + " ||| " + passage.subSequence(j, j+subj.length()+lenOfwIn));
+                            LogInfo.logs(subj + " ||| " + passage.substring(j, j+subj.length()+lenOfwIn));
                             extendVector(passage.substring(j + subj.length(), j + subj.length() + lenOfwIn),
                                     subj2robj.get(subj));
                         }
@@ -130,7 +129,7 @@ public class SemanticGrouper implements Runnable{
     }
 
     public static synchronized void modifyRel2BOW(int idx, String str) {
-        LogInfo.logs("Extend vector for rel. %d", idx);
+        //LogInfo.logs("Extend vector for rel. %d", idx);
         if (!rel2BOW.containsKey(idx))
             rel2BOW.put(idx, new StringBuffer());
         rel2BOW.get(idx).append(str);
@@ -173,6 +172,7 @@ public class SemanticGrouper implements Runnable{
             cnt ++;
             LogUpgrader.showLine(cnt, 1000000);
             String[] spt = line.split("\t");
+            if (spt[0].equals("年") || spt[0].equals("年月") || spt[0].equals("月日")) continue;
             int idx = Integer.parseInt(spt[1]);
             if (relTasks[idx] == null) relTasks[idx] = new ArrayList<>();
             relTasks[idx].add(spt[0] + "\t" + spt[2]);
