@@ -58,4 +58,6 @@ public class RawVecSummarizer {
         bw.close();
         LogInfo.logs("Real vectors generated.");
     }
+
+
 }

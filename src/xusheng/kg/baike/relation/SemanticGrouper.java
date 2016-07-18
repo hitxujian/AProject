@@ -139,8 +139,6 @@ public class SemanticGrouper implements Runnable{
                     subj2robj.put(subj, new ArrayList<>());
                 subj2robj.get(subj).add(robj);
             }
-            // release memory
-            relTasks[i].clear();
         }
         LogInfo.logs("[%d]: ch-str index done. Size: %d, %d. [%s]",
                 idx, ch2str.size(), subj2robj.size(), new Date().toString());
