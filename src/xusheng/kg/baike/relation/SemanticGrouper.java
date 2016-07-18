@@ -3,9 +3,7 @@ package xusheng.kg.baike.relation;
 import fig.basic.LogInfo;
 import xusheng.util.struct.MultiThread;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -53,6 +51,8 @@ public class SemanticGrouper implements Runnable{
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
         LogInfo.end_track();
+        LogInfo.begin_track("Start to generate relation embedding... Size: %d", rel2BOW.size());
+
     }
 
     public static void work(int idx) throws Exception {
@@ -118,6 +118,16 @@ public class SemanticGrouper implements Runnable{
         }
     }
 
+    // write raw vectors into files, and calculate real embeddings
+    public static void postProcessing() throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/raw_vectors.txt"));
+        for (Map.Entry<Integer, StringBuffer> entry: rel2BOW.entrySet()) {
+            bw.write(entry.getKey().toString() + "\t" + entry.getValue().toString() + "\n");
+        }
+        bw.close();
+        LogInfo.logs("");
+    }
+
     // -------- pre-processing --------
 
     public static int numOfRel = 0;
@@ -156,6 +166,4 @@ public class SemanticGrouper implements Runnable{
         lenOfwIn = Integer.parseInt(args[1]);
         multiThreadWork();
     }
-
-
 }

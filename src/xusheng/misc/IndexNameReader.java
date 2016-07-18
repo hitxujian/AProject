@@ -1,4 +1,4 @@
-package xusheng.kg.baidubaike;
+package xusheng.misc;
 
 import fig.basic.LogInfo;
 import xusheng.util.log.LogUpgrader;
@@ -10,27 +10,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Luo Xusheng on 4/21/16.
- * Usage: Read BaiduBaike Article Index file
- * Note that index is from 1 to N and Name is Href style.
+ * Created by Xusheng on 7/18/2016.
+ * General Index-Name form Reader
  */
 
-public class BkEntIdxReader {
-    public static String path = "/home/xusheng/pra/examples/graphs/baike/kb_svo/node_dict.tsv";
-    public static Map<String, Integer> name2Idx = null;
-    public static Map<Integer, String> idx2Name = null;
+public class IndexNameReader {
 
-    public static Integer getIdx(String name) {
+    private String path = "/home/xusheng/starry/baidubaike/edge_dict.tsv";
+    private Map<String, Integer> name2Idx = null;
+    private Map<Integer, String> idx2Name = null;
+
+    public IndexNameReader(String fp) {
+        path = fp;
+    }
+
+    public Integer getIdx(String name) {
         if (name2Idx.containsKey(name)) return name2Idx.get(name);
         else return null;
     }
 
-    public static String getName(int idx) {
+    public String getName(int idx) {
         if (idx2Name.containsKey(idx)) return idx2Name.get(idx);
         else return null;
     }
 
-    public static void initializeForBoth() throws IOException {
+    public void initializeForBoth() throws IOException {
         if (name2Idx != null && idx2Name != null) return;
         name2Idx = new HashMap<>();
         idx2Name = new HashMap<>();
@@ -44,10 +48,10 @@ public class BkEntIdxReader {
             idx2Name.put(Integer.parseInt(spt[0]), spt[1]);
         }
         br.close();
-        LogInfo.logs("BaiduBaike Entity-Idx(Both Sides) Read. Size: %d", cnt);
+        LogInfo.logs("BaiduBaike Relation-Idx(Both Sides) Read. Size: %d", cnt);
     }
 
-    public static void initializeFromName2Idx() throws IOException {
+    public void initializeFromName2Idx() throws IOException {
         if (name2Idx != null) return;
         name2Idx = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path));
@@ -59,10 +63,10 @@ public class BkEntIdxReader {
             name2Idx.put(spt[1], Integer.parseInt(spt[0]));
         }
         br.close();
-        LogInfo.logs("BaiduBaike Entity-Idx(Name to Idx) Read. Size: %d", cnt);
+        LogInfo.logs("BaiduBaike Relation-Idx(Name to Idx) Read. Size: %d", cnt);
     }
 
-    public static void initializeFromIdx2Name() throws IOException {
+    public void initializeFromIdx2Name() throws IOException {
         if (idx2Name != null) return;
         idx2Name = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path));
@@ -74,10 +78,6 @@ public class BkEntIdxReader {
             idx2Name.put(Integer.parseInt(spt[0]), spt[1]);
         }
         br.close();
-        LogInfo.logs("BaiduBaike Entity-Idx(Idx to Name) Read. Size: %d", cnt);
-    }
-
-    public static void main(String[] args) throws IOException {
-
+        LogInfo.logs("BaiduBaike Relation-Idx(Idx to Name) Read. Size: %d", cnt);
     }
 }
