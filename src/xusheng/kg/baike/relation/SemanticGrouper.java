@@ -48,14 +48,18 @@ public class SemanticGrouper implements Runnable{
         int numOfThreads = 8;
         SemanticGrouper workThread = new SemanticGrouper();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
+
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
+        LogInfo.logs("Non-use relations: %d", numOfNull);
         LogInfo.end_track();
+
         LogInfo.begin_track("Start to generate relation embedding... Size: %d", rel2BOW.size());
         postProcessing();
         LogInfo.end_track();
     }
 
+    public static int numOfNull = 0;
     public static void work(int idx) throws Exception {
         int ed = idx * 1000;
         int st = ed - 1000 + 1;
@@ -65,6 +69,10 @@ public class SemanticGrouper implements Runnable{
         Map<String, List<String>> ch2str = new HashMap<>(),
                 subj2robj = new HashMap<>();
         for (int i=st; i<=ed; i++) {
+            if (relTasks[i] == null) {
+                numOfNull ++;
+                continue;
+            }
             List<String> triples4OneRel = relTasks[i];
             for (String triple : triples4OneRel) {
                 String[] spt = triple.split("\t");
