@@ -119,6 +119,7 @@ public class InitialCleaner {
         BufferedReader br = new BufferedReader(new FileReader(relFp + "/infobox.text"));
         BufferedWriter bw = new BufferedWriter(new FileWriter(relFp + "/infobox.text.v1"));
         String line;
+        Set<String> set = new HashSet<>();
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             if (spt.length < 3) continue;
@@ -130,8 +131,8 @@ public class InitialCleaner {
             if (idx == null) LogInfo.logs(spt[1]);
             String name = inr_x.getName(idx);
             if (name == null) LogInfo.logs(idx + "\t" + spt[1]);
-            bw.write(subj + "\t" + name
-                        + "\t" + obj + "\n");
+            String triple = subj + "\t" + name + "\t" + obj + "\n";
+            if (!set.contains(triple)) bw.write(triple);
         }
         bw.close();
         LogInfo.logs("infobox.text.v1 written.");
