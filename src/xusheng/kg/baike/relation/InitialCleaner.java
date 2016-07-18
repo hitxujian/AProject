@@ -124,6 +124,7 @@ public class InitialCleaner {
             String subj = getChinese(spt[0]);
             String obj = getChinese(spt[2]);
             if (subj.equals("") || obj.equals("")) continue;
+            if (spt[1].equals("")) spt[1] = "EMPTY";
             Integer idx = inr_0.getIdx(spt[1]);
             if (idx == null) LogInfo.logs(spt[1]);
             String name = inr_x.getName(idx);
