@@ -116,8 +116,8 @@ public class SemanticGrouper implements Runnable{
 
     // each thread works for all relations on one passage
     public static void work4pas(int idx) throws Exception {
-        int ed = 1;
-        int st = numOfRel;
+        int st = 1;
+        int ed = numOfRel;
         LogInfo.logs("Working for passage %d... [%s]", idx, new Date().toString());
         //------ construct first word TO subj & subj TO rel+obj index --------
         Map<String, List<String>> ch2str = new HashMap<>(),
