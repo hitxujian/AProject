@@ -48,7 +48,7 @@ public class IndexNameReader {
             idx2Name.put(Integer.parseInt(spt[0]), spt[1]);
         }
         br.close();
-        LogInfo.logs("BaiduBaike Relation-Idx(Both Sides) Read. Size: %d", cnt);
+        LogInfo.logs("%s Relation-Idx(Both Sides) Read. Size: %d", path, cnt);
     }
 
     public void initializeFromName2Idx() throws IOException {
@@ -63,7 +63,7 @@ public class IndexNameReader {
             name2Idx.put(spt[1], Integer.parseInt(spt[0]));
         }
         br.close();
-        LogInfo.logs("BaiduBaike Relation-Idx(Name to Idx) Read. Size: %d", cnt);
+        LogInfo.logs("%s Relation-Idx(Name to Idx) Read. Size: %d", path, cnt);
     }
 
     public void initializeFromIdx2Name() throws IOException {
@@ -78,6 +78,6 @@ public class IndexNameReader {
             idx2Name.put(Integer.parseInt(spt[0]), spt[1]);
         }
         br.close();
-        LogInfo.logs("BaiduBaike Relation-Idx(Idx to Name) Read. Size: %d", cnt);
+        LogInfo.logs("%s Relation-Idx(Idx to Name) Read. Size: %d", path, cnt);
     }
 }
