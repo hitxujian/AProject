@@ -168,7 +168,7 @@ public class SemanticGrouper implements Runnable{
             }
             relTasks[i].clear();
         }
-        LogInfo.logs("ch-str index done. Size: %d, %d. [%s]",
+        LogInfo.logs("[log] Ch-str index done. Size: %d, %d. [%s]",
                 ch2str.size(), subj2robj.size(), new Date().toString());
     }
 
@@ -229,7 +229,7 @@ public class SemanticGrouper implements Runnable{
         relTasks = new List[numOfRel+1];
         while ((line = br.readLine()) != null) {
             cnt ++;
-            LogUpgrader.showLine(cnt, 1000000);
+            //LogUpgrader.showLine(cnt, 1000000);
             String[] spt = line.split("\t");
             if (spt[0].equals("年") || spt[0].equals("年月") || spt[0].equals("月日") ||
                     spt[0].equals("年月日") ) continue;
@@ -238,7 +238,7 @@ public class SemanticGrouper implements Runnable{
             relTasks[idx].add(spt[0] + "\t" + spt[2]);
         }
         br.close();
-        LogInfo.logs("Relation-Entity Pairs Map Loaded.");
+        LogInfo.logs("[log] Relation-Entity Pairs Map Loaded.");
     }
 
     public static StringBuffer[] passages = new StringBuffer[300];
@@ -249,7 +249,7 @@ public class SemanticGrouper implements Runnable{
                 passages[i] = new StringBuffer();
                 continue;
             }
-            LogUpgrader.showLine(i, 50);
+            //LogUpgrader.showLine(i, 50);
             passages[i] = new StringBuffer();
             String fp = rootFp + "/content/" + i + ".txt";
             BufferedReader br = new BufferedReader(new FileReader(fp));
@@ -257,7 +257,7 @@ public class SemanticGrouper implements Runnable{
             while ((line = br.readLine()) != null)
                 passages[i].append(line);
         }
-        LogInfo.logs("All passages loaded.");
+        LogInfo.logs("[log] All passages loaded.");
     }
 
 
