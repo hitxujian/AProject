@@ -43,7 +43,7 @@ public class SemanticGrouper implements Runnable{
     public static Map<Integer, StringBuffer> rel2BOW = new HashMap<>();
     public static void multiThreadWork() throws Exception {
         readRelEpMap();
-        curr = 1; end = 204;
+        curr = 1; end = 204; // todo: 204
         LogInfo.logs("Begin to construct vector rep. of relations...");
         int numOfThreads = 8;
         SemanticGrouper workThread = new SemanticGrouper();
@@ -83,6 +83,7 @@ public class SemanticGrouper implements Runnable{
             relTasks[i].clear();
         }
         //------- scan one pass of all the passages ---------
+        // todo: 300
         for (int i=1; i<300; i++) {
             String fp = rootFp + "/content/" + i + ".txt";
             BufferedReader br = new BufferedReader(new FileReader(fp));
@@ -114,10 +115,14 @@ public class SemanticGrouper implements Runnable{
             String obj = spt[1];
             if (text.contains(obj)) {
                 int pos = text.indexOf(obj);
-                if (!rel2BOW.containsKey(idx)) rel2BOW.put(idx, new StringBuffer());
-                rel2BOW.get(idx).append(text.substring(0, pos));
+                modifyRel2BOW(idx, text.substring(0, pos));
             }
         }
+    }
+
+    public static synchronized void modifyRel2BOW(int idx, String str) {
+        if (!rel2BOW.containsKey(idx)) rel2BOW.put(idx, new StringBuffer());
+        rel2BOW.get(idx).append(str);
     }
 
     // write raw vectors into files, and calculate real embeddings
