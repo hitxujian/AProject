@@ -95,8 +95,8 @@ public class SemanticGrouper implements Runnable{
         LogInfo.logs("[%d, %d]: ch-str index done. Size: %d, %d. [%s]",
                 st, ed, ch2str.size(), subj2robj.size(), new Date().toString());
         //------- scan one pass of all the passages ---------
-        for (int i=0; i<300; i++) {
-            if (i!=0 && i % 50 ==0)
+        for (int i=1; i<300; i++) {
+            if (i % 50 ==0)
                 LogInfo.logs("[%d, %d]: %d passages scanned. [%s]", st, ed, new Date().toString());
             StringBuffer passage = passages[i];
             for (int j = 0; j < passage.length(); j++) {
@@ -180,12 +180,17 @@ public class SemanticGrouper implements Runnable{
 
     public static StringBuffer[] passages = new StringBuffer[300];
     public static void readPassages() throws IOException {
-        for (int i=0; i<300; i++) {
+        for (int i=1; i<300; i++) {
+            // todo: check 270.txt non-exsit
+            if (i == 270) {
+                passages[i] = new StringBuffer();
+                continue;
+            }
             LogUpgrader.showLine(i, 50);
-            String fp = rootFp + "/content/" + (i+1) + ".txt";
+            passages[i] = new StringBuffer();
+            String fp = rootFp + "/content/" + i + ".txt";
             BufferedReader br = new BufferedReader(new FileReader(fp));
             String line;
-            passages[i] = new StringBuffer();
             while ((line = br.readLine()) != null)
                 passages[i].append(line);
         }
