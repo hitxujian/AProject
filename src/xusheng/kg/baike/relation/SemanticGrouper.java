@@ -44,6 +44,7 @@ public class SemanticGrouper implements Runnable{
     public static Map<Integer, StringBuffer> rel2BOW = new HashMap<>();
     public static void multiThreadWork() throws Exception {
         readRelEpMap();
+        readPassages();
         curr = 1; end = numOfRel / 1000 + 1;
         LogInfo.logs("Begin to construct vector rep. of relations...");
         int numOfThreads = 8;
@@ -94,21 +95,15 @@ public class SemanticGrouper implements Runnable{
         LogInfo.logs("[%d, %d]: ch-str index done. Size: %d, %d. [%s]",
                 st, ed, ch2str.size(), subj2robj.size(), new Date().toString());
         //------- scan one pass of all the passages ---------
-        // todo: 300
-        for (int i=1; i<300; i++) {
-            String fp = rootFp + "/content/" + i + ".txt";
-            BufferedReader br = new BufferedReader(new FileReader(fp));
-            String line, passage = "";
-            while ((line = br.readLine()) != null) {
-                passage += line;
-            }
-            for (int j=0; j<passage.length(); j++) {
+        for (int i=0; i<300; i++) {
+            StringBuffer passage = passages[i];
+            for (int j = 0; j < passage.length(); j++) {
                 if (ch2str.containsKey(passage.charAt(j))) {
                     List<String> candSubj = ch2str.get(passage.charAt(j));
-                    for (String subj: candSubj) {
+                    for (String subj : candSubj) {
                         if (j + subj.length() <= passage.length() &&
                                 passage.substring(j, j + subj.length()).equals(subj)) {
-                            extendVector(passage.substring(j+subj.length(), j+subj.length()+lenOfwIn),
+                            extendVector(passage.substring(j + subj.length(), j + subj.length() + lenOfwIn),
                                     subj2robj.get(subj));
                         }
                     }
@@ -179,6 +174,20 @@ public class SemanticGrouper implements Runnable{
         }
         br.close();
         LogInfo.logs("Relation-Entity Pairs Map Loaded.");
+    }
+
+    public static StringBuffer[] passages = new StringBuffer[300];
+    public static void readPassages() throws IOException {
+        for (int i=0; i<300; i++) {
+            LogUpgrader.showLine(i, 50);
+            String fp = rootFp + "/content/" + (i+1) + ".txt";
+            BufferedReader br = new BufferedReader(new FileReader(fp));
+            String line;
+            while ((line = br.readLine()) != null) {
+                passages[i].append(line);
+            }
+        }
+        LogInfo.logs("All passages loaded.");
     }
 
 
