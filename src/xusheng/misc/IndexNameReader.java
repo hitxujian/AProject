@@ -17,19 +17,23 @@ import java.util.Map;
 public class IndexNameReader {
 
     private String path = "/home/xusheng/starry/baidubaike/edge_dict.tsv";
-    private Map<String, Integer> name2Idx = null;
-    private Map<Integer, String> idx2Name = null;
+    private Map<String, Integer> name2Idx;
+    private Map<Integer, String> idx2Name;
 
     public IndexNameReader(String fp) {
         path = fp;
+        name2Idx = null;
+        idx2Name = null;
     }
 
     public Integer getIdx(String name) {
+        if (name2Idx == null) LogInfo.logs("Error! Pls initialize before using!");
         if (name2Idx.containsKey(name)) return name2Idx.get(name);
         else return null;
     }
 
     public String getName(int idx) {
+        if (idx2Name == null) LogInfo.logs("Error! Pls initialize before using!");
         if (idx2Name.containsKey(idx)) return idx2Name.get(idx);
         else return null;
     }
