@@ -33,7 +33,7 @@ public class InitialCleaner {
     }
 
     public static void generateEdgeDict() throws IOException {
-        File f = new File(relFp + "/infobox.url");
+        File f = new File(relFp + "/infobox.text");
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         f = new File(relFp + "/edge_dict.tsv");
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
