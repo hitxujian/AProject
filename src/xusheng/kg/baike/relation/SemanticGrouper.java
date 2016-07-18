@@ -185,9 +185,9 @@ public class SemanticGrouper implements Runnable{
             String fp = rootFp + "/content/" + (i+1) + ".txt";
             BufferedReader br = new BufferedReader(new FileReader(fp));
             String line;
-            while ((line = br.readLine()) != null) {
+            passages[i] = new StringBuffer();
+            while ((line = br.readLine()) != null)
                 passages[i].append(line);
-            }
         }
         LogInfo.logs("All passages loaded.");
     }
