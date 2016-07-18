@@ -33,7 +33,7 @@ public class SemanticGrouper implements Runnable{
 
     public static int curr = -1, end = -1;
     public static synchronized int getCurr() {
-        if (curr < end) {
+        if (curr <= end) {
             int ret = curr;
             curr ++;
             return ret;
@@ -95,6 +95,7 @@ public class SemanticGrouper implements Runnable{
         LogInfo.logs("[%d, %d]: ch-str index done. Size: %d, %d. [%s]",
                 st, ed, ch2str.size(), subj2robj.size(), new Date().toString());
         //------- scan one pass of all the passages ---------
+        boolean flag = true;
         for (int i=1; i<300; i++) {
             if (i % 10 ==0)
                 LogInfo.logs("[%d, %d]: %d passages scanned. [%s]", st, ed, i, new Date().toString());
@@ -105,6 +106,10 @@ public class SemanticGrouper implements Runnable{
                     for (String subj : candSubj) {
                         if (j + subj.length() <= passage.length() &&
                                 passage.substring(j, j + subj.length()).equals(subj)) {
+                            if (flag) {
+                                flag = false;
+                                LogInfo.logs(subj + " ||| " + passage.subSequence(j, j+subj.length()+lenOfwIn));
+                            }
                             extendVector(passage.substring(j + subj.length(), j + subj.length() + lenOfwIn),
                                     subj2robj.get(subj));
                         }
