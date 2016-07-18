@@ -42,6 +42,7 @@ public class InitialCleaner {
         Set<String> set = new HashSet<>();
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
+            if (spt.length < 3) continue;
             String rel = spt[1];
             if (rel.equals("")) rel = "EMPTY";
             if (!set.contains(rel)) {
