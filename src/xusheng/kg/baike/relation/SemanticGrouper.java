@@ -160,6 +160,10 @@ public class SemanticGrouper implements Runnable{
         relTasks = new List[numOfRel+1];
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
+            if (spt.length<3) {
+                LogInfo.logs(line);
+                continue;
+            }
             relTasks[Integer.parseInt(spt[1])].add(spt[0] + "\t" + spt[2]);
         }
         br.close();
