@@ -112,7 +112,6 @@ public class InitialCleaner {
     // get infobox.text.v1 from infobox.text
     public static void transformInfoboxText() throws IOException {
         IndexNameReader inr_0 = new IndexNameReader(relFp + "/edge_dict.tsv");
-        IndexNameReader inr_1 = new IndexNameReader(relFp + "/edge_dict.tsv.v1");
         IndexNameReader inr_x = new IndexNameReader(relFp + "/edge_dict.tsv.v0Tv1");
         inr_0.initializeFromName2Idx();
         inr_x.initializeFromIdx2Name();
@@ -122,8 +121,15 @@ public class InitialCleaner {
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             if (spt.length < 3) continue;
-            bw.write(getChinese(spt[0]) + "\t" + inr_x.getName(inr_0.getIdx(spt[1]))
-                        + "\t" + getChinese(spt[2]) + "\n");
+            String subj = getChinese(spt[0]);
+            String obj = getChinese(spt[2]);
+            if (subj.equals("") || obj.equals("")) continue;
+            Integer idx = inr_0.getIdx(spt[1]);
+            if (idx == null) LogInfo.logs(spt[1]);
+            String name = inr_x.getName(idx);
+            if (name == null) LogInfo.logs(idx + "\t" + spt[1]);
+            bw.write(subj + "\t" + name
+                        + "\t" + obj + "\n");
         }
         bw.close();
         LogInfo.logs("infobox.text.v1 written.");
