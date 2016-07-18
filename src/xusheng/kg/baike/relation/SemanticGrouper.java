@@ -147,7 +147,7 @@ public class SemanticGrouper implements Runnable{
         StringBuffer passage = passages[idx];
         int j = 0;
         while (j < passage.length()) {
-            if (j / 1000000 == 0)
+            if (j % 10000 == 0)
                 LogInfo.logs("[%d]: %d/%d scanned. [%s]", idx, j, passage.length(), new Date().toString());
             if (ch2str.containsKey(String.valueOf(passage.charAt(j)))) {
                 List<String> candSubj = ch2str.get(String.valueOf(passage.charAt(j)));
