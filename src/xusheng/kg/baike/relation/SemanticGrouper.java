@@ -99,8 +99,10 @@ public class SemanticGrouper implements Runnable{
             StringBuffer passage = passages[i];
             for (int j = 0; j < passage.length(); j++) {
                 if (ch2str.containsKey(passage.charAt(j))) {
+                    LogInfo.logs("[%d, %d]: %s", st, ed, passage.charAt(j));
                     List<String> candSubj = ch2str.get(passage.charAt(j));
                     for (String subj : candSubj) {
+                        LogInfo.logs("[%d, %d]: %s ||| %s", st, ed, subj, passage.substring(j, j + subj.length()));
                         if (j + subj.length() <= passage.length() &&
                                 passage.substring(j, j + subj.length()).equals(subj)) {
                             LogInfo.logs(subj + " ||| " + passage.subSequence(j, j+subj.length()+lenOfwIn));
