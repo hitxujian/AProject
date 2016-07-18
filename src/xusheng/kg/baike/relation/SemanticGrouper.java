@@ -24,7 +24,7 @@ public class SemanticGrouper implements Runnable{
             try {
                 int idx = getCurr();
                 if (idx == -1) return;
-                work(idx);
+                work4pas(idx);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -33,7 +33,7 @@ public class SemanticGrouper implements Runnable{
 
     public static int curr = -1, end = -1;
     public static synchronized int getCurr() {
-        if (curr <= end) {
+        if (curr < end) {
             int ret = curr;
             curr ++;
             return ret;
@@ -45,9 +45,9 @@ public class SemanticGrouper implements Runnable{
     public static void multiThreadWork() throws Exception {
         readRelEpMap();
         readPassages();
-        curr = 1; end = numOfRel / 10000 + 1;
+        curr = 1; end = 300;
         LogInfo.logs("Begin to construct vector rep. of relations...");
-        int numOfThreads = 19;
+        int numOfThreads = 20;
         SemanticGrouper workThread = new SemanticGrouper();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
 
@@ -62,7 +62,8 @@ public class SemanticGrouper implements Runnable{
     }
 
     public static int numOfNull = 0;
-    public static void work(int idx) throws Exception {
+    // each thread works for one set of relations on all passages
+    public static void work4rel(int idx) throws Exception {
         int ed = idx * 10000;
         int st = ed - 10000 + 1;
         if (ed > numOfRel) ed = numOfRel;
@@ -113,9 +114,64 @@ public class SemanticGrouper implements Runnable{
         LogInfo.logs("[%d, %d]: Passage scanning finished. [%s]", st, ed, new Date().toString());
     }
 
-    // add wordsInBetween to the raw vector of a specific relation
-    public static void extendVector(String text, List<String> target) {
+    // each thread works for all relations on one passage
+    public static void work4pas(int idx) throws Exception {
+        int ed = 1;
+        int st = numOfRel;
+        LogInfo.logs("Working for passage %d... [%s]", idx, new Date().toString());
+        //------ construct first word TO subj & subj TO rel+obj index --------
+        Map<String, List<String>> ch2str = new HashMap<>(),
+                subj2robj = new HashMap<>();
+        for (int i=st; i<=ed; i++) {
+            if (relTasks[i] == null) {
+                numOfNull ++;
+                continue;
+            }
+            List<String> triples4OneRel = relTasks[i];
+            for (String triple : triples4OneRel) {
+                String[] spt = triple.split("\t");
+                String subj = spt[0], robj = String.valueOf(i) + "\t" + spt[1];
+                String ch = subj.substring(0,1);
+                if (!ch2str.containsKey(ch))
+                    ch2str.put(ch, new ArrayList<>());
+                ch2str.get(ch).add(subj);
+                if (!subj2robj.containsKey(subj))
+                    subj2robj.put(subj, new ArrayList<>());
+                subj2robj.get(subj).add(robj);
+            }
+            // release memory
+            relTasks[i].clear();
+        }
+        LogInfo.logs("[%d]: ch-str index done. Size: %d, %d. [%s]",
+                idx, ch2str.size(), subj2robj.size(), new Date().toString());
 
+        //------- scan one pass of the passage ---------
+        StringBuffer passage = passages[idx];
+        int j = 0;
+        while (j < passage.length()) {
+            if (j / 1000000 == 0)
+                LogInfo.logs("[%d]: %d/%d scanned. [%s]", idx, j, passage.length(), new Date().toString());
+            if (ch2str.containsKey(String.valueOf(passage.charAt(j)))) {
+                List<String> candSubj = ch2str.get(String.valueOf(passage.charAt(j)));
+                for (String subj : candSubj) {
+                    if (j + subj.length() <= passage.length() &&
+                            passage.substring(j, j + subj.length()).equals(subj)) {
+                        //LogInfo.logs(subj + " ||| " + passage.substring(j, j+subj.length()+lenOfwIn));
+                        if (extendVector(passage.substring(j + subj.length(), j + subj.length() + lenOfwIn),
+                                subj2robj.get(subj))) {
+                            j += (subj.length() + lenOfwIn)-1;
+                            break;
+                        }
+                    }
+                }
+            }
+            j++;
+        }
+        LogInfo.logs("[%d]: Passage scanning finished. [%s]", idx, new Date().toString());
+    }
+
+    // add wordsInBetween to the raw vector of a specific relation
+    public static boolean extendVector(String text, List<String> target) {
         for (String str: target) {
             String[] spt = str.split("\t");
             int idx = Integer.parseInt(spt[0]);
@@ -123,8 +179,10 @@ public class SemanticGrouper implements Runnable{
             if (text.contains(obj)) {
                 int pos = text.indexOf(obj);
                 modifyRel2BOW(idx, text.substring(0, pos));
+                return true;
             }
         }
+        return false;
     }
 
     public static synchronized void modifyRel2BOW(int idx, String str) {
