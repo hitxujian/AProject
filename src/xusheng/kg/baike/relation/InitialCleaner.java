@@ -43,6 +43,7 @@ public class InitialCleaner {
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             String rel = spt[1];
+            if (rel.equals("")) rel = "EMPTY";
             if (!set.contains(rel)) {
                 idx ++;
                 set.add(rel);
@@ -65,6 +66,11 @@ public class InitialCleaner {
             String idx = line.split("\t")[0];
             String rel = line.split("\t")[1];
             String newRel = "";
+            if (rel.equals("EMPTY")) {
+                newRel = rel;
+                bw.write(idx + "\t" + newRel + "\n");
+                continue;
+            }
             for (char c: rel.toCharArray()) {
                 if (isChinese(c)) newRel += c;
                 if (newRel.equals("")) newRel = "EMPTY";
