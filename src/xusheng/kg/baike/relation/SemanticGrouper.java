@@ -33,7 +33,7 @@ public class SemanticGrouper implements Runnable{
 
     public static int curr = -1, end = -1;
     public static synchronized int getCurr() {
-        if (curr < end) {
+        if (curr <= end) {
             int ret = curr;
             curr ++;
             return ret;
@@ -42,13 +42,12 @@ public class SemanticGrouper implements Runnable{
     }
 
     public static Map<Integer, StringBuffer> rel2BOW = new HashMap<>();
-    public static void multiThreadWork() throws Exception {
+    public static void multiThreadWork(int st, int ed, int numOfThreads) throws Exception {
         readRelEpMap();
-        readPassages();
+        readPassages(st, ed);
         constructIdx();
-        curr = 1; end = 300;
+        curr = st; end = ed;
         LogInfo.logs("Begin to construct vector rep. of relations...");
-        int numOfThreads = 27;
         SemanticGrouper workThread = new SemanticGrouper();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
 
@@ -127,7 +126,7 @@ public class SemanticGrouper implements Runnable{
             if (ch2str.containsKey(String.valueOf(passage.charAt(j)))) {
                 List<String> candSubj = ch2str.get(String.valueOf(passage.charAt(j)));
                 for (String subj : candSubj) {
-                    if (j + subj.length() <= passage.length() &&
+                    if (j + subj.length() + lenOfwIn <= passage.length() &&
                             passage.substring(j, j + subj.length()).equals(subj)) {
                         //LogInfo.logs(subj + " ||| " + passage.substring(j, j+subj.length()+lenOfwIn));
                         if (extendVector(passage.substring(j + subj.length(), j + subj.length() + lenOfwIn),
@@ -242,8 +241,8 @@ public class SemanticGrouper implements Runnable{
     }
 
     public static StringBuffer[] passages = new StringBuffer[300];
-    public static void readPassages() throws IOException {
-        for (int i=1; i<300; i++) {
+    public static void readPassages(int st, int ed) throws IOException {
+        for (int i=st; i<=ed; i++) {
             // todo: check 270.txt non-exsit
             if (i == 270) {
                 passages[i] = new StringBuffer();
@@ -257,7 +256,7 @@ public class SemanticGrouper implements Runnable{
             while ((line = br.readLine()) != null)
                 passages[i].append(line);
         }
-        LogInfo.logs("[log] All passages loaded.");
+        LogInfo.logs("[log] %d-%d passages loaded.", st, ed);
     }
 
 
@@ -265,6 +264,6 @@ public class SemanticGrouper implements Runnable{
     public static void main(String[] args) throws Exception {
         numOfRel = Integer.parseInt(args[0]);
         lenOfwIn = Integer.parseInt(args[1]);
-        multiThreadWork();
+        multiThreadWork(Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
     }
 }
