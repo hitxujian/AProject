@@ -2,6 +2,8 @@ package xusheng.kg.baike.relation;
 
 import fig.basic.LogInfo;
 import fig.basic.Pair;
+import xusheng.misc.IndexNameReader;
+import xusheng.util.struct.MapHelper;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -36,19 +38,43 @@ public class RawVecSummarizer implements Runnable {
         return -1;
     }
 
-    public static Set<Pair<Integer, Integer>> visited = new HashSet<>();
-    public static synchronized void addLock(Pair<Integer, Integer> pair) {
-        visited.add(pair);
+    public static synchronized void writeRet(String ret) throws IOException{
+        bw.write(ret);
     }
 
-    public static void calcuSim(int idx) {
-        List<String> vector = vectors.get(idx);
+    public static void calcuSim(int idx) throws IOException{
+        LogInfo.logs("[log] Working for relation No.%d. [%s]", idx, new Date().toString());
+        List<String> vectorA = vectors.get(idx);
+        Map<Integer, Double> posA = getPos(vectorA);
+        // calculate similarities between relations whose idx are bigger
+        for (int i=idx+1; i<=numOfRel; i++) {
+            if (!vectors.containsKey(i)) continue;
+            List<String> vectorB = vectors.get(i);
+            Map<Integer, Double> posB = getPos(vectorB);
+            double sum = 0;
+            for (Map.Entry<Integer, Double> entry : posA.entrySet())
+                if (posB.containsKey(entry.getKey()))
+                    sum += entry.getValue() * posB.get(entry.getKey());
+            writeRet(String.format("%d %d\t%.4f\n", idx, i, sum));
+        }
+        LogInfo.logs("[log] Done for relation No.%d. [%s]", idx, new Date().toString());
     }
 
+    public static Map<Integer, Double> getPos(List<String> vec) {
+        Map<Integer, Double> ret = new HashMap<>();
+        for (String str: vec) {
+            String[] spt = str.split("\t");
+            ret.put(Integer.parseInt(spt[0]), Double.parseDouble(spt[1]));
+        }
+        return ret;
+    }
+
+    public static BufferedWriter bw;
     public static void multiThreadWork() throws Exception {
         readVectors();
         curr = 1;
         end = numOfRel;
+        bw = new BufferedWriter(new FileWriter(rootFp + "/rel_simi.txt"));
         LogInfo.logs("Begin to calculate similarities...");
         int numberOfThreads = 32;
         RawVecSummarizer workThread = new RawVecSummarizer();
@@ -56,6 +82,7 @@ public class RawVecSummarizer implements Runnable {
         LogInfo.begin_track("%d threads are running...", numberOfThreads);
         multi.runMultiThread();
         LogInfo.end_track();
+        bw.close();
     }
 
     // ------------ pre-processing ---------------
@@ -75,9 +102,13 @@ public class RawVecSummarizer implements Runnable {
 
     public static int numOfRel = -1;
     public static void main(String[] args) throws Exception {
+        // step 1.
         createTable();
+        // step 2.
         numOfRel = Integer.parseInt(args[0]);
         multiThreadWork();
+        // step 3.
+        sortAndShowRelName();
     }
 
     // ------------ construct tables ---------------
@@ -126,5 +157,26 @@ public class RawVecSummarizer implements Runnable {
         LogInfo.logs("Real vectors generated.");
     }
 
-
+    // ------------ post processing ----------------
+    public static void sortAndShowRelName() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/rel_simi.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/rel_simi.visual"));
+        String line;
+        Map<String, Double> map = new HashMap<>();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            map.put(spt[0], Double.parseDouble(spt[1]));
+        }
+        List<Map.Entry<String, Double>> sorted = MapHelper.sort(map);
+        IndexNameReader inr = new IndexNameReader(rootFp + "/edge_dict.tsv.v1");
+        inr.initializeFromIdx2Name();
+        for (int i=0; i<sorted.size(); i++) {
+            String[] spt = sorted.get(i).getKey().split(" ");
+            bw.write(inr.getName(Integer.parseInt(spt[0])) + " " +
+                    inr.getName(Integer.parseInt(spt[1])) + "\t" +
+                    sorted.get(i).getValue() + "\n");
+        }
+        bw.close();
+        LogInfo.logs("Visualization for rel_simi.txt done.");
+    }
 }
