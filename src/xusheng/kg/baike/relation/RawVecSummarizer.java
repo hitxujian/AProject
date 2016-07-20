@@ -162,7 +162,7 @@ public class RawVecSummarizer implements Runnable {
         BufferedReader br = new BufferedReader(new FileReader(rootFp + "/rel_simi.txt"));
         BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/rel_simi.visual"));
         String line;
-        Map<String, Double> map = new HashMap<>();
+        HashMap<String, Double> map = new HashMap<>();
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             map.put(spt[0], Double.parseDouble(spt[1]));
