@@ -104,7 +104,7 @@ public class RawVecSummarizer implements Runnable {
     public static int numOfRel = -1;
     public static void main(String[] args) throws Exception {
         // step 1.
-        getTogether();
+        //getTogether();
         createTable();
         // step 2.
         numOfRel = Integer.parseInt(args[0]);
