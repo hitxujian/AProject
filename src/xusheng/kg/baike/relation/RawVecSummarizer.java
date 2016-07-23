@@ -64,7 +64,7 @@ public class RawVecSummarizer implements Runnable {
     public static Map<Integer, Double> getPos(List<String> vec) {
         Map<Integer, Double> ret = new HashMap<>();
         for (String str: vec) {
-            String[] spt = str.split("\t");
+            String[] spt = str.split(" ");
             ret.put(Integer.parseInt(spt[0]), Double.parseDouble(spt[1]));
         }
         return ret;
