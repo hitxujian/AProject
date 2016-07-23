@@ -21,7 +21,8 @@ public class RawVecSummarizer implements Runnable {
         while (true) {
             try {
                 int idx = getCurr();
-                if (idx == -1 || !vectors.containsKey(idx)) return;
+                if (idx == -1) return;
+                if (!vectors.containsKey(idx)) continue;
                 calcuSim(idx);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -105,7 +106,7 @@ public class RawVecSummarizer implements Runnable {
     public static void main(String[] args) throws Exception {
         // step 1.
         //getTogether();
-        createTable();
+        //createTable();
         // step 2.
         numOfRel = Integer.parseInt(args[0]);
         multiThreadWork();
