@@ -135,7 +135,7 @@ public class RawVecSummarizer implements Runnable {
         for (Map.Entry<String, StringBuffer> entry: map.entrySet())
             bw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
         bw.close();
-        LogInfo.logs("raw_vectors.txt.0 is written.");
+        LogInfo.logs("raw_vectors.txt.0 is written. Size: %d.", map.size());
     }
 
     public static Map<String, Integer> charSet = new HashMap<>();
@@ -147,7 +147,7 @@ public class RawVecSummarizer implements Runnable {
             String[] spt = line.split("\t");
             String rawVec = spt[1];
             for (char ch: rawVec.toCharArray()) {
-                if (!charSet.containsKey(ch)) {
+                if (!charSet.containsKey(String.valueOf(ch))) {
                     charSet.put(String.valueOf(ch), chIdx);
                     chIdx ++;
                 }
@@ -164,7 +164,7 @@ public class RawVecSummarizer implements Runnable {
             int relIdx = Integer.parseInt(spt[0]);
             int total = 0;
             for (char ch: rawVec.toCharArray()) {
-                int idx = charSet.get(ch);
+                int idx = charSet.get(String.valueOf(ch));
                 realvec[idx] ++;
                 total ++;
             }
