@@ -89,7 +89,7 @@ public class RawVecSummarizer implements Runnable {
     // ------------ pre-processing ---------------
     public static Map<Integer, List<String>> vectors = new HashMap<>();
     public static void readVectors() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/real_vectors"));
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/real_vectors.txt"));
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
@@ -168,7 +168,8 @@ public class RawVecSummarizer implements Runnable {
                 realvec[idx] ++;
                 total ++;
             }
-            bw.write(relIdx);
+            bw.write(String.valueOf(relIdx));
+            LogInfo.logs(relIdx);
             for (int i=0; i<charSet.size(); i++) {
                 if (realvec[i] != 0) {
                     double tmp = realvec[i] / total;
