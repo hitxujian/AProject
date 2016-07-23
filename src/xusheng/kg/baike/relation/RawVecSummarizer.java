@@ -110,7 +110,7 @@ public class RawVecSummarizer implements Runnable {
         numOfRel = Integer.parseInt(args[0]);
         multiThreadWork();
         // step 3.
-        sortAndShowRelName();
+        //sortAndShowRelName();
     }
 
     // ------------ construct tables ---------------
@@ -122,6 +122,10 @@ public class RawVecSummarizer implements Runnable {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] spt = line.split("\t");
+                if (spt.length < 2) {
+                    LogInfo.logs(line);
+                    continue;
+                }
                 if (!map.containsKey(spt[0]))
                     map.put(spt[0], new StringBuffer());
                 map.get(spt[0]).append(spt[1]);
