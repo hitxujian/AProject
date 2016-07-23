@@ -7,6 +7,7 @@ import xusheng.util.struct.MapHelper;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
+import java.nio.Buffer;
 import java.util.*;
 
 /**
@@ -103,6 +104,7 @@ public class RawVecSummarizer implements Runnable {
     public static int numOfRel = -1;
     public static void main(String[] args) throws Exception {
         // step 1.
+        getTogether();
         createTable();
         // step 2.
         numOfRel = Integer.parseInt(args[0]);
@@ -112,9 +114,29 @@ public class RawVecSummarizer implements Runnable {
     }
 
     // ------------ construct tables ---------------
+    public static void getTogether() throws IOException {
+        Map<String, StringBuffer> map = new HashMap<>();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/raw_vectors.txt.0"));
+        for (int i=1; i<=3; i++) {
+            BufferedReader br = new BufferedReader(new FileReader(rootFp + "/raw_vectors.txt." + i));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] spt = line.split("\t");
+                if (!map.containsKey(spt[0]))
+                    map.put(spt[0], new StringBuffer());
+                map.get(spt[0]).append(spt[1]);
+            }
+            br.close();
+        }
+        for (Map.Entry<String, StringBuffer> entry: map.entrySet())
+            bw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
+        bw.close();
+        LogInfo.logs("raw_vectors.txt.0 is written.");
+    }
+
     public static Map<String, Integer> charSet = new HashMap<>();
     public static void createTable() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/raw_vectors"));
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/raw_vectors.txt.0"));
         String line;
         int chIdx = 0;
         while ((line = br.readLine()) != null) {
@@ -129,8 +151,8 @@ public class RawVecSummarizer implements Runnable {
         }
         LogInfo.logs("Char set created. Size: %d", charSet.size());
 
-        br = new BufferedReader(new FileReader(rootFp + "/raw_vectors"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/real_vectors"));
+        br = new BufferedReader(new FileReader(rootFp + "/raw_vectors.txt.0"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/real_vectors.txt"));
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             String rawVec = spt[1];
