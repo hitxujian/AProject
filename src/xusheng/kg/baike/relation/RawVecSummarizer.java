@@ -109,9 +109,9 @@ public class RawVecSummarizer implements Runnable {
         //createTable();
         // step 2.
         numOfRel = Integer.parseInt(args[0]);
-        multiThreadWork();
+        //multiThreadWork();
         // step 3.
-        //sortAndShowRelName();
+        sortAndShowRelName();
     }
 
     // ------------ construct tables ---------------
