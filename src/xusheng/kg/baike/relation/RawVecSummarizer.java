@@ -170,7 +170,6 @@ public class RawVecSummarizer implements Runnable {
                 total ++;
             }
             bw.write(String.valueOf(relIdx));
-            LogInfo.logs(relIdx);
             for (int i=0; i<charSet.size(); i++) {
                 if (realvec[i] != 0) {
                     double tmp = realvec[i] / total;
