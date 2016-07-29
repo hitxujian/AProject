@@ -2,6 +2,7 @@ package xusheng.kg.baike.relation;
 
 import fig.basic.LogInfo;
 import xusheng.misc.IndexNameReader;
+import xusheng.misc.SortVisualizer;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -13,6 +14,8 @@ import java.util.*;
  * Output is the idx-idx relation similarity scores
  * Using the relation itself co-occurrence method
  */
+
+
 public class CoOccurrence implements Runnable{
     public static String rootFp = "/home/xusheng/starry/baidubaike";
 
@@ -39,21 +42,44 @@ public class CoOccurrence implements Runnable{
         return -1;
     }
 
-    public static synchronized void writeRet(String ret) throws IOException {
-        bw.write(ret);
+    public static synchronized void writeR(String ret) throws IOException {
+        bwR.write(ret);
+    }
+
+    public static synchronized void writeN(String ret) throws IOException {
+        bwN.write(ret);
     }
 
     public static void calcuSim(int idx) throws IOException{
         LogInfo.logs("[log] Working for relation No.%d. [%s]", idx, new Date().toString());
-        String relName = inr.getName(idx);
+        String relNameA = inr.getName(idx);
         for (int i=idx+1; i<=numOfRel; i++) {
-            String content = vectors.get(i);
-
+            if (!vectors.containsKey(i)) continue;
+            int timesA = 0;
+            String contentB = vectors.get(i);
+            int lenB = contentB.length();
+            while (contentB.contains(relNameA)) {
+                timesA ++;
+                contentB = contentB.substring(contentB.indexOf(relNameA) + relNameA.length(), contentB.length());
+            }
+            // other side
+            int timesB = 0;
+            String contentA = vectors.get(idx);
+            int lenA = contentA.length();
+            String relNameB = inr.getName(i);
+            while (contentA.contains(relNameB)) {
+                timesB ++;
+                contentA = contentA.substring(contentA.indexOf(relNameB) + relNameB.length(), contentA.length());
+            }
+            double ratioA = (double)(timesA * relNameA.length()) / lenA;
+            double ratioB = (double)(timesB * relNameB.length()) / lenB;
+            writeN(idx + " " + i + "\t" + (timesA+timesB) + "\n");
+            writeR(idx + " " + i + "\t" + (ratioA+ratioB) + "\n");
         }
         LogInfo.logs("[log] Done for relation No.%d. [%s]", idx, new Date().toString());
     }
 
-    public static BufferedWriter bw;
+    public static BufferedWriter bwR, bwN;
     public static IndexNameReader inr;
     public static void multiThreadWork() throws Exception {
         readVectors();
@@ -61,7 +87,8 @@ public class CoOccurrence implements Runnable{
         end = numOfRel;
         inr = new IndexNameReader("/home/xusheng/starry/baidubaike/edge_dict.tsv.v1");
         inr.initializeFromIdx2Name();
-        bw = new BufferedWriter(new FileWriter(rootFp + "/rel_cooccur.txt"));
+        bwR = new BufferedWriter(new FileWriter(rootFp + "/rel_cooccurR.txt"));
+        bwN = new BufferedWriter(new FileWriter(rootFp + "/rel_cooccurN.txt"));
         LogInfo.logs("Begin to calculate similarities...");
         int numberOfThreads = 32;
         CoOccurrence workThread = new CoOccurrence();
@@ -69,7 +96,12 @@ public class CoOccurrence implements Runnable{
         LogInfo.begin_track("%d threads are running...", numberOfThreads);
         multi.runMultiThread();
         LogInfo.end_track();
-        bw.close();
+        bwR.close();
+        bwN.close();
+        SortVisualizer.sortAndShowRelName(rootFp + "/rel_cooccurR.txt",
+                rootFp + "/rel_cooccurR.txt.vis", rootFp + "/edge_dict.tsv.v1");
+        SortVisualizer.sortAndShowRelName(rootFp + "/rel_cooccurN.txt",
+                rootFp + "/rel_cooccurN.txt.vis", rootFp + "/edge_dict.tsv.v1");
     }
 
 
