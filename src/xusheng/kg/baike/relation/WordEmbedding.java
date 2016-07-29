@@ -1,20 +1,20 @@
 package xusheng.kg.baike.relation;
 
 import fig.basic.LogInfo;
-import fig.basic.Pair;
 import xusheng.misc.IndexNameReader;
 import xusheng.util.struct.MapHelper;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
-import java.nio.Buffer;
 import java.util.*;
 
 /**
  * Created by Xusheng on 7/18/2016.
- *
+ * Input is the idx-raw words form vectors
+ * Output is the idx-idx relation similarity scores
+ * Using the word embedding method
  */
-public class RawVecSummarizer implements Runnable {
+public class WordEmbedding implements Runnable {
     public static String rootFp = "/home/xusheng/starry/baidubaike";
 
     public void run() {
@@ -79,7 +79,7 @@ public class RawVecSummarizer implements Runnable {
         bw = new BufferedWriter(new FileWriter(rootFp + "/rel_simi.txt"));
         LogInfo.logs("Begin to calculate similarities...");
         int numberOfThreads = 32;
-        RawVecSummarizer workThread = new RawVecSummarizer();
+        WordEmbedding workThread = new WordEmbedding();
         MultiThread multi = new MultiThread(numberOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numberOfThreads);
         multi.runMultiThread();
@@ -206,4 +206,6 @@ public class RawVecSummarizer implements Runnable {
         bw.close();
         LogInfo.logs("Visualization for rel_simi.txt done.");
     }
+
+    // ------------
 }
