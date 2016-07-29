@@ -74,7 +74,7 @@ public class CoOccurrence implements Runnable{
             double ratioA = (double)(timesA * relNameA.length()) / lenA;
             double ratioB = (double)(timesB * relNameB.length()) / lenB;
             writeN(idx + " " + i + "\t" + (timesA+timesB) + "\n");
-            writeR(xidx + " " + i + "\t" + (ratioA+ratioB) + "\n");
+            writeR(idx + " " + i + "\t" + (ratioA+ratioB) + "\n");
         }
         LogInfo.logs("[log] Done for relation No.%d. [%s]", idx, new Date().toString());
     }
