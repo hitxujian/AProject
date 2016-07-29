@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 public class MapHelper<T, V extends Comparable<V>> {
 
 	// descending order
-	public static <T, V extends Comparable<V>> List<Entry<T, V>> sort(Map<T, V> mp) {
+	public static <T, V extends Comparable<V>> ArrayList<Entry<T, V>> sort(HashMap<T, V> mp) {
 		ArrayList<Entry<T, V>> ret = new ArrayList<>(mp.entrySet());
 		Collections.sort(ret, new Comparator<Entry<T, V>>() {
 			public int compare(Entry<T, V> o1, Entry<T, V> o2) {
