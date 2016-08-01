@@ -1,7 +1,6 @@
-package xusheng.kg.baike.relation;
+package xusheng.kg.baike.relation.baseline;
 
 import fig.basic.LogInfo;
-import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;

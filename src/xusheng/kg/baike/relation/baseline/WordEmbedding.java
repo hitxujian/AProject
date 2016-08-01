@@ -1,4 +1,4 @@
-package xusheng.kg.baike.relation;
+package xusheng.kg.baike.relation.baseline;
 
 import fig.basic.LogInfo;
 import xusheng.misc.IndexNameReader;
