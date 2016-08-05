@@ -145,6 +145,29 @@ public class InitialCleaner {
         LogInfo.logs("infobox.text.v1 written.");
     }
 
+    // remove those relations with supports num less than like 20
+    public static void chooseTopSupp() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(relFp + "/infobox.text.v1"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(relFp + "/relations.todo.20"));
+        String line;
+        HashMap<String, Set<String>> map = new HashMap<>();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            if (!map.containsKey(spt[1])) {
+                map.put(spt[1], new HashSet<>());
+            }
+            map.get(spt[1]).add(spt[0] + spt[2]);
+        }
+        IndexNameReader inr = new IndexNameReader(relFp + "/edge_dict.tsv.v1");
+        inr.initializeFromIdx2Name();
+        for (Map.Entry<String, Set<String>> entry: map.entrySet()) {
+            if (entry.getValue().size() >= 20) {
+                bw.write(entry.getKey() + "\t" +
+                        inr.getName(Integer.parseInt(entry.getKey())) + "\n");
+            }
+        }
+    }
+
     public static String getChinese(String str) {
         String ret = "";
         for (char ch: str.toCharArray()) {
@@ -154,9 +177,10 @@ public class InitialCleaner {
     }
 
     public static void main(String[] args) throws IOException {
-        generateEdgeDict();
+        /*generateEdgeDict();
         removeMarks();
         group();
-        transformInfoboxText();
+        transformInfoboxText();*/
+        chooseTopSupp();
     }
 }
