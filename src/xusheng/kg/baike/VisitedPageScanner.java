@@ -38,7 +38,7 @@ public class VisitedPageScanner {
         }
         bw.close();
         Set<String> todo = new HashSet<>();
-        BufferedReader br = new BufferedReader(new FileReader(root + "/data_v2/unvisited." + yesterday));
+        BufferedReader br = new BufferedReader(new FileReader(root + "/unvisited." + yesterday));
         bw = new BufferedWriter(new FileWriter(root + "/unvisited." + today));
         String line;
         while ((line = br.readLine()) != null) {
