@@ -24,7 +24,7 @@ public class VisitedPageScanner {
             cnt += 10000;
             String name = (cnt - 10000 + 1) + "-" + cnt;
             for (int i = cnt - 10000 + 1; i <= cnt; i++) {
-                String fp = root + "/data_v2/" + name + "/" + i + ".html";
+                String fp = root + "/"  + name + "/" + i + ".html";
                 if (! new File(fp).exists()) break;
                 LogInfo.begin_track("Entering into %s...", fp);
                 BufferedReader br = new BufferedReader(new FileReader(fp));
