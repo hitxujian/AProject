@@ -2,12 +2,11 @@ package xusheng.kg.baike.relation.model;
 
 import xusheng.util.nlp.ChWordSegmentor;
 
-import java.util.Properties;
-
 /**
  * Created by Xusheng on 8/1/2016.
  * Perform Chinese Word Segmentation using Stanford
  */
+
 public class WordSegmenter implements Runnable{
 
     public void run() {
