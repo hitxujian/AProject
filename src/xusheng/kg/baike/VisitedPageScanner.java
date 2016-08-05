@@ -16,6 +16,7 @@ public class VisitedPageScanner {
     public static String root = "/home/xusheng/crawl/data_v2";
 
     public static void extractURLs(String today, String yesterday, int num) throws IOException {
+        LogInfo.logs("Begin scanning...");
         Set<String> urls = new HashSet<>();
         BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/visited." + today));
         int cnt = 0;
