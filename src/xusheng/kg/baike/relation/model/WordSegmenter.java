@@ -83,6 +83,7 @@ public class WordSegmenter implements Runnable{
     }
 
     public static void main(String[] args) throws Exception {
+        len = Integer.parseInt(args[0]);
         MultiThreadWork();
     }
 }
