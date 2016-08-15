@@ -18,22 +18,22 @@ public class WordSegmenter implements Runnable{
 
     public void run() {
         while (true) {
+            int idx = getCurr();
+            if (idx == -1) return;
+            String task = taskList[idx];
             try{
-                int idx = getCurr();
-                if (idx == -1) return;
-                String task = taskList[idx];
                 List<String> str = ChWordSegmentor.segment(task);
                 if (str == null) {
-                    LogInfo.logs("NULL for %s", task);
+                    LogInfo.logs("NULL for [%s]", task);
                     return;
                 }
                 String ret = "";
                 for (int i=0; i<str.size()-1; i++)
-                    ret += str.get(i) + " \\| ";
+                    ret += str.get(i) + " | ";
                 ret += str.get(str.size()-1) + "\n";
                 writeRet(idx + "\t" + ret);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LogInfo.logs("Exception in [%s]", task);
             }
         }
     }
