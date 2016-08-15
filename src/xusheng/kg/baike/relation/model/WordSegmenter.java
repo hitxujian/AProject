@@ -20,8 +20,13 @@ public class WordSegmenter implements Runnable{
         while (true) {
             try{
                 int idx = getCurr();
+                if (idx == -1) return;
                 String task = taskList[idx];
                 List<String> str = ChWordSegmentor.segment(task);
+                if (str == null) {
+                    LogInfo.logs("NULL for %s", task);
+                    return;
+                }
                 String ret = "";
                 for (int i=0; i<str.size()-1; i++)
                     ret += str.get(i) + " \\| ";
@@ -35,7 +40,7 @@ public class WordSegmenter implements Runnable{
 
     public static int curr = -1, end = -1;
     public static synchronized int getCurr() {
-        if (curr <= end) {
+        if (curr < end) {
             int ret = curr;
             curr ++;
             return ret;
