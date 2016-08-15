@@ -73,7 +73,7 @@ public class WordSegmenter implements Runnable{
     public static void readInput_v1() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(rootFp + "/edge_dict.tsv.v1"));
         String line;
-        taskList = new String[len];
+        taskList = new String[len+1];
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             taskList[Integer.parseInt(spt[0])] = spt[1];
