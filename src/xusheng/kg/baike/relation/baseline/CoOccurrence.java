@@ -117,9 +117,17 @@ public class CoOccurrence implements Runnable{
         LogInfo.logs("Relation vectors loaded. Size: %d", vectors.size());
     }
 
+    public static void sortRet() throws IOException {
+        SortVisualizer.sortAndShowRelName(rootFp + "/rel_cooccurR.txt",
+                rootFp + "/rel_cooccurR.txt.vis", rootFp + "/edge_dict.tsv.v1");
+        SortVisualizer.sortAndShowRelName(rootFp + "/rel_cooccurN.txt",
+                rootFp + "/rel_cooccurN.txt.vis", rootFp + "/edge_dict.tsv.v1");
+    }
+
     public static int numOfRel = -1;
     public static void main(String[] args) throws Exception {
         numOfRel = Integer.parseInt(args[0]);
-        multiThreadWork();
+        if (args[1].equals("MULTI")) multiThreadWork();
+        else sortRet();
     }
 }
