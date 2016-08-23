@@ -127,6 +127,6 @@ public class CoOccurrence implements Runnable{
     public static int numOfRel = -1;
     public static void main(String[] args) throws Exception {
         numOfRel = Integer.parseInt(args[0]);
-        sortRet();
+        multiThreadWork();
     }
 }
