@@ -37,4 +37,15 @@ public class SortVisualizer {
         bw.close();
         LogInfo.logs("Sort & Visualization %s done.", outFp);
     }
+
+    public static void sortRet(String rootFp) throws IOException {
+        SortVisualizer.sortAndShowRelName(rootFp + "/rel_cooccurR.txt",
+                rootFp + "/rel_cooccurR.txt.vis", rootFp + "/edge_dict.tsv.v1");
+        SortVisualizer.sortAndShowRelName(rootFp + "/rel_cooccurN.txt",
+                rootFp + "/rel_cooccurN.txt.vis", rootFp + "/edge_dict.tsv.v1");
+    }
+
+    public static void main(String[] args) throws IOException {
+        sortRet("/home/xusheng/starry/baidubaike");
+    }
 }
