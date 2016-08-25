@@ -26,6 +26,7 @@ public class SortVisualizer {
             cnt ++;
             LogUpgrader.showLine(cnt, 500000);
             String[] spt = line.split("\t");
+            if (spt.length < 2) continue;
             double value = Double.parseDouble(spt[1]);
             if (value == 0) continue;
             map.put(spt[0], value);
