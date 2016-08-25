@@ -1,6 +1,7 @@
 package xusheng.misc;
 
 import fig.basic.LogInfo;
+import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
 
 import java.io.*;
@@ -19,11 +20,15 @@ public class SortVisualizer {
     public static void sortAndShowRelName(String inFp, String outFp, String idxFp) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(inFp));
         BufferedWriter bw = new BufferedWriter(new FileWriter(outFp));
-        String line;
+        String line; int cnt = 0;
         HashMap<String, Double> map = new HashMap<>();
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 500000);
             String[] spt = line.split("\t");
-            map.put(spt[0], Double.parseDouble(spt[1]));
+            double value = Double.parseDouble(spt[1]);
+            if (value == 0) continue;
+            map.put(spt[0], value);
         }
         List<Map.Entry<String, Double>> sorted = MapHelper.sort(map);
         IndexNameReader inr = new IndexNameReader(idxFp);
