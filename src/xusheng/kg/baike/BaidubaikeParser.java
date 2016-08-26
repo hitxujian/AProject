@@ -13,7 +13,7 @@ import java.util.*;
  * During the extracting procedure, the entities are indexed in the mean time.
  */
 
-public class BaidubaikeWorker implements Runnable{
+public class BaidubaikeParser implements Runnable{
     public static String root = "/home/xusheng/crawl";
     public static int curr = -1, end = -1, inc = 0;
     public static BufferedWriter textBw, infoBw;
@@ -48,7 +48,7 @@ public class BaidubaikeWorker implements Runnable{
         curr = 1; end = 300;
         LogInfo.logs("Begin to Construct Article Idx and Extract Infobox...");
         int numOfThreads = 8;
-        BaidubaikeWorker workThread = new BaidubaikeWorker();
+        BaidubaikeParser workThread = new BaidubaikeParser();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();

@@ -16,7 +16,9 @@ import java.util.Map;
  */
 
 public class BkEntIdxReader {
-    public static String path = "/home/xusheng/pra/examples/graphs/baike/kb_svo/node_dict.tsv";
+    public static String bdpath = "/home/xusheng/pra/examples/graphs/baike/kb_svo/node_dict.tsv";
+    public static String hdpath = "/home/xusheng/starry/hudongbaike/edge_dict.tsv";
+
     public static Map<String, Integer> name2Idx = null;
     public static Map<Integer, String> idx2Name = null;
 
@@ -30,7 +32,10 @@ public class BkEntIdxReader {
         else return null;
     }
 
-    public static void initializeForBoth() throws IOException {
+    public static void initializeForBoth(String corpus) throws IOException {
+        String path;
+        if (corpus.equals("baidu")) path = bdpath;
+        else path = hdpath;
         if (name2Idx != null && idx2Name != null) return;
         name2Idx = new HashMap<>();
         idx2Name = new HashMap<>();
@@ -47,7 +52,10 @@ public class BkEntIdxReader {
         LogInfo.logs("BaiduBaike Entity-Idx(Both Sides) Read. Size: %d", cnt);
     }
 
-    public static void initializeFromName2Idx() throws IOException {
+    public static void initializeFromName2Idx(String corpus) throws IOException {
+        String path;
+        if (corpus.equals("baidu")) path = bdpath;
+        else path = hdpath;
         if (name2Idx != null) return;
         name2Idx = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path));
@@ -62,7 +70,10 @@ public class BkEntIdxReader {
         LogInfo.logs("BaiduBaike Entity-Idx(Name to Idx) Read. Size: %d", cnt);
     }
 
-    public static void initializeFromIdx2Name() throws IOException {
+    public static void initializeFromIdx2Name(String corpus) throws IOException {
+        String path;
+        if (corpus.equals("baidu")) path = bdpath;
+        else path = hdpath;
         if (idx2Name != null) return;
         idx2Name = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path));

@@ -15,7 +15,9 @@ import java.util.*;
  * Using the word embedding method
  */
 public class WordEmbedding implements Runnable {
-    public static String rootFp = "/home/xusheng/starry/baidubaike";
+    public static String baiduFp = "/home/xusheng/starry/baidubaike";
+    public static String hudongFp = "/home/xusheng/starry/hudongbaike";
+    public static String filePath = null;
 
     public void run() {
         while (true) {
@@ -76,7 +78,7 @@ public class WordEmbedding implements Runnable {
         readVectors();
         curr = 1;
         end = numOfRel;
-        bw = new BufferedWriter(new FileWriter(rootFp + "/rel_simi.txt"));
+        bw = new BufferedWriter(new FileWriter(filePath + "/rel_simi.txt"));
         LogInfo.logs("Begin to calculate similarities...");
         int numberOfThreads = 32;
         WordEmbedding workThread = new WordEmbedding();
@@ -90,7 +92,7 @@ public class WordEmbedding implements Runnable {
     // ------------ pre-processing ---------------
     public static Map<Integer, List<String>> vectors = new HashMap<>();
     public static void readVectors() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/real_vectors.txt"));
+        BufferedReader br = new BufferedReader(new FileReader(filePath + "/real_vectors.txt"));
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
@@ -107,19 +109,24 @@ public class WordEmbedding implements Runnable {
         // step 1.
         //getTogether();
         //createTable();
-        // step 2.
-        numOfRel = Integer.parseInt(args[0]);
-        //multiThreadWork();
+
+        // step 2. choose the corpus and run
+        if (args[0].equals("baidu")) filePath = baiduFp;
+        else filePath = hudongFp;
+        numOfRel = Integer.parseInt(args[1]);
+        multiThreadWork();
+
         // step 3.
+        // sort the result by similarity score and show the relation names
         sortAndShowRelName();
     }
 
     // ------------ construct tables ---------------
     public static void getTogether() throws IOException {
         Map<String, StringBuffer> map = new HashMap<>();
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/raw_vectors.txt.0"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath + "/raw_vectors.txt.0"));
         for (int i=1; i<=3; i++) {
-            BufferedReader br = new BufferedReader(new FileReader(rootFp + "/raw_vectors.txt." + i));
+            BufferedReader br = new BufferedReader(new FileReader(filePath + "/raw_vectors.txt." + i));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] spt = line.split("\t");
@@ -141,7 +148,7 @@ public class WordEmbedding implements Runnable {
 
     public static Map<String, Integer> charSet = new HashMap<>();
     public static void createTable() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/raw_vectors.txt.0"));
+        BufferedReader br = new BufferedReader(new FileReader(filePath + "/raw_vectors.txt.0"));
         String line;
         int chIdx = 0;
         while ((line = br.readLine()) != null) {
@@ -156,8 +163,8 @@ public class WordEmbedding implements Runnable {
         }
         LogInfo.logs("Char set created. Size: %d", charSet.size());
 
-        br = new BufferedReader(new FileReader(rootFp + "/raw_vectors.txt.0"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/real_vectors.txt"));
+        br = new BufferedReader(new FileReader(filePath + "/raw_vectors.txt.0"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath + "/real_vectors.txt"));
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             String rawVec = spt[1];
@@ -186,8 +193,8 @@ public class WordEmbedding implements Runnable {
 
     // ------------ post processing ----------------
     public static void sortAndShowRelName() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/rel_simi.txt"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/rel_simi.visual"));
+        BufferedReader br = new BufferedReader(new FileReader(filePath + "/rel_simi.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath + "/rel_simi.visual"));
         String line;
         HashMap<String, Double> map = new HashMap<>();
         while ((line = br.readLine()) != null) {
@@ -195,7 +202,7 @@ public class WordEmbedding implements Runnable {
             map.put(spt[0], Double.parseDouble(spt[1]));
         }
         List<Map.Entry<String, Double>> sorted = MapHelper.sort(map);
-        IndexNameReader inr = new IndexNameReader(rootFp + "/edge_dict.tsv.v1");
+        IndexNameReader inr = new IndexNameReader(filePath + "/edge_dict.tsv.v1");
         inr.initializeFromIdx2Name();
         for (int i=0; i<sorted.size(); i++) {
             String[] spt = sorted.get(i).getKey().split(" ");

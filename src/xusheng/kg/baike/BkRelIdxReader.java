@@ -15,7 +15,8 @@ import java.util.Map;
  */
 
 public class BkRelIdxReader {
-    public static String path = "/home/xusheng/starry/baidubaike/edge_dict.tsv";
+    public static String bdpath = "/home/xusheng/starry/baidubaike/edge_dict.tsv";
+    public static String hdpath = "/home/xusheng/starry/hudongbaike/edge_dict.tsv";
 
     public static Map<String, Integer> name2Idx = null;
     public static Map<Integer, String> idx2Name = null;
@@ -30,7 +31,10 @@ public class BkRelIdxReader {
         else return null;
     }
 
-    public static void initializeForBoth() throws IOException {
+    public static void initializeForBoth(String corpus) throws IOException {
+        String path;
+        if (corpus.equals("baidu")) path = bdpath;
+        else path = hdpath;
         if (name2Idx != null && idx2Name != null) return;
         name2Idx = new HashMap<>();
         idx2Name = new HashMap<>();
@@ -47,7 +51,10 @@ public class BkRelIdxReader {
         LogInfo.logs("BaiduBaike Relation-Idx(Both Sides) Read. Size: %d", cnt);
     }
 
-    public static void initializeFromName2Idx() throws IOException {
+    public static void initializeFromName2Idx(String corpus) throws IOException {
+        String path;
+        if (corpus.equals("baidu")) path = bdpath;
+        else path = hdpath;
         if (name2Idx != null) return;
         name2Idx = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path));
@@ -62,7 +69,10 @@ public class BkRelIdxReader {
         LogInfo.logs("BaiduBaike Relation-Idx(Name to Idx) Read. Size: %d", cnt);
     }
 
-    public static void initializeFromIdx2Name() throws IOException {
+    public static void initializeFromIdx2Name(String corpus) throws IOException {
+        String path;
+        if (corpus.equals("baidu")) path = bdpath;
+        else path = hdpath;
         if (idx2Name != null) return;
         idx2Name = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(path));
@@ -77,8 +87,4 @@ public class BkRelIdxReader {
         LogInfo.logs("BaiduBaike Relation-Idx(Idx to Name) Read. Size: %d", cnt);
     }
 
-
-    public static void main() throws IOException {
-
-    }
 }
