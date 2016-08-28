@@ -13,13 +13,9 @@ import java.util.*;
  * During the extracting procedure, the entities are indexed in the mean time.
  */
 
-public class HudongbaikeParser {
-    public static String root = "/home/xusheng/starry/hudongbaike";
+public class HudongbaikeParser implements Runnable{
+    public static String rootFp = "/home/xusheng/starry/hudongbaike";
     public static int curr = -1, end = -1, inc = 0;
-    public static BufferedWriter textBw, infoBw;
-    public static Map<String, Integer> urlMap = new HashMap<>();
-    public static Map<Integer, Set<String>> idNameMap = new HashMap<>();
-    public static List<String> triples = new ArrayList<>();
 
     public void run() {
         while (true) {
@@ -42,192 +38,110 @@ public class HudongbaikeParser {
         return -1;
     }
 
+    public static BufferedWriter bwTriple = null;
     public static void multiThreadWork() throws Exception {
-        infoBw = new BufferedWriter(new FileWriter(root + "/infobox.url"));
-        textBw = new BufferedWriter(new FileWriter(root + "/infobox.text"));
-        curr = 1; end = 300;
-        LogInfo.logs("Begin to Construct Article Idx and Extract Infobox...");
-        int numOfThreads = 8;
-        BaidubaikeParser workThread = new BaidubaikeParser();
+        readTasks();
+        curr = 0; end = taskList.size();
+        bwTriple = new BufferedWriter(new FileWriter(rootFp + "/infobox/triples.tsv"));
+
+        LogInfo.logs("Task: Extract infobox for Hudong Baike (%d pages). [%s]", end, new Date().toString());
+        int numOfThreads = 32;
+        HudongbaikeParser workThread = new HudongbaikeParser();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
         LogInfo.end_track();
-        textBw.close();
-        infoBw.close();
-        // write results into files
-        writeIdx();
-        writeIdxText();
-    }
-
-    public static synchronized int add2Urls(String url) throws IOException {
-        if (! urlMap.containsKey(url)) {
-            inc ++;
-            urlMap.put(url, inc);
-            //idxBw.write(url + "\t" + inc + "\n");
-        }
-        return urlMap.get(url);
-    }
-
-    public static synchronized void add2AnchorTexts(Integer id, String text) {
-        if (! idNameMap.containsKey(id)) {
-            Set<String> tmp = new HashSet<>();
-            tmp.add(text);
-            idNameMap.put(id, tmp);
-        } else idNameMap.get(id).add(text);
-    }
-
-    public static synchronized void writeTriple(String triple, BufferedWriter bw) throws IOException {
-        bw.write(triple);
-    }
-
-    public static boolean isChinese(char c) {
-        return c >= 0x4E00 &&  c <= 0x9FA5;
+        bwTriple.close();
     }
 
     public static void extractInfobox(int idx) throws Exception {
-        int cnt = idx * 10000;
-        String folderName = (cnt-10000+1) + "-" + cnt;
-        LogInfo.logs("Entering into %s... [%s]", folderName, new Date().toString());
-        StringBuffer content = new StringBuffer();
-        int numOfChar = 0;
-        for (int i=cnt-10000+1; i<=cnt; i++) {
-            String fp = root + "/data_v2/" + folderName + "/" + i + ".html";
-            BufferedReader br = new BufferedReader(new FileReader(fp));
-            String[] tmp = br.readLine().split("com");
-            if (tmp.length < 2) continue;
-            String url = tmp[1];
-            // when meet a new url, add it to map and write it into file
-            int leftIdx = add2Urls(url);
-            String line;
-            String title = "";
-            // control the starting position of content
-            boolean _StartKeepContent = false;
-            while ((line = br.readLine()) != null) {
-                if (!_StartKeepContent && line.startsWith("<span class=\"description\">"))
-                    _StartKeepContent = true;
-                if (_StartKeepContent) {
-                    for (char c : line.toCharArray()) {
-                        if (isChinese(c) && c!='\n') {
-                            content.append(c);
-                            numOfChar++;
-                            if (numOfChar % 100 == 0) content.append("\n");
-                        }
-                    }
-                }
-                if (line.startsWith("<title>")) {
-                    if (line.split(">").length < 2) break;
-                    title = line.split(">")[1].split("<")[0].split("_")[0];
-                    add2AnchorTexts(leftIdx, title);
-                    continue;
-                }
-                if (line.startsWith("<dt class=\"basicInfo-item name\"")) {
-                    //------- deal with relation -------
-                    String itemName = line.split(">")[1].split("<")[0];
-                    String[] spt = itemName.split("&nbsp;");
-                    itemName = "";
-                    for (int j=0; j<spt.length; j++)
-                        itemName += spt[j];
-                    //------- deal with object -------
-                    br.readLine();
+        String task = taskList.get(idx);
+        String[] spt = task.split("\t");
+        int index = Integer.parseInt(spt[0]);
+        String name = spt[2];
+        int st = index / 10000 * 10000;
+        int ed = st + 10000;
+        String fp = rootFp + "/" + st + "-" + ed;
+        if (spt[1].equals("1"))
+            fp += "/" + index + "_wiki.html";
+        else
+            fp += "/" + index + "_search.html";
+        if (! new File(fp).exists()) {
+            LogInfo.logs("Cannot find \"%s\".", fp);
+            return;
+        }
+        BufferedReader br = new BufferedReader(new FileReader(fp));
+        String line;
+        while ((line = br.readLine()) != null) {
+            // infobox start-point!
+            if (line.trim().startsWith("<div class=\"module-edit")) {
+                while (!line.trim().equals("</body>") && line != null) {
                     line = br.readLine();
-                    spt = line.split("<.+?>");
-                    // get the plain text of object
-                    String itemValue = "";
-                    for (int j=0; j<spt.length; j++) {
-                        itemValue += spt[j];
-                    }
-                    spt = line.split("href=\"");
-                    String href, triple = "";
-                    /*
-                        write to "infobox.url"
-                     */
-                    // if meet a link in the object
-                    if (spt.length == 2 && line.startsWith("<a") && line.endsWith("a>")) {
-                        href = spt[1].split("\">")[0];
-                        int rightIdx = add2Urls(href);
-                        add2AnchorTexts(rightIdx, itemValue);
-                        triple  = url + "\t" + itemName + "\t" + href + "\n";
-                        writeTriple(triple, infoBw);
-                        // if no link or part of link, then write plain text
-                    } else {
-                        /*
-                            Here is a problem need to consider later:
-                            If there is only part of object text is linked,
-                            should we make use of it?
-                            now we just keep it in entity.name file
-                         */
-                        triple = url + "\t" + itemName + "\t" + itemValue + "\n";
-                        writeTriple(triple, infoBw);
-                        // add to entity.name to record alias
-                        if (spt.length > 2) {
-                            for (int j=1; j<spt.length; j++) {
-                                String[] sptt = spt[j].split("\">");
-                                href = sptt[0];
-                                String thisText = sptt[1].split("</a>")[0];
-                                int rightIdx = add2Urls(href);
-                                add2AnchorTexts(rightIdx, thisText);
+                    if (line.trim().startsWith("<strong>")) {
+                        try {
+                            String relation = line.split("<strong>")[1].split("</strong>")[0];
+                            relation = relation.substring(0,relation.length()-2); // why-2? => "rel: ".
+                            while ((line = br.readLine()).trim().startsWith("<span>")) {
+                                String obj = extractObj(line);
+                                //String obj = line.split("<span>")[1].split("</span>")[0];
+                                String triple = name + "\t" + relation + "\t" + obj;
+                                writeTriple(triple);
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
-                    /*
-                        write to "infobox.text
-                     */
-                    triple = title + "\t" + itemName + "\t" + itemValue + "\n";
-                    writeTriple(triple, textBw);
                 }
+            }
+        }
+        br.close();
+        LogInfo.logs("[log] Page %d extracted. [%s]", index, new Date().toString());
+    }
+
+    public static String extractObj(String line) {
+        String ret = "";
+        String obj = line.split("<span>")[1].split("</span>")[0];
+        if (!obj.contains("href")) ret = obj;
+        else {
+            //todo
+        }
+        return ret;
+    }
+
+    public static Map<Integer, Set<String>> entNameMap = new HashMap<>();
+    public static synchronized void addToEntNameFile(int idx, String name) {
+        if (!entNameMap.containsKey(idx))
+            entNameMap.put(idx, new HashSet<>());
+        entNameMap.get(idx).add(name);
+    }
+
+    public static synchronized void writeTriple(String triple) throws IOException {
+        bwTriple.write(triple + "\n");
+        bwTriple.flush();
+    }
+
+    public static List<String> taskList = null;
+    public static void readTasks() throws IOException {
+        String[] nameList = new String[] {"kangqi.tsv",
+                                          "darkstar.tsv",
+                                          "xusheng.tsv"};
+        taskList = new ArrayList<>();
+        for (String str: nameList) {
+            String fp = rootFp + "/saved_" + str;
+            if (! new File(fp).exists()) continue;
+            BufferedReader br = new BufferedReader(new FileReader(fp));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] spt = line.split("\t");
+                if (spt[1].equals("1") || spt[1].equals("2"))
+                    taskList.add(line);
             }
             br.close();
         }
-        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/content/" + idx + ".txt"));
-        bw.write(content.toString());
-        bw.close();
-        LogInfo.logs("Job %s is Finished. [%s]", folderName, new Date().toString());
-    }
-
-    public static void writeIdx() throws IOException {
-        LogInfo.begin_track("Now writing entity-idx into file...");
-        int cnt = 0;
-        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/entity.index"));
-        for (Map.Entry<String, Integer> entry: urlMap.entrySet()) {
-            cnt ++;
-            LogUpgrader.showLine(cnt, 10000);
-            bw.write(entry.getValue() + "\t" + entry.getKey() + "\n");
-        }
-        bw.close();
-        LogInfo.end_track();
-    }
-
-    public static void writeTriples() throws IOException {
-        LogInfo.begin_track("Now writing infobox triple...");
-        int cnt = 0;
-        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/infobox.triple"));
-        for (String str : triples) {
-            cnt ++;
-            LogUpgrader.showLine(cnt, 100000);
-            bw.write(str);
-        }
-        bw.close();
-        LogInfo.end_track();
-    }
-
-    public static void writeIdxText() throws IOException {
-        LogInfo.begin_track("Now writing idx-name into file...");
-        int cnt = 0;
-        BufferedWriter bw = new BufferedWriter(new FileWriter(root + "/entity.name"));
-        for (Map.Entry<Integer, Set<String>> entry: idNameMap.entrySet()) {
-            cnt ++;
-            LogUpgrader.showLine(cnt, 10000);
-            bw.write(entry.getKey().toString());
-            for (String str : entry.getValue()) bw.write("\t" + str);
-            bw.write("\n");
-        }
-        bw.close();
-        LogInfo.end_track();
+        LogInfo.logs("Tasks loaded. Size: %d.", taskList.size());
     }
 
     public static void main(String[] args) throws Exception {
         multiThreadWork();
-        //extractURLs();
     }
 }
