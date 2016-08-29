@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import sun.rmi.runtime.Log;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MultiThread;
 
@@ -190,10 +191,15 @@ public class HudongbaikeParser implements Runnable{
             BufferedReader br = new BufferedReader(new FileReader(fp));
             String line;
             while ((line = br.readLine()) != null) {
-                String[] spt = line.split("\t");
-                if (spt[1].equals("1") || spt[1].equals("2")) {
-                    taskList.add(line);
-                    urlEntMap.put(spt[2], Integer.parseInt(spt[0]));
+                try {
+                    String[] spt = line.split("\t");
+                    if (spt[1].equals("1") || spt[1].equals("2")) {
+                        taskList.add(line);
+                        urlEntMap.put(spt[2], Integer.parseInt(spt[0]));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    LogInfo.logs("[Exception] %s at %s.", line, fp);
                 }
             }
             br.close();
