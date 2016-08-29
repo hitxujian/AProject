@@ -129,7 +129,7 @@ public class HudongbaikeParser implements Runnable{
         if (links.size() == 0)
             return ret;
         else if (links.size() > 1)
-            LogInfo.logs("[attention]\t%s", line);
+            LogInfo.logs("[attention]\t%s", line.trim());
         for (int i=0; i<links.size(); i++) {
             Element link = links.get(i);
             String linkHref = link.attr("href");
@@ -144,7 +144,7 @@ public class HudongbaikeParser implements Runnable{
                     ret = url;
             }
             else
-                LogInfo.logs("[error] %s cannot find its index. [%s]", url, new Date().toString());
+                LogInfo.logs("[incomplete] %s cannot find its index.", url);
 
         }
         return ret;
