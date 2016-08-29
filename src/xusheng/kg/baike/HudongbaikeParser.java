@@ -43,6 +43,7 @@ public class HudongbaikeParser implements Runnable{
     }
 
     public static BufferedWriter bwTriple = null;
+    public static List<String> triples = null;
     public static void multiThreadWork() throws Exception {
         readTasks();
         curr = 0; end = taskList.size();
@@ -54,7 +55,12 @@ public class HudongbaikeParser implements Runnable{
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
+        //---------------------------------------------------------------------------------------------------------
+        LogInfo.logs("[log] Now writting infobox triples... [%s]", new Date().toString());
+        for (String triple : triples)
+            bwTriple.write(triple + "\n");
         bwTriple.close();
+        // --------------------------------------------------------------------------------------------------------
         LogInfo.logs("[log] Triples written. Now writting entity-name map... [%s]", new Date().toString());
         BufferedWriter bwName = new BufferedWriter(new FileWriter(rootFp + "/infobox/entName.tsv"));
         for (Map.Entry<Integer, Set<String>> entry : entNameMap.entrySet()) {
@@ -65,6 +71,7 @@ public class HudongbaikeParser implements Runnable{
         }
         bwName.close();
         LogInfo.logs("[log] Entity-name map written. Size: %d. [%s]", entNameMap.size(), new Date().toString());
+        // --------------------------------------------------------------------------------------------------------
         LogInfo.end_track();
     }
 
@@ -101,7 +108,7 @@ public class HudongbaikeParser implements Runnable{
                                 String obj = extractObj(line);
                                 //String obj = line.split("<span>")[1].split("</span>")[0];
                                 String triple = name + "\t" + relation + "\t" + obj;
-                                writeTriple(triple);
+                                triples.add(triple);
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
