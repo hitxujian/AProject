@@ -108,7 +108,7 @@ public class HudongbaikeParser implements Runnable{
                                 String obj = extractObj(line);
                                 //String obj = line.split("<span>")[1].split("</span>")[0];
                                 String triple = name + "\t" + relation + "\t" + obj;
-                                triples.add(triple);
+                                addToTriples(triple);
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -179,6 +179,10 @@ public class HudongbaikeParser implements Runnable{
     public static synchronized void writeTriple(String triple) throws IOException {
         bwTriple.write(triple + "\n");
         bwTriple.flush();
+    }
+
+    public static synchronized void addToTriples(String triple) {
+        triples.add(triple);
     }
 
     public static List<String> taskList = null;
