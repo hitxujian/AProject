@@ -111,8 +111,7 @@ public class HudongbaikeParser implements Runnable{
             }
         }
         br.close();
-        LogInfo.logs("[T%s] Page %d parsed. [%s]", Thread.currentThread().getName(),
-                index, new Date().toString());
+        //LogInfo.logs("[T%s] Page %d parsed. [%s]", Thread.currentThread().getName(), index, new Date().toString());
     }
 
     public static String extractObj(String line) {
