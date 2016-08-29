@@ -5,8 +5,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sun.rmi.runtime.Log;
-import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -76,8 +74,8 @@ public class HudongbaikeParser implements Runnable{
         int index = Integer.parseInt(spt[0]);
         String name = spt[2];
         addToEntNameFile(index, name);
-        int st = index / 10000 * 10000;
-        int ed = st + 10000;
+        int st = index / 10000 * 10000 + 1;
+        int ed = st + 9999;
         String fp = rootFp + "/" + st + "-" + ed;
         if (spt[1].equals("1"))
             fp += "/" + index + "_wiki.html";
