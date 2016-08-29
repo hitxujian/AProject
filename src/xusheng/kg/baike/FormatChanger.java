@@ -17,7 +17,7 @@ public class FormatChanger {
 
     // recover the index-replaced files with original names or strings
     public static void RecoverInfoTriple() throws IOException {
-        BkEntIdxReader.initializeFromIdx2Name();
+        BkEntIdxReader.initializeFromIdx2Name("baidu");
         BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/starry/baike/infobox.triple"));
         BufferedWriter bw = new BufferedWriter(new FileWriter("/home/xusheng/starry/baike/infobox.triple.raw.clean"));
         String line;

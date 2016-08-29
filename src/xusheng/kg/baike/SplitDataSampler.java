@@ -56,8 +56,8 @@ public class SplitDataSampler {
     }
 
     public static void main(String[] args) throws IOException {
-        BkEntIdxReader.initializeFromIdx2Name();
-        BkRelIdxReader.initializeFromIdx2Name();
+        BkEntIdxReader.initializeFromIdx2Name("baidu");
+        BkRelIdxReader.initializeFromIdx2Name("baidu");
         getPositiveData("201256");
         getNegativeData("57559");
     }

@@ -1,9 +1,13 @@
 package xusheng.misc;
 
-import edu.stanford.nlp.ie.crf.CRFClassifier;
-import edu.stanford.nlp.ling.CoreLabel;
+import fig.basic.LogInfo;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.PrintStream;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -12,31 +16,38 @@ import java.util.*;
 
 public class LocalTester {
 
-    private static final String basedir = System.getProperty("SegDemo", "data");
+
+    public static String urlDecode(String url) {
+        String ret = url;
+        try {
+            while (true) {
+                ret = ret.replaceAll("% +", "%");	//correct error encodes like "% 9B" (should be %9B)
+                String decode = URLDecoder.decode(ret, "UTF-8");
+                if (!decode.equals(ret))
+                    ret = decode;
+                else
+                    break;
+            }
+        } catch (Exception ex) {
+            LogInfo.logs("[T%s] Fail to Decode url [%s].", Thread.currentThread().getName(), ret);
+        }
+        return ret;
+    }
 
     public static void main(String[] args) throws Exception {
-        System.setOut(new PrintStream(System.out, true, "utf-8"));
-
-        Properties props = new Properties();
-        props.setProperty("sighanCorporaDict", basedir);
-        // props.setProperty("NormalizationTable", "data/norm.simp.utf8");
-        // props.setProperty("normTableEncoding", "UTF-8");
-        // below is needed because CTBSegDocumentIteratorFactory accesses it
-        props.setProperty("serDictionary", basedir + "/dict-chris6.ser.gz");
-        if (args.length > 0) {
-            props.setProperty("testFile", args[0]);
+        String line = "<span><a href=\"http://www.baike.com/wiki/%E4%B8%AD%E5%9B%BD\" title=\"中国\" target=\"_blank\"><img src=\"./六小龄童_互动百科_files/chn.png\"></a>中国</span>";
+        Document doc = Jsoup.parse(line);
+        Elements links = doc.select("a");
+        for (int i=0; i<links.size(); i++) {
+            Element link = links.get(i);
+            String text = doc.body().text();
+            System.out.println(text);
+            String linkHref = link.attr("href");
+            System.out.println(linkHref);
+            String linkText = link.text();
+            System.out.println(linkText);
+            String url = urlDecode(linkHref);
+            System.out.println(url);
         }
-        props.setProperty("inputEncoding", "UTF-8");
-        props.setProperty("sighanPostProcessing", "true");
-
-        CRFClassifier<CoreLabel> segmenter = new CRFClassifier<>(props);
-        segmenter.loadClassifierNoExceptions(basedir + "/ctb.gz", props);
-        for (String filename : args) {
-            segmenter.classifyAndWriteAnswers(filename);
-        }
-
-        String sample = "我住在美国。";
-        List<String> segmented = segmenter.segmentString(sample);
-        System.out.println(segmented);
     }
 }
