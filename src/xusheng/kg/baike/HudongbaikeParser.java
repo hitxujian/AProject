@@ -95,7 +95,7 @@ public class HudongbaikeParser implements Runnable{
                     if (line.trim().startsWith("<strong>")) {
                         try {
                             String relation = line.split("<strong>")[1].split("</strong>")[0];
-                            relation = relation.substring(0,relation.length()-2); // why-2? => "rel: ".
+                            relation = relation.substring(0,relation.length()-1); // why-2? => "rel: ".
                             while ((line = br.readLine()).trim().startsWith("<span>")) {
                                 if (line.equals("<span>")) line = br.readLine(); // context is in the next line
                                 String obj = extractObj(line);
