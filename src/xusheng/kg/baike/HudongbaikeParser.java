@@ -83,7 +83,7 @@ public class HudongbaikeParser implements Runnable{
         else
             fp += "/" + index + "_search.html";
         if (! new File(fp).exists()) {
-            LogInfo.logs("Cannot find \"%s\".", fp);
+            LogInfo.logs("[error] Page %d does not exist.", idx);
             return;
         }
         BufferedReader br = new BufferedReader(new FileReader(fp));
@@ -112,7 +112,7 @@ public class HudongbaikeParser implements Runnable{
             }
         }
         br.close();
-        LogInfo.logs("[T%s] Page %d extracted. [%s]", Thread.currentThread().getName(),
+        LogInfo.logs("[T%s] Page %d parsed. [%s]", Thread.currentThread().getName(),
                 index, new Date().toString());
     }
 
@@ -198,7 +198,13 @@ public class HudongbaikeParser implements Runnable{
             }
             br.close();
         }
-        LogInfo.logs("Tasks loaded. Size: %d.", taskList.size());
+        LogInfo.logs("[log] Tasks loaded. Size: %d. Start writing entity-index map...", taskList.size());
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/infobox/entIdx.tsv"));
+        for (Map.Entry<String, Integer> entry: urlEntMap.entrySet()) {
+            bw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
+        }
+        bw.close();
+        LogInfo.logs("[log] Entity-index map written.");
     }
 
     public static void main(String[] args) throws Exception {
