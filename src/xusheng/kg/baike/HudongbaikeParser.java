@@ -47,8 +47,8 @@ public class HudongbaikeParser implements Runnable{
     public static void multiThreadWork() throws Exception {
         readTasks();
         curr = 0; end = taskList.size();
+        triples = new ArrayList<>();
         bwTriple = new BufferedWriter(new FileWriter(rootFp + "/infobox/triples.tsv"));
-
         LogInfo.logs("Task: Extract infobox for Hudong Baike (%d pages). [%s]", end, new Date().toString());
         int numOfThreads = 32;
         HudongbaikeParser workThread = new HudongbaikeParser();
