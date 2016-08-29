@@ -56,7 +56,7 @@ public class HudongbaikeParser implements Runnable{
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
         //---------------------------------------------------------------------------------------------------------
-        LogInfo.logs("[log] Now writting infobox triples... [%s]", new Date().toString());
+        LogInfo.logs("[log] Now writing infobox triples... [%s]", new Date().toString());
         for (String triple : triples)
             bwTriple.write(triple + "\n");
         bwTriple.close();
@@ -89,7 +89,7 @@ public class HudongbaikeParser implements Runnable{
         else
             fp += "/" + index + "_search.html";
         if (! new File(fp).exists()) {
-            LogInfo.logs("[error] Page %d does not exist.", idx);
+            LogInfo.logs("[missing] Page %d does not exist.", index);
             return;
         }
         BufferedReader br = new BufferedReader(new FileReader(fp));
