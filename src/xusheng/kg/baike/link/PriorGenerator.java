@@ -22,7 +22,7 @@ public class PriorGenerator implements Runnable{
 
     public static String rootFp = "/home/xusheng/starry/hudongbaike";
 
-    public static int curr = -1, end = -1, inc = 0;
+    public static int curr = -1, end = -1;
 
     public void run() {
         while (true) {
@@ -49,7 +49,6 @@ public class PriorGenerator implements Runnable{
         String task = taskList.get(idx);
         String[] spt = task.split("\t");
         int index = Integer.parseInt(spt[0]);
-        String name = spt[2];
         int st = index / 10000 * 10000 + 1;
         int ed = st + 9999;
         String fp = rootFp + "/" + st + "-" + ed;
