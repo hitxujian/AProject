@@ -64,7 +64,7 @@ public class HudongbaikeParser implements Runnable{
         LogInfo.logs("[log] Triples written. Now writting entity-name map... [%s]", new Date().toString());
         BufferedWriter bwName = new BufferedWriter(new FileWriter(rootFp + "/infobox/entName.tsv"));
         for (Map.Entry<Integer, Set<String>> entry : entNameMap.entrySet()) {
-            bwName.write(entry.getKey());
+            bwName.write(entry.getKey().toString());
             for (String name : entry.getValue())
                 bwName.write("\t" + name);
             bwName.write("\n");
@@ -81,7 +81,7 @@ public class HudongbaikeParser implements Runnable{
         int index = Integer.parseInt(spt[0]);
         String name = spt[2];
         addToEntNameFile(index, name);
-        int st = index / 10000 * 10000 + 1;
+        int st = (index - 1) / 10000 * 10000 + 1;
         int ed = st + 9999;
         String fp = rootFp + "/" + st + "-" + ed;
         if (spt[1].equals("1"))
