@@ -97,17 +97,18 @@ public class HudongbaikeParser implements Runnable{
         while ((line = br.readLine()) != null) {
             // infobox start-point!
             if (line.trim().startsWith("<div class=\"module-edit")) {
-                while (!line.trim().equals("</body>") && line != null) {
+                while (line != null && !line.trim().equals("</body>")) {
                     line = br.readLine();
                     if (line.trim().startsWith("<strong>")) {
                         try {
                             String relation = line.split("<strong>")[1].split("</strong>")[0];
                             relation = relation.substring(0,relation.length()-1); // why-2? => "rel: ".
                             while ((line = br.readLine()).trim().startsWith("<span>")) {
-                                String span = "";
-                                while (!line.trim().equals("</td>")) { // context is in the following lines
+                                String span = line.trim();
+                                if (span.equals("<span>")) {
+                                    while (!(line = br.readLine()).trim().startsWith("</span>")) // context is in the following lines
+                                        span += line.trim();
                                     span += line.trim();
-                                    line = br.readLine();
                                 }
                                 List<String> objs = extractObj(span);
                                 //String obj = line.split("<span>")[1].split("</span>")[0];
