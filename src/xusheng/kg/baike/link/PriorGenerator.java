@@ -144,6 +144,7 @@ public class PriorGenerator implements Runnable{
         String[] nameList = new String[] {
                 "kangqi.tsv",
                 "darkstar.tsv",
+                "acer.tsv",
                 "xusheng_1.tsv",
                 "xusheng_2.tsv"
         };

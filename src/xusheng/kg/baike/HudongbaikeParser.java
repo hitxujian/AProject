@@ -56,9 +56,9 @@ public class HudongbaikeParser implements Runnable{
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
         //---------------------------------------------------------------------------------------------------------
-        LogInfo.logs("[log] Now writing infobox triples... [%s]", new Date().toString());
+        /*LogInfo.logs("[log] Now writing infobox triples... [%s]", new Date().toString());
         for (String triple : triples)
-            bwTriple.write(triple + "\n");
+            bwTriple.write(triple + "\n");*/
         bwTriple.close();
         // --------------------------------------------------------------------------------------------------------
         LogInfo.logs("[log] Triples written. Now writing entity-name map... [%s]", new Date().toString());
@@ -105,10 +105,12 @@ public class HudongbaikeParser implements Runnable{
                             relation = relation.substring(0,relation.length()-1); // why-2? => "rel: ".
                             while ((line = br.readLine()).trim().startsWith("<span>")) {
                                 if (line.equals("<span>")) line = br.readLine(); // context is in the next line
-                                String obj = extractObj(line);
+                                List<String> objs = extractObj(line);
                                 //String obj = line.split("<span>")[1].split("</span>")[0];
-                                String triple = name + "\t" + relation + "\t" + obj;
-                                addToTriples(triple);
+                                for (String obj: objs) {
+                                    String triple = name + "\t" + relation + "\t" + obj;
+                                    writeTriple(triple);
+                                }
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -121,13 +123,15 @@ public class HudongbaikeParser implements Runnable{
         //LogInfo.logs("[T%s] Page %d parsed. [%s]", Thread.currentThread().getName(), index, new Date().toString());
     }
 
-    public static String extractObj(String line) {
+    public static List<String> extractObj(String line) {
         Document doc = Jsoup.parse(line);
         String text = doc.body().text();
-        String ret = text;
+        List<String> ret = new ArrayList<>();
         Elements links = doc.select("a");
-        if (links.size() == 0)
+        if (links.size() == 0) {
+            ret.add(text);
             return ret;
+        }
         else if (links.size() > 1)
             LogInfo.logs("[attention]\t%s", line.trim());
         for (int i=0; i<links.size(); i++) {
@@ -139,9 +143,7 @@ public class HudongbaikeParser implements Runnable{
             String url = urlDecode(linkHref);
             if (urlEntMap.containsKey(url)) {
                 addToEntNameFile(urlEntMap.get(url), linkText);
-                if (links.size() == 1 &&
-                        (text.equals(linkText) || text.equals(url.split("/")[url.split("/").length-1])))
-                    ret = url;
+                ret.add(url);
             }
             else
                 LogInfo.logs("[incomplete] %s cannot find its index.", url);
@@ -190,6 +192,7 @@ public class HudongbaikeParser implements Runnable{
     public static void readTasks() throws IOException {
         String[] nameList = new String[] {"kangqi.tsv",
                                           "darkstar.tsv",
+                                          "acer.tsv",
                                           "xusheng_1.tsv", "xusheng_2.tsv"};
         taskList = new ArrayList<>();
         urlEntMap = new HashMap<>();
