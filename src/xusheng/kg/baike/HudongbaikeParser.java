@@ -105,7 +105,7 @@ public class HudongbaikeParser implements Runnable{
                             relation = relation.substring(0,relation.length()-1); // why-2? => "rel: ".
                             while ((line = br.readLine()).trim().startsWith("<span>")) {
                                 String span = "";
-                                while (!line.equals("</td>")) { // context is in the following lines
+                                while (!line.trim().equals("</td>")) { // context is in the following lines
                                     span += line.trim();
                                     line = br.readLine();
                                 }
@@ -136,8 +136,8 @@ public class HudongbaikeParser implements Runnable{
             ret.add(text);
             return ret;
         }
-        else if (links.size() > 1)
-            LogInfo.logs("[attention]\t%s", line.trim());
+        //else if (links.size() > 1)
+        //    LogInfo.logs("[attention]\t%s", line.trim());
         for (int i=0; i<links.size(); i++) {
             Element link = links.get(i);
             String linkHref = link.attr("href");
