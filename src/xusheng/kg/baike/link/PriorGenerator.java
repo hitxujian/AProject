@@ -49,7 +49,7 @@ public class PriorGenerator implements Runnable{
         String task = taskList.get(idx);
         String[] spt = task.split("\t");
         int index = Integer.parseInt(spt[0]);
-        int st = index / 10000 * 10000 + 1;
+        int st = (index - 1) / 10000 * 10000 + 1;
         int ed = st + 9999;
         String fp = rootFp + "/" + st + "-" + ed;
         if (spt[1].equals("1"))
@@ -65,8 +65,7 @@ public class PriorGenerator implements Runnable{
         Elements links = doc.select("a[href]");
         for (Element link: links) {
             String linkHref = link.attr("abs:href");
-            if (!linkHref.startsWith("http://www.baike.com/wiki/")
-                    && !linkHref.startsWith("http://so.baike.com/doc/"))
+            if (!linkHref.startsWith("http://www.baike.com/wiki/"))
                 continue;
             String linkUrl = urlDecode(linkHref);
             String linkText = link.text();
@@ -158,7 +157,7 @@ public class PriorGenerator implements Runnable{
             while ((line = br.readLine()) != null) {
                 try {
                     String[] spt = line.split("\t");
-                    if (spt[1].equals("1") || spt[1].equals("2")) {
+                    if (spt[1].equals("1")) {
                         taskList.add(line);
                         urlEntMap.put(spt[2], Integer.parseInt(spt[0]));
                     }

@@ -61,7 +61,7 @@ public class HudongbaikeParser implements Runnable{
             bwTriple.write(triple + "\n");
         bwTriple.close();
         // --------------------------------------------------------------------------------------------------------
-        LogInfo.logs("[log] Triples written. Now writting entity-name map... [%s]", new Date().toString());
+        LogInfo.logs("[log] Triples written. Now writing entity-name map... [%s]", new Date().toString());
         BufferedWriter bwName = new BufferedWriter(new FileWriter(rootFp + "/infobox/entName.tsv"));
         for (Map.Entry<Integer, Set<String>> entry : entNameMap.entrySet()) {
             bwName.write(entry.getKey().toString());
@@ -201,7 +201,8 @@ public class HudongbaikeParser implements Runnable{
             while ((line = br.readLine()) != null) {
                 try {
                     String[] spt = line.split("\t");
-                    if (spt[1].equals("1") || spt[1].equals("2")) {
+                    // only /wiki page used
+                    if (spt[1].equals("1")) {
                         taskList.add(line);
                         urlEntMap.put(spt[2], Integer.parseInt(spt[0]));
                     }
