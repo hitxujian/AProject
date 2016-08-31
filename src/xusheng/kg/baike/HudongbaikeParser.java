@@ -104,8 +104,12 @@ public class HudongbaikeParser implements Runnable{
                             String relation = line.split("<strong>")[1].split("</strong>")[0];
                             relation = relation.substring(0,relation.length()-1); // why-2? => "rel: ".
                             while ((line = br.readLine()).trim().startsWith("<span>")) {
-                                if (line.equals("<span>")) line = br.readLine(); // context is in the next line
-                                List<String> objs = extractObj(line);
+                                String span = "";
+                                while (!line.equals("</td>")) { // context is in the following lines
+                                    span += line.trim();
+                                    line = br.readLine();
+                                }
+                                List<String> objs = extractObj(span);
                                 //String obj = line.split("<span>")[1].split("</span>")[0];
                                 for (String obj: objs) {
                                     String triple = name + "\t" + relation + "\t" + obj;
@@ -139,10 +143,10 @@ public class HudongbaikeParser implements Runnable{
             String linkHref = link.attr("href");
             if (linkHref.equals("")) continue;
             String linkText = link.text();
-            if (linkText.equals("")) continue;
             String url = urlDecode(linkHref);
             if (urlEntMap.containsKey(url)) {
-                addToEntNameFile(urlEntMap.get(url), linkText);
+                if (!linkText.equals(""))
+                    addToEntNameFile(urlEntMap.get(url), linkText);
                 ret.add(url);
             }
             else
