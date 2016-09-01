@@ -68,7 +68,7 @@ public class DependencyParser {
     {
         DependencyParser dp = DependencyParser.getInstance();
 
-        String text = "what province is toronto in ( 7 letters )?";
+        String text = "I can almost always tell when movies use fake dinosaurs.";
         DepTree depTree = dp.parse(text);
         depTree.printTree();
     }
