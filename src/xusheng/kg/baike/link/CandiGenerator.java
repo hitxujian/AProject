@@ -6,9 +6,7 @@ import xusheng.util.struct.MultiThread;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Xusheng on 8/29/2016.
@@ -19,7 +17,7 @@ import java.util.List;
  */
 
 public class CandiGenerator implements Runnable {
-    public static String rootFp = "/home/xusheng/starry/hudongbaike/infobox";
+    public static String rootFp = "/home/xusheng/starry/hudongbaike";
 
     public static int curr = -1, end = -1;
 
@@ -46,6 +44,7 @@ public class CandiGenerator implements Runnable {
 
     public static void multiThreadWork() throws Exception{
         readTasks();
+        readData();
         curr = 0; end = 0;
         int numOfThreads = 32;
         CandiGenerator workThread = new CandiGenerator();
@@ -59,12 +58,45 @@ public class CandiGenerator implements Runnable {
         String task = taskList.get(idx);
         String[] spt = task.split("\t");
         String target = spt[2];
+        Set<Integer> candidates = new HashSet<>();
+        if (nameEntMap.containsKey(target))
+            candidates.addAll(nameEntMap.get(target));
 
+    }
+
+    public static Map<String, Map<Integer, Double>> aliasPriorMap = null;
+    public static Map<String, List<Integer>> nameEntMap = null;
+    public static void readData() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/content/prior.tsv"));
+        String line;
+        aliasPriorMap = new HashMap<>();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            if (!aliasPriorMap.containsKey(spt[0]))
+                aliasPriorMap.put(spt[0], new HashMap<>());
+            int idx = Integer.parseInt(spt[1]);
+            double prob = Double.parseDouble(spt[2]);
+            aliasPriorMap.get(spt[0]).put(idx, prob);
+        }
+        LogInfo.logs("[info] Prior file loaded. Size: %d. [%s]", aliasPriorMap.size(), new Date().toString());
+        // ---------------------------------------------------------------------------------------------------
+        nameEntMap = new HashMap<>();
+        br = new BufferedReader(new FileReader(rootFp + "/infobox/entName.tsv"));
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            int entIdx = Integer.parseInt(spt[0]);
+            for (int i = 1; i < spt.length; i++) {
+                if (!nameEntMap.containsKey(spt[i]))
+                    nameEntMap.put(spt[i], new ArrayList<>());
+                nameEntMap.get(spt[i]).add(entIdx);
+            }
+        }
+        LogInfo.logs("[info] Entity Name file loaded. Size: %d. [%s]", nameEntMap.size(), new Date().toString());
     }
 
     public static List<String> taskList = null;
     public static void readTasks() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/KB_unlinked.tsv"));
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/infobox/KB_unlinked.tsv"));
         String line;
         taskList = new ArrayList<>();
         while ((line = br.readLine()) != null) {
