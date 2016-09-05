@@ -67,11 +67,12 @@ public class BasicLinker {
     public static Graph dfs(int st, List<Integer> eds) {
         Graph graph = new Graph(st);
         Map<Integer, Boolean> visited = new HashMap<>();
-
+        visited.put(st, true);
+        search(st, visited);
         return graph;
     }
 
-    public static void search() {
+    public static void search(int node, Map<Integer, Boolean> visited) {
 
     }
 
