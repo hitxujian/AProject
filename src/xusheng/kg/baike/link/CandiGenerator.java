@@ -3,9 +3,7 @@ package xusheng.kg.baike.link;
 import fig.basic.LogInfo;
 import xusheng.util.struct.MultiThread;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -42,19 +40,22 @@ public class CandiGenerator implements Runnable {
         return -1;
     }
 
+    public static BufferedWriter bw = null;
     public static void multiThreadWork() throws Exception{
         readTasks();
         readData();
+        bw = new BufferedWriter(new FileWriter(rootFp + "/infobox/KB_unlinked.candi.tsv"));
         curr = 0; end = 0;
         int numOfThreads = 32;
         CandiGenerator workThread = new CandiGenerator();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
+        bw.close();
         LogInfo.end_track();
     }
 
-    public static void findCandidates(int idx) {
+    public static void findCandidates(int idx) throws IOException{
         String task = taskList.get(idx);
         String[] spt = task.split("\t");
         String target = spt[2];
@@ -66,6 +67,19 @@ public class CandiGenerator implements Runnable {
         // need to re-consider
         if (aliasPriorMap.containsKey(target))
             candidates.addAll(aliasPriorMap.get(target).keySet());
+        if (candidates.size() == 0)
+            writeRet(task + "\tNULL\n");
+        else {
+            String ret = task;
+            for (Integer candi: candidates)
+                ret += ("\t" + candi);
+            ret += "\n";
+            writeRet(ret);
+        }
+    }
+
+    public static synchronized void writeRet(String ret) throws IOException {
+        bw.write(ret);
     }
 
     public static Map<String, Map<Integer, Double>> aliasPriorMap = null;

@@ -110,7 +110,7 @@ public class HudongbaikeParser implements Runnable{
                                         span += line.trim();
                                     span += line.trim();
                                 }
-                                List<String> objs = extractObj(span);
+                                List<String> objs = extractObj(index, span);
                                 //String obj = line.split("<span>")[1].split("</span>")[0];
                                 for (String obj: objs) {
                                     String triple = name + "\t" + relation + "\t" + obj;
@@ -128,7 +128,7 @@ public class HudongbaikeParser implements Runnable{
         //LogInfo.logs("[T%s] Page %d parsed. [%s]", Thread.currentThread().getName(), index, new Date().toString());
     }
 
-    public static List<String> extractObj(String line) {
+    public static List<String> extractObj(int index, String line) {
         Document doc = Jsoup.parse(line);
         String text = doc.body().text();
         List<String> ret = new ArrayList<>();
@@ -151,7 +151,7 @@ public class HudongbaikeParser implements Runnable{
                 ret.add(url);
             }
             else
-                LogInfo.logs("[incomplete] %s cannot find its index.", url);
+                LogInfo.logs("[incomplete %d] %s cannot find its index.", index, url);
 
         }
         return ret;
@@ -198,6 +198,7 @@ public class HudongbaikeParser implements Runnable{
         String[] nameList = new String[] {"kangqi.tsv",
                                           "darkstar.tsv",
                                           "acer.tsv",
+                                          "kenny.tsv", "329.tsv", "316.tsv",
                                           "xusheng_1.tsv", "xusheng_2.tsv"};
         taskList = new ArrayList<>();
         urlEntMap = new HashMap<>();
