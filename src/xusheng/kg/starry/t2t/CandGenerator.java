@@ -133,7 +133,7 @@ public class CandGenerator implements Runnable {
     public static Map<Integer, String> BkId2Name = new HashMap<>();
 
     public static void readBkData() throws IOException {
-        BkEntIdxReader.initializeFromName2Idx();
+        BkEntIdxReader.initializeFromName2Idx("baidu");
         BufferedReader br = new BufferedReader(new FileReader(bkPath + "/entity.name"));
         String line;
         while ((line = br.readLine()) != null) {
