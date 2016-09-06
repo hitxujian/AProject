@@ -60,7 +60,6 @@ public class BasicLinker {
         else
             ret = task + "\t[[" + top + "]]\n";
         writeRet(ret);
-
     }
 
     // dfs within 4 steps
@@ -68,13 +67,10 @@ public class BasicLinker {
         Graph graph = new Graph(st);
         Map<Integer, Boolean> visited = new HashMap<>();
         visited.put(st, true);
-        search(st, visited);
+
         return graph;
     }
 
-    public static void search(int node, Map<Integer, Boolean> visited) {
-
-    }
 
     public static void writeRet(String ret) throws IOException {
         bw.write(ret);
