@@ -52,7 +52,7 @@ public class BasicLinker {
         List<Integer> eds = new ArrayList<>();
         for (int i=3; i<spt.length; i++)
             eds.add(Integer.parseInt(spt[i]));
-        Graph graph = dfs(st, eds);
+        Graph graph = bfs(st, eds);
         int top = graph.pageRank();
         String ret = "";
         if (top == -1)
@@ -62,12 +62,18 @@ public class BasicLinker {
         writeRet(ret);
     }
 
-    // dfs within 4 steps
-    public static Graph dfs(int st, List<Integer> eds) {
+    // bfs within 4 steps
+    public static Graph bfs(int st, List<Integer> eds) {
         Graph graph = new Graph(st);
-        Map<Integer, Boolean> visited = new HashMap<>();
-        visited.put(st, true);
-
+        List<List<Integer>> lists = new ArrayList<>();
+        lists.add(new ArrayList<>());
+        lists.get(0).add(st);
+        for (int i=0; i<maxLen; i++) {
+            lists.add(new ArrayList<>());
+            for (int j: lists.get(i)) {
+                kb.get(j)
+            }
+        }
         return graph;
     }
 
