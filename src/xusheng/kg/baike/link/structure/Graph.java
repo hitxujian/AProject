@@ -38,6 +38,7 @@ public class Graph {
 
     public int pageRank() {
         if (ends.size() == 0) return -1;
+        for (int i: ends) return i;
         return 0;
     }
 }

@@ -68,10 +68,22 @@ public class BasicLinker {
         List<List<Integer>> lists = new ArrayList<>();
         lists.add(new ArrayList<>());
         lists.get(0).add(st);
-        for (int i=0; i<maxLen; i++) {
-            lists.add(new ArrayList<>());
-            for (int j: lists.get(i)) {
-                kb.get(j)
+        for (int step=0; step<maxLen; step++) { // maxlen steps
+            int len = lists.size();
+            for (int i=0; i<len; i++) {
+                if (lists.get(i).size() < step + 1)
+                    continue;
+                List<Integer> list = lists.get(i);
+                int last = list.get(list.size()-1);
+                if (eds.contains(last))
+                    graph.addPath(list);
+                if (!kb.containsKey(last))
+                    continue;
+                for (int expand: kb.get(last)) {
+                    List<Integer> newList = new ArrayList<>(list);
+                    newList.add(expand);
+                    lists.add(newList);
+                }
             }
         }
         return graph;

@@ -26,10 +26,10 @@ public class IndexNameReader {
         idx2Name = null;
     }
 
-    public Integer getIdx(String name) {
+    public int getIdx(String name) {
         if (name2Idx == null) LogInfo.logs("Error! Pls initialize before using!");
         if (name2Idx.containsKey(name)) return name2Idx.get(name);
-        else return null;
+        else return -1;
     }
 
     public String getName(int idx) {
