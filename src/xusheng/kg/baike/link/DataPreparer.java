@@ -28,15 +28,19 @@ public class DataPreparer {
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
-            if (spt[2].startsWith("http")) {
-                int subj = inr.getIdx(spt[0]);
-                int obj = inr.getIdx(spt[2]);
-                if (subj != -1 && obj != -1)
-                    bwL.write(String.format("%d\t%s\t%d\n", subj, spt[1], obj));
-            } else {
-                int subj = inr.getIdx(spt[0]);
-                if (subj != -1)
-                    bwU.write(String.format("%d\t%s\t%s\n", subj, spt[1], spt[2]));
+            try {
+                if (spt[2].startsWith("http")) {
+                    int subj = inr.getIdx(spt[0]);
+                    int obj = inr.getIdx(spt[2]);
+                    if (subj != -1 && obj != -1)
+                        bwL.write(String.format("%d\t%s\t%d\n", subj, spt[1], obj));
+                } else {
+                    int subj = inr.getIdx(spt[0]);
+                    if (subj != -1)
+                        bwU.write(String.format("%d\t%s\t%s\n", subj, spt[1], spt[2]));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
         br.close();
