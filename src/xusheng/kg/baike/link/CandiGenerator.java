@@ -1,6 +1,7 @@
 package xusheng.kg.baike.link;
 
 import fig.basic.LogInfo;
+import xusheng.util.struct.MapHelper;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
@@ -66,7 +67,7 @@ public class CandiGenerator implements Runnable {
         // find candidates from prior map
         // need to re-consider
         if (aliasPriorMap.containsKey(target))
-            candidates.addAll(aliasPriorMap.get(target).keySet());
+            candidates.addAll(sort(new HashMap<>(aliasPriorMap.get(target))));
         if (candidates.size() == 0)
             writeRet(task + "\tNULL\n");
         else {
@@ -76,6 +77,14 @@ public class CandiGenerator implements Runnable {
             ret += "\n";
             writeRet(ret);
         }
+    }
+
+    public static List<Integer> sort(HashMap<Integer, Double> map) {
+        ArrayList<Map.Entry<Integer, Double>> sorted = MapHelper.sort(map);
+        List<Integer> ret = new ArrayList<>();
+        for (int i=0; i<sorted.size(); i++)
+            ret.add(sorted.get(i).getKey());
+        return ret;
     }
 
     public static synchronized void writeRet(String ret) throws IOException {
