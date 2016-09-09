@@ -17,7 +17,7 @@ public class DataPreparer {
     public static IndexNameReader inr = null;
     public static void main(String[] args) throws Exception {
         inr = new IndexNameReader(rootFp + "/infobox/entIdx.tsv");
-        inr.initializeFromName2Idx();
+        inr.initializeFromName2Idx("NI");
         getData();
     }
 

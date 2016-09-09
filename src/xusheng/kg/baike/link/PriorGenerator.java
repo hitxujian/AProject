@@ -145,6 +145,7 @@ public class PriorGenerator implements Runnable{
                 "kangqi.tsv",
                 "darkstar.tsv",
                 "acer.tsv",
+                "kenny.tsv", "329.tsv", "316.tsv",
                 "xusheng_1.tsv",
                 "xusheng_2.tsv"
         };

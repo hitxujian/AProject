@@ -70,6 +70,24 @@ public class IndexNameReader {
         LogInfo.logs("%s Relation-Idx(Name to Idx) Read. Size: %d", path, cnt);
     }
 
+    public void initializeFromName2Idx(String dir) throws IOException {
+        if (name2Idx != null) return;
+        name2Idx = new HashMap<>();
+        BufferedReader br = new BufferedReader(new FileReader(path));
+        String line; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 100000);
+            String[] spt = line.split("\t");
+            if (dir.equals("IN") || dir.equals("Idx-Name"))
+                name2Idx.put(spt[1], Integer.parseInt(spt[0]));
+            else if (dir.equals("NI") || dir.equals("Name-Idx"))
+                name2Idx.put(spt[0], Integer.parseInt(spt[1]));
+        }
+        br.close();
+        LogInfo.logs("%s Relation-Idx(Name to Idx) Read. Size: %d", path, cnt);
+    }
+
     public void initializeFromIdx2Name() throws IOException {
         if (idx2Name != null) return;
         idx2Name = new HashMap<>();
@@ -80,6 +98,24 @@ public class IndexNameReader {
             LogUpgrader.showLine(cnt, 100000);
             String[] spt = line.split("\t");
             idx2Name.put(Integer.parseInt(spt[0]), spt[1]);
+        }
+        br.close();
+        LogInfo.logs("%s Relation-Idx(Idx to Name) Read. Size: %d", path, cnt);
+    }
+
+    public void initializeFromIdx2Name(String dir) throws IOException {
+        if (idx2Name != null) return;
+        idx2Name = new HashMap<>();
+        BufferedReader br = new BufferedReader(new FileReader(path));
+        String line; int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 100000);
+            String[] spt = line.split("\t");
+            if (dir.equals("IN") || dir.equals("Idx-Name"))
+                idx2Name.put(Integer.parseInt(spt[0]), spt[1]);
+            else if (dir.equals("NI") || dir.equals("Name-Idx"))
+                idx2Name.put(Integer.parseInt(spt[1]), spt[0]);
         }
         br.close();
         LogInfo.logs("%s Relation-Idx(Idx to Name) Read. Size: %d", path, cnt);
