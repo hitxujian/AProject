@@ -28,6 +28,7 @@ public class DataPreparer {
         String line;
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
+            LogInfo.logs(spt.length);
             try {
                 if (spt[2].startsWith("http")) {
                     int subj = inr.getIdx(spt[0]);
