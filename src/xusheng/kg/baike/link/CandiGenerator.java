@@ -46,8 +46,8 @@ public class CandiGenerator implements Runnable {
         readTasks();
         readData();
         bw = new BufferedWriter(new FileWriter(rootFp + "/infobox/KB_unlinked.candi.tsv"));
-        curr = 0; end = 0;
-        int numOfThreads = 32;
+        curr = 0; end = taskList.size();
+        int numOfThreads = 10;
         CandiGenerator workThread = new CandiGenerator();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
@@ -63,13 +63,19 @@ public class CandiGenerator implements Runnable {
         Set<Integer> candidates = new HashSet<>();
         // find candidates from prior map
         // need to re-consider
-        if (aliasPriorMap.containsKey(target))
+        if (aliasPriorMap.containsKey(target)) {
             candidates.addAll(sort(new HashMap<>(aliasPriorMap.get(target))));
+            LogInfo.logs("[T%s] Find candidates in prior.tsv.", Thread.currentThread().getName());
+        }
         // find candidates from entity-name map
-        if (nameEntMap.containsKey(target))
+        if (nameEntMap.containsKey(target)) {
             candidates.addAll(nameEntMap.get(target));
-        if (candidates.size() == 0)
+            LogInfo.logs("[T%s] Find candidates in entity-name map.", Thread.currentThread().getName());
+        }
+        if (candidates.size() == 0) {
             writeRet(task + "\tNULL\n");
+            LogInfo.logs("[T%s] No candidates found.", Thread.currentThread().getName());
+        }
         else {
             String ret = task;
             for (Integer candi: candidates)
