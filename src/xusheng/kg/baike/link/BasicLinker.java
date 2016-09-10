@@ -141,11 +141,11 @@ public class BasicLinker {
         readLinked();
         readUnLinked();
         curr = 0; end = taskList.size();
-        int numOfThreads = 32;
+        int numOfThreads = 20;
         CandiGenerator workThread = new CandiGenerator();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
-        bw = new BufferedWriter(new FileWriter(rootFp + "/infobox/KB_full.tsv"));
+        bw = new BufferedWriter(new FileWriter(rootFp + "/infobox/KB_addLinks.tsv"));
         multi.runMultiThread();
         bw.close();
         LogInfo.end_track();
