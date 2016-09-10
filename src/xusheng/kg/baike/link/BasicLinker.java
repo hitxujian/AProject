@@ -90,7 +90,7 @@ public class BasicLinker {
     }
 
 
-    public static void writeRet(String ret) throws IOException {
+    public static synchronized void writeRet(String ret) throws IOException {
         bw.write(ret);
     }
 
@@ -126,7 +126,7 @@ public class BasicLinker {
 
     public static List<String> taskList = null;
     public static void readUnLinked() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/infobox/KB_unlinked.tsv"));
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/infobox/KB_unlinked.candi.tsv"));
         String line;
         taskList = new ArrayList<>();
         while ((line = br.readLine()) != null) {
@@ -140,7 +140,7 @@ public class BasicLinker {
     public static void multiThreadWork() throws Exception{
         readLinked();
         readUnLinked();
-        curr = 0; end = 0;
+        curr = 0; end = taskList.size();
         int numOfThreads = 32;
         CandiGenerator workThread = new CandiGenerator();
         MultiThread multi = new MultiThread(numOfThreads, workThread);

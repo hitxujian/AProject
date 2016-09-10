@@ -56,9 +56,9 @@ public class HudongbaikeParser implements Runnable{
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
         //---------------------------------------------------------------------------------------------------------
-        /*LogInfo.logs("[log] Now writing infobox triples... [%s]", new Date().toString());
+        LogInfo.logs("[log] Now writing infobox triples... [%s]", new Date().toString());
         for (String triple : triples)
-            bwTriple.write(triple + "\n");*/
+            bwTriple.write(triple + "\n");
         bwTriple.close();
         // --------------------------------------------------------------------------------------------------------
         LogInfo.logs("[log] Triples written. Now writing entity-name map... [%s]", new Date().toString());
@@ -114,7 +114,7 @@ public class HudongbaikeParser implements Runnable{
                                 //String obj = line.split("<span>")[1].split("</span>")[0];
                                 for (String obj: objs) {
                                     String triple = name + "\t" + relation + "\t" + obj;
-                                    writeTriple(triple);
+                                    addToTriples(triple);
                                 }
                             }
                         } catch (Exception ex) {
