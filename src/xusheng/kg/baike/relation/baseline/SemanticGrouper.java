@@ -258,7 +258,6 @@ public class SemanticGrouper implements Runnable{
         LogInfo.logs("[log] %d-%d passages loaded.", st, ed);
     }
 
-
     public static int lenOfwIn;
     public static void main(String[] args) throws Exception {
         numOfRel = Integer.parseInt(args[0]);

@@ -61,13 +61,13 @@ public class CandiGenerator implements Runnable {
         String[] spt = task.split("\t");
         String target = spt[2];
         Set<Integer> candidates = new HashSet<>();
-        // find candidates from entity-name map
-        if (nameEntMap.containsKey(target))
-            candidates.addAll(nameEntMap.get(target));
         // find candidates from prior map
         // need to re-consider
         if (aliasPriorMap.containsKey(target))
             candidates.addAll(sort(new HashMap<>(aliasPriorMap.get(target))));
+        // find candidates from entity-name map
+        if (nameEntMap.containsKey(target))
+            candidates.addAll(nameEntMap.get(target));
         if (candidates.size() == 0)
             writeRet(task + "\tNULL\n");
         else {
