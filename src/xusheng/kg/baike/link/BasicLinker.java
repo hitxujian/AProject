@@ -46,20 +46,24 @@ public class BasicLinker {
     public static void work(int idx) throws IOException{
         String task = taskList.get(idx);
         String[] spt = task.split("\t");
-        if (spt[3].equals("NULL"))
+        if (spt[3].equals("NULL")) {
+            LogInfo.logs("[T%s|W%d] No candidates found.", Thread.currentThread().getName(), idx);
             return;
+        }
         int st = Integer.parseInt(spt[0]);
         List<Integer> eds = new ArrayList<>();
         for (int i=3; i<spt.length; i++)
             eds.add(Integer.parseInt(spt[i]));
         Graph graph = bfs(st, eds);
+        if (graph.numOfPath > 3) graph.printGraph();
         int top = graph.pageRank();
         String ret = "";
         if (top == -1)
             ret = task + "\t[[" + spt[3] + "]]\n";
         else
             ret = task + "\t[[" + top + "]]\n";
-        writeRet(ret);
+        addToRet(ret);
+        LogInfo.logs("[T%s|W%d] Linked ", Thread.currentThread().getName(), idx);
     }
 
     // bfs within 4 steps
@@ -92,6 +96,10 @@ public class BasicLinker {
 
     public static synchronized void writeRet(String ret) throws IOException {
         bw.write(ret);
+    }
+
+    public static synchronized void addToRet(String ret) throws IOException {
+        triRet.add(ret);
     }
 
     // read linked part of graph
@@ -137,9 +145,11 @@ public class BasicLinker {
     }
 
     public static BufferedWriter bw = null;
+    public static List<String> triRet = null;
     public static void multiThreadWork() throws Exception{
         readLinked();
         readUnLinked();
+        triRet = new ArrayList<>();
         curr = 0; end = taskList.size();
         int numOfThreads = 20;
         CandiGenerator workThread = new CandiGenerator();
@@ -147,7 +157,11 @@ public class BasicLinker {
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         bw = new BufferedWriter(new FileWriter(rootFp + "/infobox/KB_addLinks.tsv"));
         multi.runMultiThread();
+        LogInfo.logs("[info] Now write linked triples into file.");
+        for (String triple: triRet)
+            bw.write(triple);
         bw.close();
+        LogInfo.logs("[info] Linking mission completed.");
         LogInfo.end_track();
     }
 

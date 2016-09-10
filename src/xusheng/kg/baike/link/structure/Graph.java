@@ -1,5 +1,7 @@
 package xusheng.kg.baike.link.structure;
 
+import fig.basic.LogInfo;
+
 import java.util.*;
 
 /**
@@ -11,10 +13,12 @@ public class Graph {
     private Map<Integer, Set<Integer>> linkedList;
     private int source;
     private Set<Integer> ends;
+    public int numOfPath;
 
     public Graph(int stIdx) {
         source = stIdx;
         ends = new HashSet<>();
+        numOfPath = 0;
         linkedList = new HashMap<>();
         linkedList.put(source, new HashSet<>());
     }
@@ -34,6 +38,14 @@ public class Graph {
         for (int i=0; i<path.size()-1; i++)
             addEdge(path.get(i), path.get(i+1));
         ends.add(path.get(path.size()-1));
+        numOfPath ++;
+    }
+
+    public void printGraph() {
+        LogInfo.begin_track("Graph from Source [%d] to Targets %s", ends.toString());
+        for (Map.Entry<Integer, Set<Integer>> entry: linkedList.entrySet()) {
+            LogInfo.logs("%d -> (%s).", entry.getKey(), entry.getValue().toString());
+        }
     }
 
     public int pageRank() {
