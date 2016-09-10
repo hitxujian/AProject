@@ -18,7 +18,7 @@ import java.util.Map;
  * Output: KB_full.tsv
  */
 
-public class BasicLinker {
+public class BasicLinker implements Runnable {
     public static String rootFp = "/home/xusheng/starry/hudongbaike";
     public static int curr = -1, end = -1;
 
@@ -152,7 +152,7 @@ public class BasicLinker {
         triRet = new ArrayList<>();
         curr = 0; end = taskList.size();
         int numOfThreads = 20;
-        CandiGenerator workThread = new CandiGenerator();
+        BasicLinker workThread = new BasicLinker();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         bw = new BufferedWriter(new FileWriter(rootFp + "/infobox/KB_addLinks.tsv"));
