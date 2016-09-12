@@ -60,16 +60,22 @@ public class CandiGenerator implements Runnable {
         String task = taskList.get(idx);
         String[] spt = task.split("\t");
         String target = spt[2];
-        Set<Integer> candidates = new HashSet<>();
+        List<Integer> candidates = new ArrayList<>();
         // find candidates from prior map
         // need to re-consider
         if (aliasPriorMap.containsKey(target)) {
-            candidates.addAll(sort(new HashMap<>(aliasPriorMap.get(target))));
+            List<Integer> sorted = sort(new HashMap<>(aliasPriorMap.get(target)));
+            for (int i=0; i<sorted.size(); i++)
+                if (!candidates.contains(sorted.get(i)))
+                    candidates.add(sorted.get(i));
             LogInfo.logs("[T%s] Find candidates in prior.tsv.", Thread.currentThread().getName());
         }
         // find candidates from entity-name map
         if (nameEntMap.containsKey(target)) {
-            candidates.addAll(nameEntMap.get(target));
+            List<Integer> list = sort(new HashMap<>(aliasPriorMap.get(target)));
+            for (int i=0; i<list.size(); i++)
+                if (!candidates.contains(list.get(i)))
+                    candidates.add(list.get(i));
             LogInfo.logs("[T%s] Find candidates in entity-name map.", Thread.currentThread().getName());
         }
         if (candidates.size() == 0) {
