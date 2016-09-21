@@ -42,7 +42,7 @@ public class Graph {
     }
 
     public void printGraph() {
-        LogInfo.begin_track("Graph from Source [%d] to Targets %s", ends.toString());
+        LogInfo.begin_track("Graph from Source [%d] to Targets %s", source, ends.toString());
         for (Map.Entry<Integer, Set<Integer>> entry: linkedList.entrySet()) {
             LogInfo.logs("%d -> (%s).", entry.getKey(), entry.getValue().toString());
         }

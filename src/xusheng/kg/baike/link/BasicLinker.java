@@ -70,7 +70,7 @@ public class BasicLinker implements Runnable {
         List<List<Integer>> lists = new ArrayList<>();
         lists.add(new ArrayList<>());
         lists.get(0).add(st);
-        for (int step=0; step<maxLen; step++) { // maxlen steps
+        for (int step=0; step<maxLen; step++) { // maxLen steps
             int len = lists.size();
             for (int i=0; i<len; i++) {
                 if (lists.get(i).size() < step + 1)
