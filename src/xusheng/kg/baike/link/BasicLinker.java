@@ -5,10 +5,7 @@ import xusheng.kg.baike.link.structure.Graph;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Xusheng on 9/5/2016.
@@ -68,6 +65,7 @@ public class BasicLinker implements Runnable {
 
     // bfs within 4 steps
     public static Graph bfs(int st, List<Integer> eds) {
+        LogInfo.logs("[T%s] Begin BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
         Graph graph = new Graph(st);
         List<List<Integer>> lists = new ArrayList<>();
         lists.add(new ArrayList<>());
@@ -90,9 +88,9 @@ public class BasicLinker implements Runnable {
                 }
             }
         }
+        LogInfo.logs("[T%s] Complete BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
         return graph;
     }
-
 
     public static synchronized void writeRet(String ret) throws IOException {
         bw.write(ret);
