@@ -106,6 +106,7 @@ public class BasicLinker implements Runnable {
 
     public static synchronized void writeRet(String ret) throws IOException {
         bw.write(ret);
+        bw.flush();
     }
 
     public static synchronized void addToRet(String ret) throws IOException {
