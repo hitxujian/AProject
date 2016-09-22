@@ -36,18 +36,12 @@ public class LocalTester {
 
     public static void main(String[] args) throws Exception {
         String line = "<span><a href=\"http://www.baike.com/wiki/%E4%B8%AD%E5%9B%BD\" title=\"中国\" target=\"_blank\"><img src=\"./六小龄童_互动百科_files/chn.png\"></a>中国</span>";
-        Document doc = Jsoup.parse(line);
-        Elements links = doc.select("a");
-        for (int i=0; i<links.size(); i++) {
-            Element link = links.get(i);
-            String text = doc.body().text();
-            System.out.println(text);
-            String linkHref = link.attr("href");
-            System.out.println(linkHref);
-            String linkText = link.text();
-            System.out.println(linkText);
-            String url = urlDecode(linkHref);
-            System.out.println(url);
-        }
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        List<Integer> newList = new ArrayList<>(list);
+        newList.add(3);
+        LogInfo.logs(list.toString());
+        LogInfo.logs(newList.toString());
     }
 }

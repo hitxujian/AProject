@@ -67,6 +67,33 @@ public class BasicLinker implements Runnable {
     public static Graph bfs(int st, List<Integer> eds) {
         LogInfo.logs("[T%s] Begin BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
         Graph graph = new Graph(st);
+        Set<List<Integer>> paths = new HashSet<>();
+        paths.add(new ArrayList<>(st));
+        for (int step = 0; step < maxLen; step++) {
+            Set<List<Integer>> toAdd = new HashSet<>();
+            for (Iterator<List<Integer>> iter = paths.iterator(); iter.hasNext();) {
+                List<Integer> path = iter.next();
+                int last = path.get(path.size()-1);
+                if (eds.contains(last))
+                    graph.addPath(path);
+                if (!kb.containsKey(last))
+                    continue;
+                for (int expand : kb.get(last)) {
+                    List<Integer> newPath = new ArrayList<>(path);
+                    newPath.add(expand);
+                    toAdd.add(newPath);
+                }
+                iter.remove();
+            }
+            paths.addAll(toAdd);
+        }
+        LogInfo.logs("[T%s] Complete BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
+        return graph;
+    }
+
+    public static Graph bfs_old(int st, List<Integer> eds) {
+        LogInfo.logs("[T%s] Begin BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
+        Graph graph = new Graph(st);
         List<List<Integer>> lists = new ArrayList<>();
         lists.add(new ArrayList<>());
         lists.get(0).add(st);
