@@ -57,9 +57,16 @@ public class BasicLinker implements Runnable {
         String ret = "";
         if (top == -1)
             ret = task + "\t[[" + spt[3] + "]]\n";
-        else
+        else {
             ret = task + "\t[[" + top + "]]\n";
-        addToRet(ret);
+            // enrich the kb
+            if (!kb.containsKey(st)) kb.put(st, new ArrayList<>());
+            kb.get(st).add(top);
+            if (!kb.containsKey(top)) kb.put(top, new ArrayList<>());
+            kb.get(top).add(st);
+        }
+        //addToRet(ret);
+        writeRet(ret);
         LogInfo.logs("[T%s|W%d] Linked ", Thread.currentThread().getName(), idx);
     }
 
@@ -68,14 +75,19 @@ public class BasicLinker implements Runnable {
         LogInfo.logs("[T%s] Begin BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
         Graph graph = new Graph(st);
         Set<List<Integer>> paths = new HashSet<>();
-        paths.add(new ArrayList<>(st));
+        List<Integer> startPath = new ArrayList<>();
+        startPath.add(st);
+        paths.add(startPath);
         for (int step = 0; step < maxLen; step++) {
             Set<List<Integer>> toAdd = new HashSet<>();
             for (Iterator<List<Integer>> iter = paths.iterator(); iter.hasNext();) {
                 List<Integer> path = iter.next();
                 int last = path.get(path.size()-1);
-                if (eds.contains(last))
+                if (eds.contains(last)) {
                     graph.addPath(path);
+                    iter.remove();
+                    continue;
+                }
                 if (!kb.containsKey(last))
                     continue;
                 for (int expand : kb.get(last)) {
@@ -91,33 +103,6 @@ public class BasicLinker implements Runnable {
         return graph;
     }
 
-    public static Graph bfs_old(int st, List<Integer> eds) {
-        LogInfo.logs("[T%s] Begin BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
-        Graph graph = new Graph(st);
-        List<List<Integer>> lists = new ArrayList<>();
-        lists.add(new ArrayList<>());
-        lists.get(0).add(st);
-        for (int step=0; step<maxLen; step++) { // maxLen steps
-            int len = lists.size();
-            for (int i=0; i<len; i++) {
-                if (lists.get(i).size() < step + 1)
-                    continue;
-                List<Integer> list = lists.get(i);
-                int last = list.get(list.size()-1);
-                if (eds.contains(last))
-                    graph.addPath(list);
-                if (!kb.containsKey(last))
-                    continue;
-                for (int expand: kb.get(last)) {
-                    List<Integer> newList = new ArrayList<>(list);
-                    newList.add(expand);
-                    lists.add(newList);
-                }
-            }
-        }
-        LogInfo.logs("[T%s] Complete BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
-        return graph;
-    }
 
     public static synchronized void writeRet(String ret) throws IOException {
         bw.write(ret);
@@ -174,7 +159,7 @@ public class BasicLinker implements Runnable {
     public static void multiThreadWork() throws Exception{
         readLinked();
         readUnLinked();
-        triRet = new ArrayList<>();
+        //triRet = new ArrayList<>();
         curr = 0; end = taskList.size();
         int numOfThreads = 20;
         BasicLinker workThread = new BasicLinker();
@@ -182,11 +167,11 @@ public class BasicLinker implements Runnable {
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         bw = new BufferedWriter(new FileWriter(rootFp + "/infobox/KB_addLinks.tsv"));
         multi.runMultiThread();
-        LogInfo.logs("[info] Now write linked triples into file.");
+        /*LogInfo.logs("[info] Now write linked triples into file.");
         for (String triple: triRet)
             bw.write(triple);
         bw.close();
-        LogInfo.logs("[info] Linking mission completed.");
+        LogInfo.logs("[info] Linking mission completed.");*/
         LogInfo.end_track();
     }
 
