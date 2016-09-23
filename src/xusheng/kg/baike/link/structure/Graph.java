@@ -50,7 +50,13 @@ public class Graph {
 
     public int pageRank() {
         if (ends.size() == 0) return -1;
-        for (int i: ends) return i;
-        return 0;
+        int maxi = 0, ret = -1;
+        for (int ed: ends) {
+            if (linkedList.containsKey(ed) && linkedList.get(ed).size() > maxi) {
+                maxi = linkedList.get(ed).size();
+                ret = ed;
+            }
+        }
+        return ret;
     }
 }

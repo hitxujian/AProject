@@ -40,6 +40,13 @@ public class BasicLinker implements Runnable {
         return -1;
     }
 
+    public static synchronized void enrich(int st, int top) {
+        if (!kb.containsKey(st)) kb.put(st, new ArrayList<>());
+        kb.get(st).add(top);
+        if (!kb.containsKey(top)) kb.put(top, new ArrayList<>());
+        kb.get(top).add(st);
+    }
+
     public static void work(int idx) throws IOException{
         String task = taskList.get(idx);
         String[] spt = task.split("\t");
@@ -60,10 +67,7 @@ public class BasicLinker implements Runnable {
         else {
             ret = task + "\t[[" + top + "]]\n";
             // enrich the kb
-            if (!kb.containsKey(st)) kb.put(st, new ArrayList<>());
-            kb.get(st).add(top);
-            if (!kb.containsKey(top)) kb.put(top, new ArrayList<>());
-            kb.get(top).add(st);
+            enrich(st, top);
         }
         //addToRet(ret);
         writeRet(ret);
@@ -162,7 +166,7 @@ public class BasicLinker implements Runnable {
         readUnLinked();
         //triRet = new ArrayList<>();
         curr = 0; end = taskList.size();
-        int numOfThreads = 20;
+        int numOfThreads = 10;
         BasicLinker workThread = new BasicLinker();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
