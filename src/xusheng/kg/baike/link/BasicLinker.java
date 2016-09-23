@@ -170,7 +170,7 @@ public class BasicLinker implements Runnable {
         readUnLinked();
         //triRet = new ArrayList<>();
         curr = 0; end = taskList.size();
-        int numOfThreads = 10;
+        int numOfThreads = 20;
         BasicLinker workThread = new BasicLinker();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
