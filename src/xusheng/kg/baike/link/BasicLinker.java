@@ -87,16 +87,15 @@ public class BasicLinker implements Runnable {
             for (Iterator<List<Integer>> iter = paths.iterator(); iter.hasNext();) {
                 List<Integer> path = iter.next();
                 int last = path.get(path.size()-1);
-                if (eds.contains(last)) {
-                    graph.addPath(path);
-                    iter.remove();
-                    continue;
-                }
                 if (!kb.containsKey(last))
                     continue;
                 for (int expand : kb.get(last)) {
                     List<Integer> newPath = new ArrayList<>(path);
                     newPath.add(expand);
+                    if (eds.contains(expand)) {
+                        graph.addPath(newPath);
+                        continue;
+                    }
                     toAdd.add(newPath);
                 }
                 iter.remove();
@@ -106,7 +105,6 @@ public class BasicLinker implements Runnable {
         LogInfo.logs("[T%s] Complete BFS from %d to %s. [%s]", Thread.currentThread().getName(), st, eds.toString(), new Date().toString());
         return graph;
     }
-
 
     public static synchronized void writeRet(String ret) throws IOException {
         bw.write(ret);
@@ -180,7 +178,7 @@ public class BasicLinker implements Runnable {
         LogInfo.end_track();
     }
 
-    public static int maxLen = 4;
+    public static int maxLen = 3;
     public static void main(String[] args) throws Exception {
         if (args.length != 0)
             maxLen = Integer.parseInt(args[0]);
