@@ -47,6 +47,12 @@ public class BasicLinker implements Runnable {
         kb.get(top).add(st);
     }
 
+    public static synchronized List<Integer> queryKB(int idx) {
+        if (kb.containsKey(idx))
+            return kb.get(idx);
+        else return null;
+    }
+
     public static void work(int idx) throws IOException{
         String task = taskList.get(idx);
         String[] spt = task.split("\t");
@@ -87,9 +93,9 @@ public class BasicLinker implements Runnable {
             for (Iterator<List<Integer>> iter = paths.iterator(); iter.hasNext();) {
                 List<Integer> path = iter.next();
                 int last = path.get(path.size()-1);
-                if (!kb.containsKey(last))
-                    continue;
-                for (int expand : kb.get(last)) {
+                List<Integer> expands = queryKB(last);
+                if (expands == null) continue;
+                for (int expand : expands) {
                     List<Integer> newPath = new ArrayList<>(path);
                     newPath.add(expand);
                     if (eds.contains(expand)) {
