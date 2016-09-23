@@ -72,7 +72,7 @@ public class BasicLinker implements Runnable {
             ret = task + "\t[[" + spt[3] + "]]\n";
         else {
             ret = task + "\t[[" + top + "]]\n";
-            // enrich the kb
+            //enrich the kb
             enrich(st, top);
         }
         //addToRet(ret);
@@ -93,7 +93,7 @@ public class BasicLinker implements Runnable {
             for (Iterator<List<Integer>> iter = paths.iterator(); iter.hasNext();) {
                 List<Integer> path = iter.next();
                 int last = path.get(path.size()-1);
-                List<Integer> expands = queryKB(last);
+                List<Integer> expands = new ArrayList<>(queryKB(last));
                 if (expands == null) continue;
                 for (int expand : expands) {
                     List<Integer> newPath = new ArrayList<>(path);
