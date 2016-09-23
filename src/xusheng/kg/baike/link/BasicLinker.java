@@ -65,7 +65,7 @@ public class BasicLinker implements Runnable {
         for (int i=3; i<spt.length; i++)
             eds.add(Integer.parseInt(spt[i]));
         Graph graph = bfs(st, eds);
-        if (graph.numOfPath > 3) graph.printGraph();
+        //if (graph.numOfPath > 3) graph.printGraph();
         int top = graph.pageRank();
         String ret = "";
         if (top == -1)
