@@ -38,7 +38,7 @@ public class LocalTester {
                 " 8, 1845) was an American statesman who served as the seventh <a href=\"President%20of%20the%20United" +
                 "%20States\">President of the United States</a> from 1829 to 1837.";
         String s = "<a>123</a><a>456</a><a>789</a>";
-        Pattern pat = Pattern.compile("<a>([sS]*?)</a>");
+        Pattern pat = Pattern.compile("<a>(.*?)</a>");
         Matcher mat = pat.matcher(s);
         boolean rs = mat.find();
         for(int i=1;i<=mat.groupCount();i++){
