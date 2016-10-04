@@ -40,8 +40,9 @@ public class LocalTester {
         String s = "<a>123</a><a>456</a><a>789</a>";
         Pattern pat = Pattern.compile("<a>(.*?)</a>");
         Matcher mat = pat.matcher(s);
-        boolean rs = mat.find();
+        LogInfo.logs(mat.groupCount());
         for(int i=0;i<mat.groupCount();i++){
+            mat.find();
             System.out.println(mat.group(i));
         }
     }
