@@ -1,14 +1,13 @@
 package xusheng.misc;
 
 import fig.basic.LogInfo;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+
 
 import java.io.PrintStream;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by angrymidiao on 3/29/16.
@@ -35,8 +34,15 @@ public class LocalTester {
     }
 
     public static void main(String[] args) throws Exception {
-        String line = "<span><a href=\"http://www.baike.com/wiki/%E4%B8%AD%E5%9B%BD\" title=\"中国\" target=\"_blank\"><img src=\"./六小龄童_互动百科_files/chn.png\"></a>中国</span>";
-        List<Integer> list = new ArrayList<>(1);
-        LogInfo.logs(list.toString());
+        String line = "Andrew Jackson (March 1<a href=\"Battle%20of%20New%20Orleans\">Battle of New Orleans</a>June" +
+                " 8, 1845) was an American statesman who served as the seventh <a href=\"President%20of%20the%20United" +
+                "%20States\">President of the United States</a> from 1829 to 1837.";
+        String s = "<a>123</a><a>456</a><a>789</a>";
+        Pattern pat = Pattern.compile("<a>([sS]*?)</a>");
+        Matcher mat = pat.matcher(s);
+        boolean rs = mat.find();
+        for(int i=1;i<=mat.groupCount();i++){
+            System.out.println(mat.group(i));
+        }
     }
 }

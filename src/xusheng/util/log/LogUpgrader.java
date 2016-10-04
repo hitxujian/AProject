@@ -6,7 +6,7 @@ public class LogUpgrader {
 	
 	public static boolean showLine(int lines, int mod) {
 		if (0 == lines % mod) {
-            LogInfo.logs("Current: %d", lines);
+            LogInfo.logs("[log]: %d lines.", lines);
             return true;
         }
         return false;
