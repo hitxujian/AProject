@@ -41,7 +41,7 @@ public class LocalTester {
         Pattern pat = Pattern.compile("<a>(.*?)</a>");
         Matcher mat = pat.matcher(s);
         boolean rs = mat.find();
-        for(int i=1;i<=mat.groupCount();i++){
+        for(int i=0;i<mat.groupCount();i++){
             System.out.println(mat.group(i));
         }
     }
