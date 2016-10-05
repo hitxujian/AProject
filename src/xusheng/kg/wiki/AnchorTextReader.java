@@ -26,6 +26,8 @@ public class AnchorTextReader {
         String line;
         int cnt = 0;
         while ((line = br.readLine()) != null) {
+            if (!line.startsWith("<http"))
+                continue;
             String[] spt = line.split(" ");
             // entity still contains "_";
             String entity = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
