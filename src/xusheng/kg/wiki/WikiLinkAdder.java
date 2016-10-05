@@ -119,28 +119,27 @@ public class WikiLinkAdder implements Runnable {
         LogInfo.end_track();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static List<String> taskList = null;
+    public static void main(String[] args) throws Exception {
+        taskList = new ArrayList<>();
         for (char Ch ='A'; Ch<='F'; Ch++) {
             for (char ch = 'A'; ch <= 'Z'; ch++) {
                 for (int i = 0; i <= 9; i++) {
                     String fp = String.format("%s/%s%s/wiki_0%d", rootFp, Ch, ch, i);
                     if (new File(fp).exists()) {
-                        addToTasks(fp);
+                        taskList.add(fp);
                     }
                 }
                 for (int i = 10; i <= 99; i++) {
                     String fp = String.format("%s/%s%s/wiki_%d", rootFp, Ch, ch, i);
                     if (new File(fp).exists()) {
-                        addToTasks(fp);
+                        taskList.add(fp);
                     }
                 }
             }
         }
+        multiThreadWork();
     }
 
-    public static List<String> taskList = null;
-    public static void addToTasks(String fp) {
-        taskList = new ArrayList<>();
-        taskList.add(fp);
-    }
+
 }
