@@ -1,13 +1,11 @@
 package xusheng.kg.wiki;
 
 import fig.basic.LogInfo;
-import fig.record.RegexMatcher;
 import xusheng.util.struct.MultiThread;
 
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -128,13 +126,17 @@ public class WikiLinkAdder implements Runnable {
                     String fp = String.format("%s/%s%s/wiki_0%d", rootFp, Ch, ch, i);
                     if (new File(fp).exists()) {
                         taskList.add(fp);
-                    }
+                        LogInfo.logs("[log] add task: [%s]", fp);
+                    } else
+                        LogInfo.logs("[error] file path not exists: [%s]", fp);
                 }
                 for (int i = 10; i <= 99; i++) {
                     String fp = String.format("%s/%s%s/wiki_%d", rootFp, Ch, ch, i);
                     if (new File(fp).exists()) {
                         taskList.add(fp);
-                    }
+                        LogInfo.logs("[log] add task: [%s]", fp);
+                    } else
+                        LogInfo.logs("[error] file path not exists: [%s]", fp);
                 }
             }
         }
