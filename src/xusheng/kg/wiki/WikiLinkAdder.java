@@ -43,7 +43,7 @@ public class WikiLinkAdder implements Runnable {
 
     public static void addLinks(int idx) throws IOException {
         String taskFp = taskList.get(idx);
-        LogInfo.logs("[T%d] start dealing with %s. [%s]", Thread.currentThread().getName(), taskFp, new Date().toString());
+        LogInfo.logs("[T%s] start dealing with %s. [%s]", Thread.currentThread().getName(), taskFp, new Date().toString());
         BufferedReader br = new BufferedReader(new FileReader(taskFp));
         BufferedWriter bw = new BufferedWriter(new FileWriter(taskFp + "_links"));
         String line;
@@ -79,7 +79,7 @@ public class WikiLinkAdder implements Runnable {
         }
         br.close();
         bw.close();
-        LogInfo.logs("[T%d] Done dealing with %s. [%s]", Thread.currentThread().getName(), taskFp, new Date().toString());
+        LogInfo.logs("[T%s] Done dealing with %s. [%s]", Thread.currentThread().getName(), taskFp, new Date().toString());
     }
 
     public static String addMark(String entity) {
