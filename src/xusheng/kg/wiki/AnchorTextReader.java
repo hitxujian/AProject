@@ -28,17 +28,22 @@ public class AnchorTextReader {
         while ((line = br.readLine()) != null) {
             if (!line.startsWith("<http"))
                 continue;
-            String[] spt = line.split(" ");
-            // entity still contains "_";
-            String entity = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
-            // name contains no "_" (replaced by " ")
-            String name = spt[2].split("\"")[1].toLowerCase();
-            if (!anchorMap.containsKey(entity))
-                anchorMap.put(entity, new HashSet<>());
-            anchorMap.get(entity).add(name);
+            try {
+                String[] spt = line.split(" ");
+                // entity still contains "_";
+                String entity = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
+                // name contains no "_" (replaced by " ")
+                String name = spt[2].split("\"")[1].toLowerCase();
+                if (!anchorMap.containsKey(entity))
+                    anchorMap.put(entity, new HashSet<>());
+                anchorMap.get(entity).add(name);
+                if (cnt < 10)
+                    LogInfo.logs(entity + "\t" + name);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                LogInfo.logs("[error] %s", line);
+            }
             cnt ++;
-            if (cnt < 10)
-                LogInfo.logs(entity + "\t" + name);
             LogUpgrader.showLine(cnt, 1000000);
         }
         br.close();
