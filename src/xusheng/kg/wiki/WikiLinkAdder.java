@@ -55,6 +55,7 @@ public class WikiLinkAdder implements Runnable {
             if (line.startsWith("<doc")) {
                 entity = line.split("title=\"")[1].split("\">")[0];
                 mark = addMark(entity);
+                if (idx == 0) LogInfo.logs(mark);
                 names.clear();
                 if (anchorTextMap.containsKey(entity))
                     names = anchorTextMap.get(entity);
@@ -63,15 +64,18 @@ public class WikiLinkAdder implements Runnable {
                 br.readLine();
                 br.readLine();
             } else {
-                for (String name: names)
+                for (String name: names) {
                     line.replace(name, mark);
+                    if (idx == 0)
+                        LogInfo.logs("%s, %s", name, mark);
+                }
                 Pattern pattern = Pattern.compile("<a href=\"(.*?)\">(.*?)</a>");
                 Matcher matcher = pattern.matcher(line);
                 while (matcher.find()) {
                     String hrefEnt = urlDecode(matcher.group(1));
                     if (hrefEnt != null) {
                         String markedEnt = addMark(hrefEnt);
-                        matcher.replaceAll(markedEnt);
+                        line = matcher.replaceAll(markedEnt);
                     }
                 }
                 bw.write(line + "\n");
