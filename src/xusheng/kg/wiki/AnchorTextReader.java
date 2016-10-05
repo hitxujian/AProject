@@ -33,7 +33,7 @@ public class AnchorTextReader {
                 // entity still contains "_";
                 String entity = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
                 // name contains no "_" (replaced by " ")
-                String name = spt[2].split("\"")[1].toLowerCase();
+                String name = line.split("\"")[1].trim().toLowerCase();
                 if (!anchorMap.containsKey(entity))
                     anchorMap.put(entity, new HashSet<>());
                 anchorMap.get(entity).add(name);
