@@ -65,7 +65,8 @@ public class WikiLinkAdder implements Runnable {
                 br.readLine();
             } else {
                 for (String name: names) {
-                    line.replace(name, mark);
+                    String newLine = line.replace(name, mark);
+                    line = newLine;
                     if (idx == 0)
                         LogInfo.logs("%s, %s", name, mark);
                 }
@@ -75,7 +76,8 @@ public class WikiLinkAdder implements Runnable {
                     String hrefEnt = urlDecode(matcher.group(1));
                     if (hrefEnt != null) {
                         String markedEnt = addMark(hrefEnt);
-                        line = matcher.replaceAll(markedEnt);
+                        String newLine = line.replace(matcher.group(0), markedEnt);
+                        line = newLine;
                     }
                 }
                 bw.write(line + "\n");

@@ -40,7 +40,11 @@ public class LocalTester {
         Pattern pat = Pattern.compile("<a href=\"(.*?)\"(.*?)</a>");
         Matcher mat = pat.matcher(line);
         while (mat.find()) {
-            line = mat.replaceAll(urlDecode(mat.group(1)));
+            LogInfo.logs(urlDecode(mat.group(0)));
+            LogInfo.logs(urlDecode(mat.group(1)));
+            String newLine = line.replace(mat.group(0), urlDecode(mat.group(1)));
+            line = newLine;
+            LogInfo.logs(line);
         }
     }
 }
