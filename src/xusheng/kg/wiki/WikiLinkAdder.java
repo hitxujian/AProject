@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 
 public class WikiLinkAdder implements Runnable {
-    public static String rootFp = "/home/wikipedia/extracted";
+    public static String rootFp = "/home/xusheng/wikipedia/extracted";
     public static int curr = -1, end = -1;
 
     public void run() {
