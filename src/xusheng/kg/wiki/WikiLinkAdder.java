@@ -55,7 +55,6 @@ public class WikiLinkAdder implements Runnable {
             if (line.startsWith("<doc")) {
                 entity = line.split("title=\"")[1].split("\">")[0];
                 mark = addMark(entity);
-                if (idx == 0) LogInfo.logs(mark);
                 names.clear();
                 if (anchorTextMap.containsKey(entity))
                     names = anchorTextMap.get(entity);
@@ -67,8 +66,6 @@ public class WikiLinkAdder implements Runnable {
                 for (String name: names) {
                     String newLine = line.replace(name, mark);
                     line = newLine;
-                    if (idx == 0)
-                        LogInfo.logs("%s, %s", name, mark);
                 }
                 Pattern pattern = Pattern.compile("<a href=\"(.*?)\">(.*?)</a>");
                 Matcher matcher = pattern.matcher(line);
@@ -113,8 +110,7 @@ public class WikiLinkAdder implements Runnable {
 
     public static Map<String, Set<String>> anchorTextMap = null;
     public static void multiThreadWork() throws Exception{
-        anchorTextMap = new HashMap<>();
-        //anchorTextMap = AnchorTextReader.ReadData();
+        anchorTextMap = AnchorTextReader.ReadData();
         curr = 0; end = taskList.size();
         int numOfThreads = 32;
         WikiLinkAdder workThread = new WikiLinkAdder();
