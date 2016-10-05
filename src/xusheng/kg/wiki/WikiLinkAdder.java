@@ -45,16 +45,18 @@ public class WikiLinkAdder implements Runnable {
 
     public static void addLinks(int idx) throws IOException {
         String taskFp = taskList.get(idx);
+        LogInfo.logs("[T%d] start dealing with %s. [%s]", Thread.currentThread().getName(), taskFp, new Date().toString());
         BufferedReader br = new BufferedReader(new FileReader(taskFp));
         BufferedWriter bw = new BufferedWriter(new FileWriter(taskFp + "_links"));
         String line;
         String entity = "", mark = "";
         Set<String> names = new HashSet<>();
         while ((line = br.readLine()) != null) {
+            // to lower case, match to anchor texts
+            line = line.toLowerCase();
             if (line.startsWith("<doc")) {
                 entity = line.split("title=\"")[1].split("\">")[0];
-                mark = String.format("aabb%sbbaa", entity.replace(" ", "")
-                        .replace("(","ccdd")).replace(")", "ddcc");
+                mark = addMark(entity);
                 names.clear();
                 if (anchorTextMap.containsKey(entity))
                     names = anchorTextMap.get(entity);
@@ -67,11 +69,24 @@ public class WikiLinkAdder implements Runnable {
                     line.replace(name, mark);
                 Pattern pattern = Pattern.compile("<a href=\"(.*?)\">(.*?)</a>");
                 Matcher matcher = pattern.matcher(line);
+                while (matcher.find()) {
+                    String hrefEnt = urlDecode(matcher.group(1));
+                    if (hrefEnt != null) {
+                        String markedEnt = addMark(hrefEnt);
+                        matcher.replaceAll(markedEnt);
+                    }
+                }
                 bw.write(line + "\n");
             }
         }
+        br.close();
+        bw.close();
+        LogInfo.logs("[T%d] Done dealing with %s. [%s]", Thread.currentThread().getName(), taskFp, new Date().toString());
+    }
 
-
+    public static String addMark(String entity) {
+        return String.format("aabb%sbbaa", entity.replace(" ", "")
+                .replace("(","ccdd")).replace(")", "ddcc");
     }
 
     public static String urlDecode(String url) {
@@ -87,6 +102,7 @@ public class WikiLinkAdder implements Runnable {
             }
         } catch (Exception ex) {
             LogInfo.logs("[T%s] Fail to Decode url [%s].", Thread.currentThread().getName(), ret);
+            return null;
         }
         return ret;
     }
@@ -94,7 +110,7 @@ public class WikiLinkAdder implements Runnable {
     public static Map<String, Set<String>> anchorTextMap = null;
     public static void multiThreadWork() throws Exception{
         anchorTextMap = AnchorTextReader.ReadData();
-        curr = 0; end = 0;
+        curr = 0; end = taskList.size();
         int numOfThreads = 32;
         WikiLinkAdder workThread = new WikiLinkAdder();
         MultiThread multi = new MultiThread(numOfThreads, workThread);

@@ -34,16 +34,13 @@ public class LocalTester {
     }
 
     public static void main(String[] args) throws Exception {
-        String line = "Andrew Jackson (March 1<a href=\"Battle%20of%20New%20Orleans\">Battle of New Orleans</a>June" +
-                " 8, 1845) was an American statesman who served as the seventh <a href=\"President%20of%20the%20United" +
+        String line = "Andrew Jackson (March 1<a href=\"Battle%20of%20New%20Orleans\">Battle of New Orle" +
+                "ans</a>June 8, 1845) was an American statesman who served as the seventh <a href=\"President%20of%20the%20United" +
                 "%20States\">President of the United States</a> from 1829 to 1837.";
-        String s = "<a>123</a><a>456</a><a>789</a>";
-        Pattern pat = Pattern.compile("<a>(.*?)</a>");
-        Matcher mat = pat.matcher(s);
-        LogInfo.logs(mat.groupCount());
-        for(int i=0;i<mat.groupCount();i++){
-            mat.find();
-            System.out.println(mat.group(i));
+        Pattern pat = Pattern.compile("<a href=\"(.*?)\"(.*?)</a>");
+        Matcher mat = pat.matcher(line);
+        while (mat.find()) {
+            LogInfo.logs(mat.replaceAll(urlDecode(mat.group(1))));
         }
     }
 }
