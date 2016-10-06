@@ -45,5 +45,37 @@ public class W2VDataPreparer {
 
     public static void main(String[] args) throws Exception {
         mergeData();
+        process4Final();
+    }
+
+    public static void process4Final() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/wiki4train_link.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/wiki_link.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String newLine = "";
+            for (int i=0; i<line.length(); i++) {
+                char curr = line.charAt(i);
+                if (isWord(curr))
+                    newLine += curr;
+                else if (!isNum(curr))
+                    newLine += (" "+curr+" ");
+            }
+            bw.write(newLine + "\n");
+        }
+        br.close();
+        bw.close();
+    }
+
+    public static boolean isWord(char ch) {
+        if (ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z')
+            return true;
+        else return false;
+    }
+
+    public static boolean isNum(char ch) {
+        if (ch >= '0' && ch <='9')
+            return true;
+        else return false;
     }
 }

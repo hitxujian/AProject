@@ -50,6 +50,7 @@ public class WikiLinkAdder implements Runnable {
         String entity = "", mark = "";
         Set<String> names = new HashSet<>();
         while ((line = br.readLine()) != null) {
+            if (line.startsWith("</doc>")) continue;
             // to lower case, match to anchor texts
             line = line.toLowerCase();
             if (line.startsWith("<doc")) {
@@ -63,10 +64,6 @@ public class WikiLinkAdder implements Runnable {
                 br.readLine();
                 br.readLine();
             } else {
-                for (String name: names) {
-                    String newLine = line.replace(name, mark);
-                    line = newLine;
-                }
                 Pattern pattern = Pattern.compile("<a href=\"(.*?)\">(.*?)</a>");
                 Matcher matcher = pattern.matcher(line);
                 while (matcher.find()) {
@@ -76,6 +73,14 @@ public class WikiLinkAdder implements Runnable {
                         String newLine = line.replace(matcher.group(0), markedEnt);
                         line = newLine;
                     }
+                }
+                // replace href link first, then the title name.
+                // attention that only words can be replaced, not part of word.
+                for (String name: names) {
+                    // special case e.g. "a".
+                    if (name.length() <= 2) name = "\"" + name + "\"";
+                    String newLine = line.replace(name, mark);
+                    line = newLine;
                 }
                 bw.write(line + "\n");
             }
