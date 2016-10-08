@@ -27,8 +27,10 @@ public class NNDataPreparer {
     public static void getCleanData() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
                 "/dbpedia/infobox_properties_en.ttl"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/wiki_info.tsv"));
+        BufferedWriter bwl = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/wiki_info_linked.tsv"));
+        BufferedWriter bwu = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/wiki_info_unlinked.tsv"));
         String line;
         int cnt = 0;
         while ((line = br.readLine()) != null) {
@@ -37,16 +39,24 @@ public class NNDataPreparer {
             try {
                 String[] spt = line.split(" ");
                 String subj = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
-                String obj_s = line.split("\"")[1].trim().toLowerCase();
                 String relation = spt[1].split("property/")[1].split(">")[0].replace("_", " ").toLowerCase();
-                bw.write(String.format("%s\t%s\t%s\n", subj, relation, obj_s));
+                String obj_s;
+                if (spt[2].startsWith("<http")) {
+                    obj_s = spt[2].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
+                    bwl.write(String.format("%s\t%s\t%s\n", subj, relation, obj_s));
+                }
+                else{
+                    obj_s = line.split("\"")[1].trim().toLowerCase();
+                    bwl.write(String.format("%s\t%s\t%s\n", subj, relation, obj_s));
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 LogInfo.logs("[error] %s", line);
             }
         }
         br.close();
-        bw.close();
+        bwl.close();
+        bwu.close();
     }
 
     public static void main(String[] args) throws IOException {
