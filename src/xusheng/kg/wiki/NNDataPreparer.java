@@ -28,9 +28,9 @@ public class NNDataPreparer {
         File f = new File(rootFp + "/dbpedia/infobox_properties_en.ttl");
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         f = new File(rootFp + "/nn/wiki_info_linked.tsv");
-        BufferedWriter bwl = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+        BufferedWriter bwl = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
         f = new File(rootFp + "/nn/wiki_info_unlinked.tsv");
-        BufferedWriter bwu = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+        BufferedWriter bwu = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
 
         String line;
         int cnt = 0;
