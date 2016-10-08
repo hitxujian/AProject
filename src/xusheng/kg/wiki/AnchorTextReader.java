@@ -30,7 +30,7 @@ public class AnchorTextReader {
                 continue;
             try {
                 String[] spt = line.split(" ");
-                // entity still contains "_";
+                // entity not contains "_";
                 String entity = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
                 // name contains no "_" (replaced by " ")
                 String name = line.split("\"")[1].trim().toLowerCase();
