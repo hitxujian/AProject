@@ -25,12 +25,13 @@ public class NNDataPreparer {
     }
 
     public static void getCleanData() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp +
-                "/dbpedia/infobox_properties_en.ttl"));
-        BufferedWriter bwl = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/wiki_info_linked.tsv"));
-        BufferedWriter bwu = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/wiki_info_unlinked.tsv"));
+        File f = new File(rootFp + "/dbpedia/infobox_properties_en.ttl");
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+        f = new File(rootFp + "/nn/wiki_info_linked.tsv");
+        BufferedWriter bwl = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+        f = new File(rootFp + "/nn/wiki_info_unlinked.tsv");
+        BufferedWriter bwu = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+
         String line;
         int cnt = 0;
         while ((line = br.readLine()) != null) {
