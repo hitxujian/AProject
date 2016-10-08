@@ -41,7 +41,7 @@ public class NNDataPreparer {
                 String subj = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
                 String relation = spt[1].split("property/")[1].split(">")[0].replace("_", " ").toLowerCase();
                 String obj_s;
-                if (spt[2].contains("resource")) {
+                if (spt[2].contains("dbpedia.org/resource")) {
                     obj_s = spt[2].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
                     bwl.write(String.format("%s\t%s\t%s\n", subj, relation, obj_s));
                 }
