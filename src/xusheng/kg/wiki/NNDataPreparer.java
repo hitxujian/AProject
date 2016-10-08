@@ -46,11 +46,10 @@ public class NNDataPreparer {
                     bwl.write(String.format("%s\t%s\t%s\n", subj, relation, obj_s));
                 }
                 else{
-                    if (spt[2].startsWith("<http"))
-                        obj_s = spt[2];
-                    else
-                        obj_s = line.split("\"")[1].trim().toLowerCase();
-                    bwl.write(String.format("%s\t%s\t%s\n", subj, relation, obj_s));
+                    obj_s = spt[2];
+                    if (obj_s.equals("\""))
+                        obj_s = spt[2] + spt[3];
+                    bwu.write(String.format("%s\t%s\t%s\n", subj, relation, obj_s));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
