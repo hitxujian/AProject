@@ -26,9 +26,9 @@ public class NNDataPreparer {
 
     public static void getCleanData() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
-                "dbpedia/infobox_properties_en.ttl"));
+                "/dbpedia/infobox_properties_en.ttl"));
         BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp +
-                "nn/wiki_info.tsv"));
+                "/nn/wiki_info.tsv"));
         String line;
         int cnt = 0;
         while ((line = br.readLine()) != null) {
