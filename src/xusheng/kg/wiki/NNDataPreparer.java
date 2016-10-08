@@ -1,6 +1,7 @@
 package xusheng.kg.wiki;
 
 import fig.basic.LogInfo;
+import xusheng.util.log.LogUpgrader;
 
 import java.io.*;
 import java.util.HashSet;
@@ -29,7 +30,10 @@ public class NNDataPreparer {
         BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp +
                 "nn/wiki_info.tsv"));
         String line;
+        int cnt = 0;
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 1000000);
             try {
                 String[] spt = line.split(" ");
                 String subj = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
