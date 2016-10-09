@@ -30,7 +30,7 @@ public class NNDataPreparer {
             cnt ++;
             LogUpgrader.showLine(cnt, 1000000);
             try {
-                String[] spt = line.split(" ");
+                String[] spt = line.split("\t");
                 String markedSubj = addMark(spt[0]);
                 String markedObj = addMark(spt[2]);
                 String obj_s[] = spt[2].split(" ");
