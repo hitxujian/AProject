@@ -2,22 +2,59 @@ package xusheng.kg.wiki;
 
 import fig.basic.LogInfo;
 import xusheng.util.log.LogUpgrader;
+import xusheng.word2vec.VecLoader;
+import xusheng.word2vec.WordEmbedder;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Xusheng on 10/8/2016.
  */
+
 public class NNDataPreparer {
     public static String rootFp = "/home/xusheng";
 
-    public static void getTrainingData() throws IOException {
+    public static void getTrainingData(int numOfSample) throws IOException {
+        Map<String, String> vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_50.txt");
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
-                "dbpedia/infobox_properties_en.ttl"));
+                "/nn/wiki_info_linked.tsv"));
         BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp +
-                "nn/training.tsv"));
+                "/nn/training.tsv"));
+        String line;
+        List<String> data = new ArrayList<>();
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split(" ");
+            String markedSubj = addMark(spt[0]);
+            String markedObj = addMark(spt[2]);
+            String obj_s[] = spt[2].split(" ");
+            boolean flag = true;
+            for (String str: obj_s)
+                if (!vectors.containsKey(str)) {
+                    flag = false;
+                    break;
+                }
+            if (!flag) continue;
+            if (!vectors.containsKey(markedObj) || !vectors.containsKey(markedSubj))
+                continue;
+            String newLine = "";
+            newLine += (vectors.get(markedSubj));
+            newLine += "\t";
+            newLine += (vectors.get(markedObj));
+            for (String str: obj_s)
+                newLine += ("\t" + vectors.get(str));
+            // format: triple\t\tvec\tvec\tvec\t...
+            data.add(line + "\t\t" + newLine + "\n");
+        }
 
+    }
+
+    public static String addMark(String entity) {
+        return String.format("aabb%sbbaa", entity.replace(" ", "")
+                .replace("(","ccdd")).replace(")", "ddcc");
     }
 
     public static void getTestingData() throws IOException {
@@ -63,6 +100,7 @@ public class NNDataPreparer {
     }
 
     public static void main(String[] args) throws IOException {
-        getCleanData();
+        //getCleanData();
+        getTrainingData(Integer.parseInt(args[0]));
     }
 }
