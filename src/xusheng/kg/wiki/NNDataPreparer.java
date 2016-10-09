@@ -29,27 +29,32 @@ public class NNDataPreparer {
         while ((line = br.readLine()) != null) {
             cnt ++;
             LogUpgrader.showLine(cnt, 1000000);
-            String[] spt = line.split(" ");
-            String markedSubj = addMark(spt[0]);
-            String markedObj = addMark(spt[2]);
-            String obj_s[] = spt[2].split(" ");
-            boolean flag = true;
-            for (String str: obj_s)
-                if (!vectors.containsKey(str)) {
-                    flag = false;
-                    break;
-                }
-            if (!flag) continue;
-            if (!vectors.containsKey(markedObj) || !vectors.containsKey(markedSubj))
-                continue;
-            String newLine = "";
-            newLine += (vectors.get(markedSubj));
-            newLine += "\t";
-            newLine += (vectors.get(markedObj));
-            for (String str: obj_s)
-                newLine += ("\t" + vectors.get(str));
-            // format: triple\t\tvec\tvec\tvec\t...
-            data.add(line + "\t\t" + newLine + "\n");
+            try {
+                String[] spt = line.split(" ");
+                String markedSubj = addMark(spt[0]);
+                String markedObj = addMark(spt[2]);
+                String obj_s[] = spt[2].split(" ");
+                boolean flag = true;
+                for (String str : obj_s)
+                    if (!vectors.containsKey(str)) {
+                        flag = false;
+                        break;
+                    }
+                if (!flag) continue;
+                if (!vectors.containsKey(markedObj) || !vectors.containsKey(markedSubj))
+                    continue;
+                String newLine = "";
+                newLine += (vectors.get(markedSubj));
+                newLine += "\t";
+                newLine += (vectors.get(markedObj));
+                for (String str : obj_s)
+                    newLine += ("\t" + vectors.get(str));
+                // format: triple\t\tvec\tvec\tvec\t...
+                data.add(line + "\t\t" + newLine + "\n");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                LogInfo.logs("[error] %s", line);
+            }
         }
         LogInfo.logs("[log] data size: %d", data.size());
         Random rand = new Random();
