@@ -15,7 +15,7 @@ import java.util.*;
 public class NNDataPreparer {
     public static String rootFp = "/home/xusheng";
 
-    public static void getTrainingData(int numOfTrain, int numOfTest) throws IOException {
+    public static void getTrainTestData(int numOfTrain, int numOfTest) throws IOException {
         Map<String, String> vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_50.txt");
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
                 "/nn/wiki_info_linked.tsv"));
@@ -24,8 +24,11 @@ public class NNDataPreparer {
         BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
                 "/nn/testing_" + String.valueOf(numOfTest) + ".tsv"));
         String line;
+        int cnt = 0;
         List<String> data = new ArrayList<>();
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 1000000);
             String[] spt = line.split(" ");
             String markedSubj = addMark(spt[0]);
             String markedObj = addMark(spt[2]);
@@ -48,9 +51,10 @@ public class NNDataPreparer {
             // format: triple\t\tvec\tvec\tvec\t...
             data.add(line + "\t\t" + newLine + "\n");
         }
+        LogInfo.logs("[log] data size: %d", data.size());
         Random rand = new Random();
         Set<Integer> set = new HashSet<>();
-        int cnt = 0;
+        cnt = 0;
         while (cnt < numOfTrain) {
             int num = rand.nextInt(data.size());
             if (!set.contains(num)) {
@@ -59,6 +63,7 @@ public class NNDataPreparer {
                 bwn.write(data.get(num));
             }
         }
+        LogInfo.logs("[log] training data generated.");
         cnt = 0;
         while (cnt < numOfTest) {
             int num = rand.nextInt(data.size());
@@ -68,6 +73,7 @@ public class NNDataPreparer {
                 bwt.write(data.get(num));
             }
         }
+        LogInfo.logs("[log] testing data generated.");
         br.close();
         bwn.close();
         bwt.close();
@@ -78,9 +84,6 @@ public class NNDataPreparer {
                 .replace("(","ccdd")).replace(")", "ddcc");
     }
 
-    public static void getTestingData() throws IOException {
-
-    }
 
     public static void getCleanData() throws IOException {
         File f = new File(rootFp + "/dbpedia/infobox_properties_en.ttl");
@@ -122,6 +125,6 @@ public class NNDataPreparer {
 
     public static void main(String[] args) throws IOException {
         //getCleanData();
-            getTrainingData(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+        getTrainTestData(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
     }
 }

@@ -53,7 +53,7 @@ public class VecLoader {
             vecs.put(spt[0], vec);
         }
         br.close();
-        LogInfo.logs("%s Loaded. Size: %d", fp, vectors.size());
+        LogInfo.logs("[log] %s Loaded. Size: %d", fp, vectors.size());
         return vecs;
     }
 
