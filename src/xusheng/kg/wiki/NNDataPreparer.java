@@ -6,10 +6,7 @@ import xusheng.word2vec.VecLoader;
 import xusheng.word2vec.WordEmbedder;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Xusheng on 10/8/2016.
@@ -18,12 +15,14 @@ import java.util.Map;
 public class NNDataPreparer {
     public static String rootFp = "/home/xusheng";
 
-    public static void getTrainingData(int numOfSample) throws IOException {
+    public static void getTrainingData(int numOfTrain, int numOfTest) throws IOException {
         Map<String, String> vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_50.txt");
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
                 "/nn/wiki_info_linked.tsv"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/training.tsv"));
+        BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/training_" + String.valueOf(numOfTrain) + ".tsv"));
+        BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/testing_" + String.valueOf(numOfTest) + ".tsv"));
         String line;
         List<String> data = new ArrayList<>();
         while ((line = br.readLine()) != null) {
@@ -49,7 +48,29 @@ public class NNDataPreparer {
             // format: triple\t\tvec\tvec\tvec\t...
             data.add(line + "\t\t" + newLine + "\n");
         }
-
+        Random rand = new Random();
+        Set<Integer> set = new HashSet<>();
+        int cnt = 0;
+        while (cnt < numOfTrain) {
+            int num = rand.nextInt(data.size());
+            if (!set.contains(num)) {
+                set.add(num);
+                cnt ++;
+                bwn.write(data.get(num));
+            }
+        }
+        cnt = 0;
+        while (cnt < numOfTest) {
+            int num = rand.nextInt(data.size());
+            if (!set.contains(num)) {
+                set.add(num);
+                cnt ++;
+                bwt.write(data.get(num));
+            }
+        }
+        br.close();
+        bwn.close();
+        bwt.close();
     }
 
     public static String addMark(String entity) {
@@ -101,6 +122,6 @@ public class NNDataPreparer {
 
     public static void main(String[] args) throws IOException {
         //getCleanData();
-        getTrainingData(Integer.parseInt(args[0]));
+            getTrainingData(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
     }
 }
