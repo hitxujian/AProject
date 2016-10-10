@@ -47,8 +47,9 @@ public class LocalTester {
             line = newLine;
             LogInfo.logs(line);
         } */
-        String word = "'[[fdsf]],";
+        String word = "[[fdsf]]";
         String[] spt = word.split("\\[\\[|\\]\\]");
+        LogInfo.logs(spt.length);
         for (String str: spt)
             LogInfo.logs(str);
     }

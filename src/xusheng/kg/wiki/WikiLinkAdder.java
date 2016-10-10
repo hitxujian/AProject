@@ -94,12 +94,19 @@ public class WikiLinkAdder implements Runnable {
                 String newLine = "";
                 String[] words = line.split(" ");
                 for (String word: words) {
+                    newLine += " ";
                     if (word.contains("[[") && word.contains("]]")) {
                         if (word.startsWith("[[") && word.endsWith("]]"))
                             newLine += (" " + word + " ");
                         else {
-                            String[] spt = word.split("\\[\\[|\\]\\]");
-                            newLine += String.format(" %s [[%s]] %s ", spt[0], spt[1], spt[2]);
+                            int i = 0;
+                            while (word.charAt(i) != '[') i++;
+                            int j = word.length();
+                            while (word.charAt(j-1) != ']') j--;
+                            String link = word.substring(i, j);
+                            if (i!=0) newLine += (" " + word.substring(0,i) + " ");
+                            newLine += (" " + link + " ");
+                            if (j!=word.length()) newLine += (" " + word.substring(j, word.length()) + " ");
                         }
                     } else {
                         for (int i=0; i<word.length(); i++)
