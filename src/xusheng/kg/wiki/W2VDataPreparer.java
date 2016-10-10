@@ -13,7 +13,7 @@ public class W2VDataPreparer {
     public static String rootFp = "/home/xusheng/wikipedia/extracted";
 
     public static void mergeData() throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/wiki4train_link.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/wiki_link.txt"));
         for (char Ch ='A'; Ch<='F'; Ch++) {
             for (char ch = 'A'; ch <= 'Z'; ch++) {
                 for (int i = 0; i <= 9; i++) {
@@ -45,11 +45,10 @@ public class W2VDataPreparer {
 
     public static void main(String[] args) throws Exception {
         mergeData();
-        process4Final();
     }
 
     public static void process4Final() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/wiki4train_link.txt"));
+        BufferedReader br = new BufferedReader(new FileReader(rootFp + "/wiki_link.txt"));
         BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp + "/wiki_link.txt"));
         String line;
         while ((line = br.readLine()) != null) {

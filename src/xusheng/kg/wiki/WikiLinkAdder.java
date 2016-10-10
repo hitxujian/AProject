@@ -70,19 +70,46 @@ public class WikiLinkAdder implements Runnable {
                     String hrefEnt = urlDecode(matcher.group(1));
                     if (hrefEnt != null) {
                         String markedEnt = addMark(hrefEnt);
-                        String newLine = line.replace(matcher.group(0), markedEnt);
-                        line = newLine;
+                        line = line.replace(matcher.group(0), markedEnt);
                     }
                 }
                 // replace href link first, then the title name.
+                // be careful that do not replace words in href a second time.
                 // attention that only words can be replaced, not part of word.
+
+                // replacement priority!!!
+                // replace the title form first to avoid duplicated replacement!
+                String title = entity;
+                if (title.length() <=2)
+                    title = "\"" + title + "\"";
+                line = line.replace(title, mark);
+
                 for (String name: names) {
                     // special case e.g. "a".
                     if (name.length() <= 2) name = "\"" + name + "\"";
-                    String newLine = line.replace(name, mark);
-                    line = newLine;
+                    line = line.replace(name, mark);
                 }
-                bw.write(line + "\n");
+
+                // add " "
+                String newLine = "";
+                String[] words = line.split(" ");
+                for (String word: words) {
+                    if (word.contains("[[") && word.contains("]]")) {
+                        if (word.startsWith("[[") && word.endsWith("]]"))
+                            newLine += (" " + word + " ");
+                        else {
+                            String[] spt = word.split("\\[\\[|\\]\\]");
+                            newLine += String.format(" %s [[%s]] %s ", spt[0], spt[1], spt[2]);
+                        }
+                    } else {
+                        for (int i=0; i<word.length(); i++)
+                            if (isWord(word.charAt(i)))
+                                newLine += word.charAt(i);
+                            else if (!isNum(word.charAt(i)))
+                                newLine += (" " + word.charAt(i) + " ");
+                    }
+                }
+                bw.write(newLine + "\n");
             }
         }
         br.close();
@@ -91,8 +118,27 @@ public class WikiLinkAdder implements Runnable {
     }
 
     public static String addMark(String entity) {
+        String tmp = entity.replace(" ", "");
+        String mark = String.valueOf(tmp.charAt(0));
+        for (int i=1; i<tmp.length(); i++)
+            mark += ("_" + tmp.charAt(i));
+        return String.format("[[%s]]", mark);
+    }
+
+    public static String addMark_bak(String entity) {
         return String.format("aabb%sbbaa", entity.replace(" ", "")
                 .replace("(","ccdd")).replace(")", "ddcc");
+    }
+    public static boolean isWord(char ch) {
+        if (ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z')
+            return true;
+        else return false;
+    }
+
+    public static boolean isNum(char ch) {
+        if (ch >= '0' && ch <='9')
+            return true;
+        else return false;
     }
 
     public static String urlDecode(String url) {

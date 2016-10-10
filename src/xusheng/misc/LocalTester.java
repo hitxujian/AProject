@@ -1,6 +1,7 @@
 package xusheng.misc;
 
 import fig.basic.LogInfo;
+import sun.rmi.runtime.Log;
 
 
 import java.io.PrintStream;
@@ -34,7 +35,7 @@ public class LocalTester {
     }
 
     public static void main(String[] args) throws Exception {
-        String line = "Andrew Jackson (March 1<a href=\"Battle%20of%20New%20Orleans\">Battle of New Orle" +
+        /*String line = "Andrew Jackson (March 1<a href=\"Battle%20of%20New%20Orleans\">Battle of New Orle" +
                 "ans</a>June 8, 1845) was an American statesman who served as the seventh <a href=\"President%20of%20the%20United" +
                 "%20States\">President of the United States</a> from 1829 to 1837.";
         Pattern pat = Pattern.compile("<a href=\"(.*?)\"(.*?)</a>");
@@ -45,6 +46,10 @@ public class LocalTester {
             String newLine = line.replace(mat.group(0), urlDecode(mat.group(1)));
             line = newLine;
             LogInfo.logs(line);
-        }
+        } */
+        String word = "'[[fdsf]],";
+        String[] spt = word.split("\\[\\[|\\]\\]");
+        for (String str: spt)
+            LogInfo.logs(str);
     }
 }
