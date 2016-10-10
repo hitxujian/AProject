@@ -116,7 +116,7 @@ public class WikiLinkAdder implements Runnable {
                                 newLine += (" " + word.charAt(i) + " ");
                     }
                 }
-                bw.write(newLine + "\n");
+                bw.write(newLine.replaceAll(" +", " ") + "\n");
             }
         }
         br.close();
