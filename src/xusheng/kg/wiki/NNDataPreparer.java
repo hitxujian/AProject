@@ -175,7 +175,7 @@ public class NNDataPreparer {
                 String rawRelation = spt[1].split("property/")[1].split(">")[0].replace("_", " ");
                 String relation = "";
                 for (int i=0; i<rawRelation.length(); i++) {
-                    if (rawRelation.charAt(i) >= 'A')
+                    if (rawRelation.charAt(i) <= 'Z')
                         relation += " " + String.valueOf(rawRelation.charAt(i)).toLowerCase();
                     else relation += String.valueOf(rawRelation.charAt(i));
                 }
