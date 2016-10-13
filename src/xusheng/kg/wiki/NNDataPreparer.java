@@ -155,7 +155,7 @@ public class NNDataPreparer {
 
     public static Set<String> getNegObj(String obj_s) {
         LogInfo.logs("[log] get negative samples for %s... [%s].", obj_s, new Date().toString());
-        FixLenRankList<Set<String>, Double> rankList = new FixLenRankList<>(15);
+        FixLenRankList<Set<String>, Double> rankList = new FixLenRankList<>(25);
         for (Map.Entry<String, Set<String>> entry: anchorTextMap.entrySet()) {
             double score = getSimilarity(entry.getKey(), obj_s);
             rankList.insert(new Pair<>(entry.getValue(), score));
