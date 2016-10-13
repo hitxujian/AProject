@@ -179,8 +179,10 @@ public class NNDataPreparer {
     public static double getSimilarity(String str1, String str2) {
         String[] spt1 = str1.split(" ");
         String[] spt2 = str2.split(" ");
-        Set<String> set1 = new HashSet<>(spt1);
-        Set<String> set2 = new HashSet<>(spt2);
+        Set<String> set1 = new HashSet<>();
+        for (String str: spt1) set1.add(str);
+        Set<String> set2 = new HashSet<>();
+        for (String str: spt2) set2.add(str);
         int intersect = 0;
         int union = 0;
         for (String str: set1)
