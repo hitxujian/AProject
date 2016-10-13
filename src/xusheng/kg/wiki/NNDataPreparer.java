@@ -177,7 +177,18 @@ public class NNDataPreparer {
     }
 
     public static double getSimilarity(String str1, String str2) {
-        return 0.0;
+        String[] spt1 = str1.split(" ");
+        String[] spt2 = str2.split(" ");
+        Set<String> set1 = new HashSet<>(spt1);
+        Set<String> set2 = new HashSet<>(spt2);
+        int intersect = 0;
+        int union = 0;
+        for (String str: set1)
+            if (set2.contains(str))
+                intersect ++;
+        union = set1.size() + set2.size() - intersect;
+        double score = (double) intersect / union;
+        return score;
     }
 
     public static String average(String[] spt) {
