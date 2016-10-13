@@ -116,16 +116,17 @@ public class NNDataPreparer {
         while (cnt < numOfTrain/10) {
             int num = rand.nextInt(data.size());
             if (!set.contains(num)) {
+                LogInfo.logs("[log] get positive sample [%s].", data.get(num).split("\t\t")[0]);
                 set.add(num);
                 cnt ++;
                 String[] spt = data.get(num).split("\t\t")[1].split("\t");
                 String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
-                bwn.write(PosVec + " 1");
+                bwn.write(PosVec + " 1\n");
                 // generate negative data
                 String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
                 Set<String> negObjs = getNegObj(obj_s);
                 for (String negObj: negObjs)
-                    bwn.write(spt[0] + " " + spt[1] + " " + spt[2]  + " " + negObj + " 0");
+                    bwn.write(spt[0] + " " + spt[1] + " " + spt[2]  + " " + negObj + " 0\n");
             }
         }
         LogInfo.logs("[log] training data generated.");
@@ -137,12 +138,12 @@ public class NNDataPreparer {
                 cnt ++;
                 String[] spt = data.get(num).split("\t\t")[1].split("\t");
                 String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
-                bwt.write(PosVec + " 1");
+                bwt.write(PosVec + " 1\n");
                 // generate negative data
                 String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
                 Set<String> negObjs = getNegObj(obj_s);
                 for (String negObj: negObjs)
-                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2]  + " " + negObj + " 0");
+                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2]  + " " + negObj + " 0\n");
             }
         }
         LogInfo.logs("[log] testing data generated.");
@@ -153,10 +154,12 @@ public class NNDataPreparer {
     }
 
     public static Set<String> getNegObj(String obj_s) {
-        FixLenRankList<Set<String>, Double> rankList = new FixLenRankList<>(30);
+        LogInfo.logs("[log] get negative samples for %s...", obj_s);
+        FixLenRankList<Set<String>, Double> rankList = new FixLenRankList<>(15);
         for (Map.Entry<String, Set<String>> entry: anchorTextMap.entrySet()) {
             double score = getSimilarity(entry.getKey(), obj_s);
             rankList.insert(new Pair<>(entry.getValue(), score));
+            if (rankList.isFull() && rankList.getLastVal() > 0.0) break;
         }
         List<Set<String>> retList = rankList.getList();
         Set<String> ret = new HashSet<>();

@@ -32,6 +32,15 @@ public class FixLenRankList <T, V extends Comparable>{
         adjust();
     }
 
+    public boolean isFull() {
+        if (getSize() == length) return true;
+        else return false;
+    }
+
+    public V getLastVal() {
+        return getLast().getSecond();
+    }
+
     public String toString() {
         String str = "";
         for (Pair elem: list)
