@@ -44,7 +44,6 @@ public class W2VDataPreparer {
     }
 
     public static void main(String[] args) throws Exception {
-        mergeData();
         process4Final();
     }
 
