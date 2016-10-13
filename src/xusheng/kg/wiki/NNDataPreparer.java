@@ -20,8 +20,6 @@ public class NNDataPreparer {
 
     public static void getFullPositiveData() throws IOException {
         LogInfo.begin_track("Start to get full positive data.");
-        // load anchor text data
-        Map<String, Set<String>> anchorTextMap = AnchorTextReader.ReadDataFromName2Ent();
         // load word2vec
         vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
         // load clean wiki infobox data
@@ -84,6 +82,8 @@ public class NNDataPreparer {
 
     public static void getTrainTestData(int numOfTrain, int numOfTest) throws IOException {
         LogInfo.begin_track("Start to get training & testing data.");
+
+        // load full positive data
         List<String> data = new ArrayList<>();
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
                 "/nn/positive_full.tsv"));
@@ -91,6 +91,11 @@ public class NNDataPreparer {
         while ((line = br.readLine()) != null)
             data.add(line);
         LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/positive_full.tsv", data.size());
+
+        // load anchor text data
+        Map<String, Set<String>> anchorTextMap = AnchorTextReader.ReadDataFromName2Ent();
+
+
 
         BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
                 "/nn/training_" + String.valueOf(numOfTrain) + ".tsv"));
