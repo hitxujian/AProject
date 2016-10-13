@@ -35,19 +35,17 @@ public class LocalTester {
     }
 
     public static void main(String[] args) throws Exception {
-        /*String line = "Andrew Jackson (March 1<a href=\"Battle%20of%20New%20Orleans\">Battle of New Orle" +
-                "ans</a>June 8, 1845) was an American statesman who served as the seventh <a href=\"President%20of%20the%20United" +
-                "%20States\">President of the United States</a> from 1829 to 1837.";
-        Pattern pat = Pattern.compile("<a href=\"(.*?)\"(.*?)</a>");
+        String line = " <p id=\"openCatp\" style=\"display:none\">开放分类：<a target=\"_blank\" title=\"日本漫画\" " +
+                "href=\"http://fenlei.baike.com/%E6%97%A5%E6%9C%AC%E6%BC%AB%E7%94%BB/?prd=zhengwenye_left_kaifangfenlei\">" +
+                "日本漫画</a><a target=\"_blank\" title=\"漫画\" href=\"http://fenlei.baike.com/%E6%BC%AB%E7%94%BB" +
+                "/?prd=zhengwenye_left_kaifangfenlei\">漫画</a></p>\n";
+        Pattern pat = Pattern.compile("title=\"(.*?)\" href");
         Matcher mat = pat.matcher(line);
         while (mat.find()) {
             LogInfo.logs(urlDecode(mat.group(0)));
             LogInfo.logs(urlDecode(mat.group(1)));
-            String newLine = line.replace(mat.group(0), urlDecode(mat.group(1)));
-            line = newLine;
-            LogInfo.logs(line);
-        } */
-        String word = "[[  f  d   s f] ]";
-        LogInfo.logs(word.replaceAll(" +", " "));
+            //line= line.replace(mat.group(0), urlDecode(mat.group(1)));
+            //LogInfo.logs(line);
+        }
     }
 }

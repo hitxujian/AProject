@@ -3,10 +3,9 @@ package xusheng.kg.baike;
 import fig.basic.LogInfo;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Xusheng on 13/10/2016.
@@ -20,7 +19,7 @@ public class EduNamedEntExtractor {
         extract();
     }
 
-    public static List<String> classes = new ArrayList<>();
+    public static Set<String> classes = new HashSet<>();
     public static void readClasses() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("/home/xusheng/xbj/classes.txt"));
         String line;
@@ -78,12 +77,19 @@ public class EduNamedEntExtractor {
         String line;
         boolean flag = true;
         while ((line = br.readLine()) != null && flag) {
-            for (String str: classes)
-                if (line.contains(str)) {
-                    bw.write(name + "\t" + str + "\t" + line + "\n");
-                    flag = false;
-                    break;
+            if (line.trim().startsWith("<p id=\"openCatp")) {
+                Pattern pat = Pattern.compile("title=\"(.*?)\" href");
+                Matcher mat = pat.matcher(line);
+                while (mat.find()) {
+                    String cate = mat.group(1);
+                    if (classes.contains(cate)) {
+                        bw.write(name + "\t" + cate + "\n");
+                        flag = false;
+                        break;
+                    }
                 }
+            }
+
         }
         br.close();
     }
