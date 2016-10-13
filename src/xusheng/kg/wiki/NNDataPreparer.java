@@ -19,7 +19,7 @@ public class NNDataPreparer {
     public static Map<String, String> vectors = null;
 
     public static void getFullPositiveData() throws IOException {
-        LogInfo.begin_track("Start to get full positive data.");
+        LogInfo.begin_track("Begin to get full positive data.");
         // load word2vec
         vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
         // load clean wiki infobox data
@@ -33,7 +33,7 @@ public class NNDataPreparer {
         int cnt = 0;
         while ((line = br.readLine()) != null) {
             cnt ++;
-            LogUpgrader.showLine(cnt, 1000000);
+            LogUpgrader.showLine(cnt, 100000);
             try {
                 String[] spt = line.split("\t");
                 // 4 elements
@@ -140,9 +140,9 @@ public class NNDataPreparer {
         }
         for (int i=0; i<vec.length; i++)
             vec[i] /= spt.length;
-        String ret = String.valueOf(vec[0]);
+        String ret = String.format("%.6f", vec[0]);
         for (int i=1; i<vec.length; i++)
-            ret += " " + vec[i];
+            ret += " " + String.format("%.6f", vec[i]);
         return ret;
     }
 
