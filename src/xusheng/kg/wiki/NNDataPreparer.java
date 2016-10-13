@@ -1,7 +1,9 @@
 package xusheng.kg.wiki;
 
 import fig.basic.LogInfo;
+import fig.basic.Pair;
 import xusheng.util.log.LogUpgrader;
+import xusheng.util.struct.FixLenRankList;
 import xusheng.word2vec.VecLoader;
 import xusheng.word2vec.WordEmbedder;
 
@@ -17,6 +19,7 @@ import java.util.*;
 public class NNDataPreparer {
     public static String rootFp = "/home/xusheng";
     public static Map<String, String> vectors = null;
+    public static Map<String, Set<String>> anchorTextMap = null;
 
     public static void getFullPositiveData() throws IOException {
         LogInfo.begin_track("Begin to get full positive data.");
@@ -93,35 +96,53 @@ public class NNDataPreparer {
         LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/positive_full.tsv", data.size());
 
         // load anchor text data
-        Map<String, Set<String>> anchorTextMap = AnchorTextReader.ReadDataFromName2Ent();
-
-
+        if (anchorTextMap == null)
+            anchorTextMap = AnchorTextReader.ReadDataFromName2Ent();
+        // load word2vec
+        if (vectors == null)
+            vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
 
         BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
                 "/nn/training_" + String.valueOf(numOfTrain) + ".tsv"));
         BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
                 "/nn/testing_" + String.valueOf(numOfTest) + ".tsv"));
+
         int cnt = 0;
         LogInfo.logs("[log] sampling training data.");
         Random rand = new Random();
         Set<Integer> set = new HashSet<>();
         cnt = 0;
-        while (cnt < numOfTrain) {
+        // pos:neg = 1:9, that's why /10!
+        while (cnt < numOfTrain/10) {
             int num = rand.nextInt(data.size());
             if (!set.contains(num)) {
                 set.add(num);
                 cnt ++;
-                bwn.write(data.get(num));
+                String[] spt = data.get(num).split("\t\t")[1].split("\t");
+                String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
+                bwn.write(PosVec + " 1");
+                // generate negative data
+                String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
+                Set<String> negObjs = getNegObj(obj_s);
+                for (String negObj: negObjs)
+                    bwn.write(spt[0] + " " + spt[1] + " " + spt[2]  + " " + negObj + " 0");
             }
         }
         LogInfo.logs("[log] training data generated.");
         cnt = 0;
-        while (cnt < numOfTest) {
+        while (cnt < numOfTest/10) {
             int num = rand.nextInt(data.size());
             if (!set.contains(num)) {
                 set.add(num);
                 cnt ++;
-                bwt.write(data.get(num));
+                String[] spt = data.get(num).split("\t\t")[1].split("\t");
+                String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
+                bwt.write(PosVec + " 1");
+                // generate negative data
+                String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
+                Set<String> negObjs = getNegObj(obj_s);
+                for (String negObj: negObjs)
+                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2]  + " " + negObj + " 0");
             }
         }
         LogInfo.logs("[log] testing data generated.");
@@ -129,6 +150,34 @@ public class NNDataPreparer {
         bwn.close();
         bwt.close();
         LogInfo.end_track();
+    }
+
+    public static Set<String> getNegObj(String obj_s) {
+        FixLenRankList<Set<String>, Double> rankList = new FixLenRankList<>(30);
+        for (Map.Entry<String, Set<String>> entry: anchorTextMap.entrySet()) {
+            double score = getSimilarity(entry.getKey(), obj_s);
+            rankList.insert(new Pair<>(entry.getValue(), score));
+        }
+        List<Set<String>> retList = rankList.getList();
+        Set<String> entSet = new HashSet<>();
+        boolean flag = true;
+        for (int i=0; i<retList.size(); i++) {
+            Set<String> set = retList.get(i);
+            for (String str: set) {
+                if (!str.equals(obj_s) && vectors.containsKey(addMark(str)))
+                    set.add(vectors.get(addMark(str)));
+                if (set.size() == 10) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (!flag) break;
+        }
+        return entSet;
+    }
+
+    public static double getSimilarity(String str1, String str2) {
+        return 0.0;
     }
 
     public static String average(String[] spt) {
@@ -206,8 +255,8 @@ public class NNDataPreparer {
     public static int lenOfw2v = 50;
     public static void main(String[] args) throws IOException {
         lenOfw2v = Integer.parseInt(args[0]);
-        getCleanData();
-        getFullPositiveData();
-        //getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        //getCleanData();
+        //getFullPositiveData();
+        getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
     }
 }
