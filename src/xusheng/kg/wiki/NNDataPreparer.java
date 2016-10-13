@@ -10,53 +10,94 @@ import java.util.*;
 
 /**
  * Created by Xusheng on 10/8/2016.
+ * Prepare training/testing data for NN
+ * Input: wiki_infobox data
  */
 
 public class NNDataPreparer {
     public static String rootFp = "/home/xusheng";
+    public static Map<String, String> vectors = null;
 
-    public static void getTrainTestData(int numOfTrain, int numOfTest) throws IOException {
-        Map<String, String> vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_50.txt");
+    public static void getFullPositiveData() throws IOException {
+        LogInfo.begin_track("Start to get full positive data.");
+        // load anchor text data
+        Map<String, Set<String>> anchorTextMap = AnchorTextReader.ReadDataFromName2Ent();
+        // load word2vec
+        vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
+        // load clean wiki infobox data
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
                 "/nn/wiki_info_linked.tsv"));
-        BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/training_" + String.valueOf(numOfTrain) + ".tsv"));
-        BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/testing_" + String.valueOf(numOfTest) + ".tsv"));
+
+        BufferedWriter bwp = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/positive_full.tsv"));
+
         String line;
         int cnt = 0;
-        List<String> data = new ArrayList<>();
         while ((line = br.readLine()) != null) {
             cnt ++;
             LogUpgrader.showLine(cnt, 1000000);
             try {
                 String[] spt = line.split("\t");
+                // 4 elements
                 String markedSubj = addMark(spt[0]);
                 String markedObj = addMark(spt[2]);
+                String rel_s[] = spt[1].split(" ");
                 String obj_s[] = spt[2].split(" ");
+                // check if w2v contains these 4 elements
+                // check rel_s
                 boolean flag = true;
+                for (String str : rel_s) {
+                    if (!vectors.containsKey(str)) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (!flag) continue;
+                // check obj_s
+                flag = true;
                 for (String str : obj_s)
                     if (!vectors.containsKey(str)) {
                         flag = false;
                         break;
                     }
                 if (!flag) continue;
+                // check subj_l & obj_l
                 if (!vectors.containsKey(markedObj) || !vectors.containsKey(markedSubj))
                     continue;
+                // get the final vectors
                 String newLine = "";
-                newLine += (vectors.get(markedSubj));
-                newLine += "\t";
-                newLine += (vectors.get(markedObj));
-                for (String str : obj_s)
-                    newLine += ("\t" + vectors.get(str));
-                // format: triple\t\tvec\tvec\tvec\t...
-                data.add(line + "\t\t" + newLine + "\n");
+
+                newLine += (vectors.get(markedSubj) + "\t" + average(rel_s) + "\t" + average(obj_s) + "\t" +
+                        (vectors.get(markedObj)));
+
+                // format: triple\t\t\vec
+                bwp.write(line + "\t\t" + newLine + "\n");
             } catch (Exception ex) {
                 ex.printStackTrace();
                 LogInfo.logs("[error] %s", line);
             }
         }
-        LogInfo.logs("[log] data size: %d", data.size());
+        br.close();
+        bwp.close();
+        LogInfo.end_track();
+    }
+
+    public static void getTrainTestData(int numOfTrain, int numOfTest) throws IOException {
+        LogInfo.begin_track("Start to get training & testing data.");
+        List<String> data = new ArrayList<>();
+        BufferedReader br = new BufferedReader(new FileReader(rootFp +
+                "/nn/positive_full.tsv"));
+        String line;
+        while ((line = br.readLine()) != null)
+            data.add(line);
+        LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/positive_full.tsv", data.size());
+
+        BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/training_" + String.valueOf(numOfTrain) + ".tsv"));
+        BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/testing_" + String.valueOf(numOfTest) + ".tsv"));
+        int cnt = 0;
+        LogInfo.logs("[log] sampling training data.");
         Random rand = new Random();
         Set<Integer> set = new HashSet<>();
         cnt = 0;
@@ -79,18 +120,38 @@ public class NNDataPreparer {
             }
         }
         LogInfo.logs("[log] testing data generated.");
-        br.close();
+
         bwn.close();
         bwt.close();
+        LogInfo.end_track();
+    }
+
+    public static String average(String[] spt) {
+        double[] vec = new double[lenOfw2v];
+        for (String str: spt) {
+            String[] sptt = vectors.get(str).split(" ");
+            for (int i=0; i<sptt.length; i++)
+                vec[i] += Double.parseDouble(sptt[i]);
+        }
+        for (int i=0; i<vec.length; i++)
+            vec[i] /= spt.length;
+        String ret = String.valueOf(vec[0]);
+        for (int i=1; i<vec.length; i++)
+            ret += " " + vec[i];
+        return ret;
     }
 
     public static String addMark(String entity) {
-        return String.format("aabb%sbbaa", entity.replace(" ", "")
-                .replace("(","ccdd")).replace(")", "ddcc");
+        String tmp = entity.replace(" ", "");
+        String mark = String.valueOf(tmp.charAt(0));
+        for (int i=1; i<tmp.length(); i++)
+            mark += ("_" + tmp.charAt(i));
+        return String.format("[[%s]]", mark);
     }
 
 
     public static void getCleanData() throws IOException {
+        LogInfo.begin_track("Begin to get clean wiki infobox data.");
         File f = new File(rootFp + "/dbpedia/infobox_properties_en.ttl");
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         f = new File(rootFp + "/nn/wiki_info_linked.tsv");
@@ -106,7 +167,13 @@ public class NNDataPreparer {
             try {
                 String[] spt = line.split(" ");
                 String subj = spt[0].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
-                String relation = spt[1].split("property/")[1].split(">")[0].replace("_", " ").toLowerCase();
+                String rawRelation = spt[1].split("property/")[1].split(">")[0].replace("_", " ");
+                String relation = "";
+                for (int i=0; i<rawRelation.length(); i++) {
+                    if (rawRelation.charAt(i) >= 'A')
+                        relation += " " + String.valueOf(rawRelation.charAt(i)).toLowerCase();
+                    else relation += String.valueOf(rawRelation.charAt(i));
+                }
                 String obj_s;
                 if (spt[2].contains("dbpedia.org/resource")) {
                     obj_s = spt[2].split("resource/")[1].split(">")[0].replace("_", " ").toLowerCase();
@@ -126,10 +193,16 @@ public class NNDataPreparer {
         br.close();
         bwl.close();
         bwu.close();
+        LogInfo.end_track();
     }
 
+
+
+    public static int lenOfw2v = 50;
     public static void main(String[] args) throws IOException {
-        //getCleanData();
-        getTrainTestData(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+        lenOfw2v = Integer.parseInt(args[0]);
+        getCleanData();
+        getFullPositiveData();
+        //getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
     }
 }

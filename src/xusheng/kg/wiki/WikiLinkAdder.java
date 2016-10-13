@@ -168,7 +168,7 @@ public class WikiLinkAdder implements Runnable {
 
     public static Map<String, Set<String>> anchorTextMap = null;
     public static void multiThreadWork() throws Exception{
-        anchorTextMap = AnchorTextReader.ReadData();
+        anchorTextMap = AnchorTextReader.ReadDataFromEnt2Name();
         curr = 0; end = taskList.size();
         int numOfThreads = 32;
         WikiLinkAdder workThread = new WikiLinkAdder();
