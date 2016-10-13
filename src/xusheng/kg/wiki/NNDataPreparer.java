@@ -159,21 +159,21 @@ public class NNDataPreparer {
             rankList.insert(new Pair<>(entry.getValue(), score));
         }
         List<Set<String>> retList = rankList.getList();
-        Set<String> entSet = new HashSet<>();
+        Set<String> ret = new HashSet<>();
         boolean flag = true;
         for (int i=0; i<retList.size(); i++) {
             Set<String> set = retList.get(i);
             for (String str: set) {
                 if (!str.equals(obj_s) && vectors.containsKey(addMark(str)))
-                    set.add(vectors.get(addMark(str)));
-                if (set.size() == 10) {
+                    ret.add(vectors.get(addMark(str)));
+                if (ret.size() == 10) {
                     flag = false;
                     break;
                 }
             }
             if (!flag) break;
         }
-        return entSet;
+        return ret;
     }
 
     public static double getSimilarity(String str1, String str2) {
