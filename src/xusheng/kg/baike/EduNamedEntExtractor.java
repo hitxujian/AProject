@@ -1,6 +1,9 @@
 package xusheng.kg.baike;
 
 import fig.basic.LogInfo;
+import xusheng.util.log.LogUpgrader;
+import xusheng.util.struct.MultiThread;
+import xusheng.util.struct.MultiThreadTemplate;
 
 import java.io.*;
 import java.util.*;
@@ -11,12 +14,36 @@ import java.util.regex.Pattern;
  * Created by Xusheng on 13/10/2016.
  */
 
-public class EduNamedEntExtractor {
+public class EduNamedEntExtractor implements Runnable{
     public static String rootFp = "/home/xusheng/starry/hudongbaike";
 
-    public static void main(String[] args) throws IOException {
+    public static int curr = -1, end = -1;
+
+    public void run() {
+        while (true) {
+            try {
+                int idx = getCurr();
+                if (idx == -1) return;
+                check(idx);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public static synchronized int getCurr() {
+        if (curr < end) {
+            int ret = curr;
+            curr ++;
+            return ret;
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) throws Exception {
         readClasses();
-        extract();
+        readTasks();
+        multiThreadWork();
     }
 
     public static Set<String> classes = new HashSet<>();
@@ -35,7 +62,8 @@ public class EduNamedEntExtractor {
 
 
     public static BufferedWriter bw = null;
-    public static void extract() throws IOException {
+    public static List<String> taskList = new ArrayList<>();
+    public static void readTasks() throws IOException {
         bw = new BufferedWriter(new FileWriter(rootFp + "/EduKeyWords.txt"));
         String[] nameList = new String[]{
                 "kangqi.tsv",
@@ -59,7 +87,7 @@ public class EduNamedEntExtractor {
                         int st = (index - 1) / 10000 * 10000 + 1;
                         int ed = st + 9999;
                         String path = rootFp + "/" + st + "-" + ed + "/" + index + "_wiki.html";
-                        check(path, name);
+                        taskList.add(path + "\t" + name);
                     }
 
                 } catch (Exception ex) {
@@ -69,10 +97,26 @@ public class EduNamedEntExtractor {
             }
             br.close();
         }
+        LogInfo.logs("[log] Tasks info loaded. Size: %d.", taskList.size());
+    }
+
+    public static void multiThreadWork() throws Exception{
+        curr = 0; end = taskList.size();
+        int numOfThreads = 32;
+        // todo: re-write the work thread
+        EduNamedEntExtractor workThread = new EduNamedEntExtractor();
+        MultiThread multi = new MultiThread(numOfThreads, workThread);
+        LogInfo.begin_track("%d threads are running...", numOfThreads);
+        multi.runMultiThread();
+        LogInfo.end_track();
         bw.close();
     }
 
-    public static void check(String fp, String name) throws IOException {
+    public static void check(int idx) throws IOException {
+        LogUpgrader.showLine(idx, 10000);
+        String[] task = taskList.get(idx).split("\t");
+        String fp = task[0];
+        String name = task[1];
         BufferedReader br = new BufferedReader(new FileReader(fp));
         String line;
         boolean flag = true;
@@ -83,7 +127,7 @@ public class EduNamedEntExtractor {
                 while (mat.find()) {
                     String cate = mat.group(1);
                     if (classes.contains(cate)) {
-                        bw.write(name + "\t" + cate + "\n");
+                        writeRet(name + "\t" + cate + "\n");
                         flag = false;
                         break;
                     }
@@ -92,6 +136,10 @@ public class EduNamedEntExtractor {
 
         }
         br.close();
+    }
+
+    public static synchronized void writeRet(String ret) throws IOException {
+        bw.write(ret);
     }
 
 }
