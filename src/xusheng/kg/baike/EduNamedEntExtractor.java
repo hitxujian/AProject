@@ -80,7 +80,7 @@ public class EduNamedEntExtractor {
         while ((line = br.readLine()) != null && flag) {
             for (String str: classes)
                 if (line.contains(str)) {
-                    bw.write(name + "\n");
+                    bw.write(name + "\t" + str + "\t" + line + "\n");
                     flag = false;
                     break;
                 }
