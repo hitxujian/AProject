@@ -89,7 +89,7 @@ public class NNDataPreparer {
         // load full positive data
         List<String> data = new ArrayList<>();
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
-                "/nn/data/spositive_full.tsv"));
+                "/nn/data/positive_full.tsv"));
         String line;
         while ((line = br.readLine()) != null)
             data.add(line);
