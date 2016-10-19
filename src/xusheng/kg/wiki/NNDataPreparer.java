@@ -27,10 +27,10 @@ public class NNDataPreparer {
         vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
         // load clean wiki infobox data
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
-                "/nn/wiki_info_linked.tsv"));
+                "/nn/data/wiki_info_linked.tsv"));
 
         BufferedWriter bwp = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/positive_full.tsv"));
+                "/nn/data/positive_full.tsv"));
 
         String line;
         int cnt = 0;
@@ -93,7 +93,7 @@ public class NNDataPreparer {
         String line;
         while ((line = br.readLine()) != null)
             data.add(line);
-        LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/positive_full.tsv", data.size());
+        LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/data/positive_full.tsv", data.size());
 
         // load anchor text data
         if (anchorTextMap == null)
@@ -103,9 +103,9 @@ public class NNDataPreparer {
             vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
 
         BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/training_" + String.valueOf(numOfTrain) + ".tsv"));
+                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv"));
         BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/testing_" + String.valueOf(numOfTest) + ".tsv"));
+                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv"));
 
         int cnt = 0;
         LogInfo.logs("[log] sampling training data.");
@@ -121,12 +121,12 @@ public class NNDataPreparer {
                 cnt ++;
                 String[] spt = data.get(num).split("\t\t")[1].split("\t");
                 String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
-                bwn.write(PosVec + " 1\n");
+                //bwn.write(PosVec + " 1\n");
                 // generate negative data
                 String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
                 Set<String> negObjs = getNegObj(obj_s);
                 for (String negObj: negObjs)
-                    bwn.write(spt[0] + " " + spt[1] + " " + spt[2]  + " " + negObj + " 0\n");
+                    bwn.write(PosVec  + " " + negObj + " " + String.valueOf(num+1) + "\n");
             }
         }
         LogInfo.logs("[log] training data generated.");
@@ -138,12 +138,12 @@ public class NNDataPreparer {
                 cnt ++;
                 String[] spt = data.get(num).split("\t\t")[1].split("\t");
                 String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
-                bwt.write(PosVec + " 1\n");
+                //bwt.write(PosVec + " 1\n");
                 // generate negative data
                 String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
                 Set<String> negObjs = getNegObj(obj_s);
                 for (String negObj: negObjs)
-                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2]  + " " + negObj + " 0\n");
+                    bwt.write(PosVec  + " " + negObj + " " + String.valueOf(num+1) + "\n");
             }
         }
         LogInfo.logs("[log] testing data generated.");
@@ -153,6 +153,7 @@ public class NNDataPreparer {
         LogInfo.end_track();
     }
 
+    // get the negative object entity embeddings of one object surface form
     public static Set<String> getNegObj(String obj_s) {
         LogInfo.logs("[log] get negative samples for %s... [%s].", obj_s, new Date().toString());
         FixLenRankList<Set<String>, Double> rankList = new FixLenRankList<>(30);
@@ -169,7 +170,7 @@ public class NNDataPreparer {
             for (String str: set) {
                 if (!str.equals(obj_s) && vectors.containsKey(addMark(str)))
                     ret.add(vectors.get(addMark(str)));
-                if (ret.size() == 10) {
+                if (ret.size() == 9) {
                     flag = false;
                     break;
                 }
@@ -180,6 +181,7 @@ public class NNDataPreparer {
         return ret;
     }
 
+    // calculate the similarity of two embedding vectors
     public static double getSimilarity(String str1, String str2) {
         String[] spt1 = str1.split(" ");
         String[] spt2 = str2.split(" ");
@@ -197,6 +199,8 @@ public class NNDataPreparer {
         return score;
     }
 
+    // simply average embeddings of relation/object surface form words
+    // to get a representative vector
     public static String average(String[] spt) {
         double[] vec = new double[lenOfw2v];
         for (String str: spt) {
@@ -219,7 +223,6 @@ public class NNDataPreparer {
             mark += ("_" + tmp.charAt(i));
         return String.format("[[%s]]", mark);
     }
-
 
     public static void getCleanData() throws IOException {
         LogInfo.begin_track("Begin to get clean wiki infobox data.");
