@@ -138,12 +138,12 @@ public class NNDataPreparer {
                 cnt ++;
                 String[] spt = data.get(num).split("\t\t")[1].split("\t");
                 String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
-                //bwt.write(PosVec + " 1\n");
+                bwt.write(PosVec + " 1\n");
                 // generate negative data
                 String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
                 Set<String> negObjs = getNegObj(obj_s);
                 for (String negObj: negObjs)
-                    bwt.write(PosVec  + " " + negObj + " " + String.valueOf(num+1) + "\n");
+                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
             }
         }
         LogInfo.logs("[log] testing data generated.");
