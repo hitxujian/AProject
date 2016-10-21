@@ -105,7 +105,7 @@ public class NNDataPreparer {
         //BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
         //        "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv"));
         BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv"));
+                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full"));
 
         int cnt = 0;
         LogInfo.logs("[log] sampling training/testing data.");
@@ -171,7 +171,7 @@ public class NNDataPreparer {
             Set<String> set = retList.get(i);
             for (String str: set) {
                 if (!str.equals(obj_s) && vectors.containsKey(addMark(str)))
-                    ret.add(vectors.get(addMark(str)) + " " + str);
+                    ret.add(vectors.get(addMark(str)) + " " + str.replace(" ", "_"));
                 if (ret.size() == 9) {
                     flag = false;
                     break;
