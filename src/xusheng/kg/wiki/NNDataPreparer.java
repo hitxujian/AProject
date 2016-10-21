@@ -102,15 +102,16 @@ public class NNDataPreparer {
         if (vectors == null)
             vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
 
-        BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv"));
+        //BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
+        //        "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv"));
         BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
                 "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv"));
 
         int cnt = 0;
-        LogInfo.logs("[log] sampling training data.");
+        LogInfo.logs("[log] sampling training/testing data.");
         Random rand = new Random();
         Set<Integer> set = new HashSet<>();
+        /*
         cnt = 0;
         // pos:neg = 1:9, that's why /10!
         while (cnt < numOfTrain/10) {
@@ -130,6 +131,7 @@ public class NNDataPreparer {
             }
         }
         LogInfo.logs("[log] training data generated.");
+        */
         cnt = 0;
         while (cnt < numOfTest/10) {
             int num = rand.nextInt(data.size());
@@ -143,12 +145,12 @@ public class NNDataPreparer {
                 String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
                 Set<String> negObjs = getNegObj(obj_s);
                 for (String negObj: negObjs)
-                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
+                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0 " + String.valueOf(num+1) + "\n");
             }
         }
         LogInfo.logs("[log] testing data generated.");
 
-        bwn.close();
+        //bwn.close();
         bwt.close();
         LogInfo.end_track();
     }
