@@ -139,13 +139,13 @@ public class NNDataPreparer {
                 set.add(num);
                 cnt ++;
                 String[] spt = data.get(num).split("\t\t")[1].split("\t");
-                String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
+                String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3] + " " + String.valueOf(num+1);
                 bwt.write(PosVec + " 1\n");
                 // generate negative data
                 String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
                 Set<String> negObjs = getNegObj(obj_s);
                 for (String negObj: negObjs)
-                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0 " + String.valueOf(num+1) + "\n");
+                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
             }
         }
         LogInfo.logs("[log] testing data generated.");
@@ -171,7 +171,7 @@ public class NNDataPreparer {
             Set<String> set = retList.get(i);
             for (String str: set) {
                 if (!str.equals(obj_s) && vectors.containsKey(addMark(str)))
-                    ret.add(vectors.get(addMark(str)));
+                    ret.add(vectors.get(addMark(str)) + " " + str);
                 if (ret.size() == 9) {
                     flag = false;
                     break;
