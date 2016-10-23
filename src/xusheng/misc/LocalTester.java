@@ -34,17 +34,18 @@ public class LocalTester {
     }
 
     public static void main(String[] args) throws Exception {
-        /*String line = " <p id=\"openCatp\" style=\"display:none\">开放分类：<a target=\"_blank\" title=\"日本漫画\" " +
+        String line = " <p id=\"openCatp\" st[[Apple Inc.|apple]] yle=\"display:none\">开放分类：<a target=\"_blank\" title=\"日本漫画\" " +
                 "href=\"http://fenlei.baike.com/%E6%97%A5%E6%9C%AC%E6%BC%AB%E7%94%BB/?prd=zhengwenye_left_kaifangfenlei\">" +
-                "日本漫画</a><a target=\"_blank\" title=\"漫画\" href=\"http://fenlei.baike.com/%E6%BC%AB%E7%94%BB" +
+                "日本漫画</a><a target=\"_[[fuck]]blank\" title=\"漫画\" href=\"http://fenle[[hello|hi]]i.baike.com/%E6%BC%AB%E7%94%BB" +
                 "/?prd=zhengwenye_left_kaifangfenlei\">漫画</a></p>\n";
-        Pattern pat = Pattern.compile("title=\"(.*?)\" href");
+        Pattern pat = Pattern.compile("\\[\\[(.*?)\\]\\]");
         Matcher mat = pat.matcher(line);
         while (mat.find()) {
-            LogInfo.logs(urlDecode(mat.group(0)));
-            LogInfo.logs(urlDecode(mat.group(1)));
+            LogInfo.logs(mat.group(0));
+            LogInfo.logs(mat.group(1).split("\\|").length);
+
             //line= line.replace(mat.group(0), urlDecode(mat.group(1)));
             //LogInfo.logs(line);
-        }*/
+        }
     }
 }

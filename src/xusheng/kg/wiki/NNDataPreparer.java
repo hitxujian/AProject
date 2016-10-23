@@ -102,8 +102,8 @@ public class NNDataPreparer {
         if (vectors == null)
             vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
 
-        //BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
-        //        "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv"));
+        BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv"));
         BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
                 "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full"));
 
@@ -111,7 +111,7 @@ public class NNDataPreparer {
         LogInfo.logs("[log] sampling training/testing data.");
         Random rand = new Random();
         Set<Integer> set = new HashSet<>();
-        /*
+
         cnt = 0;
         // pos:neg = 1:9, that's why /10!
         while (cnt < numOfTrain/10) {
@@ -131,7 +131,7 @@ public class NNDataPreparer {
             }
         }
         LogInfo.logs("[log] training data generated.");
-        */
+
         cnt = 0;
         while (cnt < numOfTest/10) {
             int num = rand.nextInt(data.size());
@@ -156,6 +156,7 @@ public class NNDataPreparer {
     }
 
     // get the negative object entity embeddings of one object surface form
+    // todo: to use the prior file
     public static Set<String> getNegObj(String obj_s) {
         LogInfo.logs("[log] get negative samples for %s... [%s].", obj_s, new Date().toString());
         FixLenRankList<Set<String>, Double> rankList = new FixLenRankList<>(30);
@@ -184,6 +185,7 @@ public class NNDataPreparer {
     }
 
     // calculate the similarity of two embedding vectors
+    // todo: n-gram similarity will be better?
     public static double getSimilarity(String str1, String str2) {
         String[] spt1 = str1.split(" ");
         String[] spt2 = str2.split(" ");
@@ -226,13 +228,13 @@ public class NNDataPreparer {
         return String.format("[[%s]]", mark);
     }
 
-    public static void getCleanData() throws IOException {
+    public static void getCleanInfoboxFromDbpedia() throws IOException {
         LogInfo.begin_track("Begin to get clean wiki infobox data.");
         File f = new File(rootFp + "/dbpedia/infobox_properties_en.ttl");
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
-        f = new File(rootFp + "/nn/wiki_info_linked.tsv");
+        f = new File(rootFp + "/nn/data/dbpedia/wiki_info_linked.tsv");
         BufferedWriter bwl = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
-        f = new File(rootFp + "/nn/wiki_info_unlinked.tsv");
+        f = new File(rootFp + "/nn/data/dbpedia/wiki_info_unlinked.tsv");
         BufferedWriter bwu = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
 
         String line;
@@ -272,13 +274,38 @@ public class NNDataPreparer {
         LogInfo.end_track();
     }
 
+    // todo: extract infobox information from raw wiki xml.
+    public static void getCleanInfoboxFromWikipedia() throws IOException {
+        LogInfo.begin_track("Begin to get clean wiki infobox data.");
+        File f = new File(rootFp + "/wikipedia/enwiki-20160920-pages-articles-multistream.xml");
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+        f = new File(rootFp + "/nn/data/wikipedia/wiki_info_linked.tsv");
+        BufferedWriter bwl = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+        f = new File(rootFp + "/nn/data/wikipedia/wiki_info_unlinked.tsv");
+        BufferedWriter bwu = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            line = line.trim();
+            if (line.startsWith("<title>")) {
+                String entity = line.split(">")[1].split("<")[0];
+                while (!(line = br.readLine()).trim().startsWith("</page>"))
+                    if (line.trim().startsWith("{{Infobox"))
+                        while (!(line = br.readLine()).trim().startsWith("}}")) {
+                            // todo
+                        }
+            }
+        }
+        br.close();
+        bwl.close();
+        bwu.close();
+    }
 
 
     public static int lenOfw2v = 50;
     public static void main(String[] args) throws IOException {
         lenOfw2v = Integer.parseInt(args[0]);
-        //getCleanData();
-        //getFullPositiveData();
+        getCleanInfoboxFromWikipedia();
+        getFullPositiveData();
         getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
     }
 }
