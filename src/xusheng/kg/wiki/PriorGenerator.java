@@ -29,7 +29,7 @@ public class PriorGenerator {
         String line; int cnt = 0;
         while ((line = br.readLine()) != null) {
             cnt ++;
-            LogUpgrader.showLine(cnt, 5000000);
+            LogUpgrader.showLine(cnt, 1000000);
             Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
             Matcher matcher = pattern.matcher(line);
             while (matcher.find()) {
@@ -42,6 +42,7 @@ public class PriorGenerator {
                     mention = spt[1];
                 }
                 add2Map(entity, mention);
+                if (cnt < 100) LogInfo.logs("[link]\t" + mention + " : " + entity);
             }
 
             pattern = Pattern.compile("<title>(.*?)</title>");
@@ -49,6 +50,7 @@ public class PriorGenerator {
             while (matcher.find()) {
                 String raw = matcher.group(1);
                 add2Map(raw.toLowerCase(), raw);
+                if (cnt < 100) LogInfo.logs("[title]\t" + raw + " : " + raw.toLowerCase());
             }
         }
 
