@@ -82,4 +82,25 @@ public class AnchorTextReader {
         LogInfo.end_track();
         return anchorMap;
     }
+
+    public static Map<String, Set<String>> ReadDataFromName2Ent(String cmd) throws IOException {
+        Map<String, Set<String>> anchorMap = new HashMap<>();
+        dataFp = "/home/xusheng/nn/data/wikipedia/prior.txt";
+        LogInfo.begin_track("Start to read %s from name to entity.", dataFp);
+        BufferedReader br = new BufferedReader(new FileReader(dataFp));
+        String line;
+        int cnt = 0;
+        while ((line = br.readLine()) != null) {
+            String[] spt = line.split("\t");
+            if (spt[0].equals(" ")) continue;
+            if (!anchorMap.containsKey(spt[0]))
+                anchorMap.put(spt[0], new HashSet<>());
+            anchorMap.get(spt[0]).add(spt[1]);
+            cnt ++;
+            LogUpgrader.showLine(cnt, 1000000);
+        }
+        br.close();
+        LogInfo.end_track();
+        return anchorMap;
+    }
 }

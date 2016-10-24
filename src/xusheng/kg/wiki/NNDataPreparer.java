@@ -41,11 +41,14 @@ public class NNDataPreparer {
             LogUpgrader.showLine(cnt, 100000);
             try {
                 String[] spt = line.split("\t");
+                if (spt[0].equals(" ") || spt[3].equals(" "))
+                    continue;
                 // 4 elements
                 String markedSubj = addMark(spt[0]);
                 String markedObj = addMark(spt[3]);
                 String rel_s[] = spt[1].split(" ");
-                String obj_s[] = spt[2].split(" ");
+                // note that here we only focus the w2v, so change to lower case!
+                String obj_s[] = spt[2].toLowerCase().split(" ");
                 // check if w2v contains these 4 elements
                 // check rel_s
                 boolean flag = true;
@@ -91,23 +94,23 @@ public class NNDataPreparer {
         // load full positive data
         List<String> data = new ArrayList<>();
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
-                "/nn/data/positive_full.tsv"));
+                "/nn/data/wikipedia/positive_full.tsv"));
         String line;
         while ((line = br.readLine()) != null)
             data.add(line);
-        LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/data/positive_full.tsv", data.size());
+        LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/data/wikipedia/positive_full.tsv", data.size());
 
         // load anchor text data
         if (anchorTextMap == null)
-            anchorTextMap = AnchorTextReader.ReadDataFromName2Ent();
+            anchorTextMap = AnchorTextReader.ReadDataFromName2Ent("Prior");
         // load word2vec
         if (vectors == null)
             vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
 
         BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv"));
+                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv.full.1025"));
         BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full"));
+                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full.1025"));
 
         int cnt = 0;
         LogInfo.logs("[log] sampling training/testing data.");
@@ -276,7 +279,6 @@ public class NNDataPreparer {
         LogInfo.end_track();
     }
 
-    // todo: extract infobox information from raw wiki xml.
     public static void getCleanInfoboxFromWikipedia() throws IOException {
         LogInfo.begin_track("Begin to get clean wiki infobox data.");
         File f = new File(rootFp + "/wikipedia/enwiki-20160920-pages-articles-multistream.xml");
@@ -347,8 +349,8 @@ public class NNDataPreparer {
     public static int lenOfw2v = 50;
     public static void main(String[] args) throws IOException {
         lenOfw2v = Integer.parseInt(args[0]);
-        getCleanInfoboxFromWikipedia();
+        //getCleanInfoboxFromWikipedia();
         getFullPositiveData();
-        //getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
     }
 }
