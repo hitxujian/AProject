@@ -296,6 +296,7 @@ public class NNDataPreparer {
                 while (!(line = br.readLine()).trim().startsWith("</page>"))
                     if (line.trim().startsWith("{{Infobox"))
                         while (!(line = br.readLine()).trim().startsWith("}}")) {
+                            if (!line.trim().startsWith("\\|")) continue;
                             String[] spt = line.split(" \\| ")[1].split("=");
                             String rel = removeNum(spt[0].trim());
                             String obj = spt[1].trim();
