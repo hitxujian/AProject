@@ -297,7 +297,7 @@ public class NNDataPreparer {
                     if (line.trim().startsWith("{{Infobox")) {
                         LogInfo.logs(line);
                         while (!(line = br.readLine()).trim().startsWith("}}")) {
-                            //if (!line.trim().startsWith("\\|")) continue;
+                            if (!line.contains("=")) continue;
                             LogInfo.logs(subj + "  :  " + line);
                             String[] spt = line.split("=");
                             String rel = removeOthers(spt[0].trim().toLowerCase());
