@@ -293,14 +293,14 @@ public class NNDataPreparer {
             line = line.trim();
             if (line.startsWith("<title>")) {
                 String subj = line.split(">")[1].split("<")[0].toLowerCase();
-                LogInfo.logs(subj);
                 while (!(line = br.readLine()).trim().startsWith("</page>"))
-                    if (line.trim().startsWith("{{Infobox"))
+                    if (line.trim().startsWith("{{Infobox")) {
+                        LogInfo.logs(line);
                         while (!(line = br.readLine()).trim().startsWith("}}")) {
                             if (!line.trim().startsWith("\\|")) continue;
                             LogInfo.logs(subj + "  :  " + line);
                             String[] spt = line.split("=");
-                            String rel = removeOthers(spt[0].trim().toLowerCase() );
+                            String rel = removeOthers(spt[0].trim().toLowerCase());
                             String obj = spt[1].trim();
                             // if has links
                             Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
@@ -322,6 +322,7 @@ public class NNDataPreparer {
                             if (flag)
                                 bwu.write(subj + "\t" + rel + "\t" + obj + "\n");
                         }
+                    }
             }
         }
         br.close();
@@ -339,7 +340,6 @@ public class NNDataPreparer {
             j ++;
         return str.substring(j, i);
     }
-
 
     public static int lenOfw2v = 50;
     public static void main(String[] args) throws IOException {
