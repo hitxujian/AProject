@@ -1,6 +1,7 @@
 package xusheng.kg.wiki;
 
 import fig.basic.LogInfo;
+import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.MapHelper;
 
 import java.io.*;
@@ -25,8 +26,10 @@ public class PriorGenerator {
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         f = new File(rootFp + "/nn/data/wikipedia/prior.txt");
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
-        String line;
+        String line; int cnt = 0;
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 5000000);
             Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
             Matcher matcher = pattern.matcher(line);
             while (matcher.find()) {
