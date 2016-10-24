@@ -295,13 +295,13 @@ public class NNDataPreparer {
                 String subj = line.split(">")[1].split("<")[0].toLowerCase();
                 while (!(line = br.readLine()).trim().startsWith("</page>"))
                     if (line.trim().startsWith("{{Infobox")) {
-                        LogInfo.logs(line);
                         while (!(line = br.readLine()).trim().startsWith("}}")) {
                             try {
                                 String[] spt = line.split("=");
                                 String rel = removeOthers(spt[0].trim().toLowerCase());
                                 String obj = spt[1].trim();
                                 // if has links
+                                LogInfo.logs(subj + "\t" + rel + "\t" + obj);
                                 Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
                                 Matcher matcher = pattern.matcher(obj);
                                 boolean flag = true;
