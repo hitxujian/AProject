@@ -301,7 +301,7 @@ public class NNDataPreparer {
                                 String rel = removeOthers(spt[0].trim().toLowerCase());
                                 String obj = spt[1].trim();
                                 // if has links
-                                LogInfo.logs(subj + "\t" + rel + "\t" + obj);
+                                //LogInfo.logs(subj + "\t" + rel + "\t" + obj);
                                 Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
                                 Matcher matcher = pattern.matcher(obj);
                                 boolean flag = true;
@@ -321,7 +321,7 @@ public class NNDataPreparer {
                                 if (flag)
                                     bwu.write(subj + "\t" + rel + "\t" + obj + "\n");
                             } catch (Exception ex) {
-                                ex.printStackTrace();
+                                //ex.printStackTrace();
                                 LogInfo.logs("[error] %s", line);
                             }
                         }
