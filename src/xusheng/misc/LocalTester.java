@@ -34,7 +34,7 @@ public class LocalTester {
     }
 
     public static void main(String[] args) throws Exception {
-        String line = " <p id=\"openCatp\" st[[Apple Inc.|apple]] yle=\"display:none\">开放分类：<a target=\"_blank\" title=\"日本漫画\" " +
+        /*String line = " <p id=\"openCatp\" st[[Apple Inc.|apple]] yle=\"display:none\">开放分类：<a target=\"_blank\" title=\"日本漫画\" " +
                 "href=\"http://fenlei.baike.com/%E6%97%A5%E6%9C%AC%E6%BC%AB%E7%94%BB/?prd=zhengwenye_left_kaifangfenlei\">" +
                 "日本漫画</a><a target=\"_[[fuck]]blank\" title=\"漫画\" href=\"http://fenle[[hello|hi]]i.baike.com/%E6%BC%AB%E7%94%BB" +
                 "/?prd=zhengwenye_left_kaifangfenlei\">漫画</a></p>\n";
@@ -46,6 +46,8 @@ public class LocalTester {
 
             //line= line.replace(mat.group(0), urlDecode(mat.group(1)));
             //LogInfo.logs(line);
-        }
+        }*/
+        String a = "hello";
+        LogInfo.logs(a.split("h")[0] + ":" + a.split("h")[1]);
     }
 }

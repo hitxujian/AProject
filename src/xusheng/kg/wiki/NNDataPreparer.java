@@ -9,6 +9,8 @@ import xusheng.word2vec.WordEmbedder;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Xusheng on 10/8/2016.
@@ -27,10 +29,10 @@ public class NNDataPreparer {
         vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
         // load clean wiki infobox data
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
-                "/nn/data/wiki_info_linked.tsv"));
+                "/nn/data/wikipedia/wiki_info_linked.tsv"));
 
         BufferedWriter bwp = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/positive_full.tsv"));
+                "/nn/data/wikipedia/positive_full.tsv"));
 
         String line;
         int cnt = 0;
@@ -41,7 +43,7 @@ public class NNDataPreparer {
                 String[] spt = line.split("\t");
                 // 4 elements
                 String markedSubj = addMark(spt[0]);
-                String markedObj = addMark(spt[2]);
+                String markedObj = addMark(spt[3]);
                 String rel_s[] = spt[1].split(" ");
                 String obj_s[] = spt[2].split(" ");
                 // check if w2v contains these 4 elements
@@ -284,14 +286,38 @@ public class NNDataPreparer {
         f = new File(rootFp + "/nn/data/wikipedia/wiki_info_unlinked.tsv");
         BufferedWriter bwu = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
         String line;
+        int cnt = 0;
         while ((line = br.readLine()) != null) {
+            cnt ++;
+            LogUpgrader.showLine(cnt, 1000000);
             line = line.trim();
             if (line.startsWith("<title>")) {
-                String entity = line.split(">")[1].split("<")[0];
+                String subj = line.split(">")[1].split("<")[0].toLowerCase();
                 while (!(line = br.readLine()).trim().startsWith("</page>"))
                     if (line.trim().startsWith("{{Infobox"))
                         while (!(line = br.readLine()).trim().startsWith("}}")) {
-                            // todo
+                            String[] spt = line.split(" \\| ")[1].split("=");
+                            String rel = removeNum(spt[0].trim());
+                            String obj = spt[1].trim();
+                            // if has links
+                            Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
+                            Matcher matcher = pattern.matcher(obj);
+                            boolean flag = true;
+                            while (matcher.find()) {
+                                flag = false;
+                                String raw = matcher.group(1);
+                                String entity = raw.toLowerCase();
+                                String mention = raw; // maintain original case
+                                String[] sptt = raw.split("\\|");
+                                if (sptt.length > 1) {
+                                    entity = sptt[0].toLowerCase();
+                                    mention = sptt[1];
+                                }
+                                bwl.write(subj + "\t" + rel + "\t" + mention + "\t" + entity + "\n");
+                            }
+                            // no links in obj
+                            if (flag)
+                                bwu.write(subj + "\t" + rel + "\t" + obj + "\n");
                         }
             }
         }
@@ -300,12 +326,20 @@ public class NNDataPreparer {
         bwu.close();
     }
 
+    public static String removeNum(String str) {
+        int i = str.length() - 1;
+        while (str.charAt(i) >= '0' && str.charAt(i) <= '9')
+            i--;
+        i++;
+        return str.substring(0, i);
+    }
+
 
     public static int lenOfw2v = 50;
     public static void main(String[] args) throws IOException {
         lenOfw2v = Integer.parseInt(args[0]);
         getCleanInfoboxFromWikipedia();
         getFullPositiveData();
-        getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        //getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
     }
 }
