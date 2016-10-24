@@ -297,8 +297,8 @@ public class NNDataPreparer {
                     if (line.trim().startsWith("{{Infobox"))
                         while (!(line = br.readLine()).trim().startsWith("}}")) {
                             if (!line.trim().startsWith("\\|")) continue;
-                            String[] spt = line.split(" \\| ")[1].split("=");
-                            String rel = removeNum(spt[0].trim());
+                            String[] spt = line.split("=");
+                            String rel = removeOthers(spt[0].trim().toLowerCase() );
                             String obj = spt[1].trim();
                             // if has links
                             Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
@@ -327,12 +327,15 @@ public class NNDataPreparer {
         bwu.close();
     }
 
-    public static String removeNum(String str) {
+    public static String removeOthers(String str) {
         int i = str.length() - 1;
         while (str.charAt(i) >= '0' && str.charAt(i) <= '9')
-            i--;
+            i --;
         i++;
-        return str.substring(0, i);
+        int j=0;
+        while (str.charAt(j) < 'a' || str.charAt(j) > 'z')
+            j ++;
+        return str.substring(j, i);
     }
 
 
