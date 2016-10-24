@@ -297,30 +297,33 @@ public class NNDataPreparer {
                     if (line.trim().startsWith("{{Infobox")) {
                         LogInfo.logs(line);
                         while (!(line = br.readLine()).trim().startsWith("}}")) {
-                            if (!line.contains("=")) continue;
-                            LogInfo.logs(subj + "  :  " + line);
-                            String[] spt = line.split("=");
-                            String rel = removeOthers(spt[0].trim().toLowerCase());
-                            String obj = spt[1].trim();
-                            // if has links
-                            Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
-                            Matcher matcher = pattern.matcher(obj);
-                            boolean flag = true;
-                            while (matcher.find()) {
-                                flag = false;
-                                String raw = matcher.group(1);
-                                String entity = raw.toLowerCase();
-                                String mention = raw; // maintain original case
-                                String[] sptt = raw.split("\\|");
-                                if (sptt.length > 1) {
-                                    entity = sptt[0].toLowerCase();
-                                    mention = sptt[1];
+                            try {
+                                String[] spt = line.split("=");
+                                String rel = removeOthers(spt[0].trim().toLowerCase());
+                                String obj = spt[1].trim();
+                                // if has links
+                                Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
+                                Matcher matcher = pattern.matcher(obj);
+                                boolean flag = true;
+                                while (matcher.find()) {
+                                    flag = false;
+                                    String raw = matcher.group(1);
+                                    String entity = raw.toLowerCase();
+                                    String mention = raw; // maintain original case
+                                    String[] sptt = raw.split("\\|");
+                                    if (sptt.length > 1) {
+                                        entity = sptt[0].toLowerCase();
+                                        mention = sptt[1];
+                                    }
+                                    bwl.write(subj + "\t" + rel + "\t" + mention + "\t" + entity + "\n");
                                 }
-                                bwl.write(subj + "\t" + rel + "\t" + mention + "\t" + entity + "\n");
+                                // no links in obj
+                                if (flag)
+                                    bwu.write(subj + "\t" + rel + "\t" + obj + "\n");
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                LogInfo.logs("[error] %s", line);
                             }
-                            // no links in obj
-                            if (flag)
-                                bwu.write(subj + "\t" + rel + "\t" + obj + "\n");
                         }
                     }
             }
