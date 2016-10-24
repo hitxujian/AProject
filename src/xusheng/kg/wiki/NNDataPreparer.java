@@ -293,10 +293,12 @@ public class NNDataPreparer {
             line = line.trim();
             if (line.startsWith("<title>")) {
                 String subj = line.split(">")[1].split("<")[0].toLowerCase();
+                LogInfo.logs(subj);
                 while (!(line = br.readLine()).trim().startsWith("</page>"))
                     if (line.trim().startsWith("{{Infobox"))
                         while (!(line = br.readLine()).trim().startsWith("}}")) {
                             if (!line.trim().startsWith("\\|")) continue;
+                            LogInfo.logs(subj + "  :  " + line);
                             String[] spt = line.split("=");
                             String rel = removeOthers(spt[0].trim().toLowerCase() );
                             String obj = spt[1].trim();
