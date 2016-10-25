@@ -117,43 +117,50 @@ public class NNDataPreparer {
         Random rand = new Random();
         Set<Integer> set = new HashSet<>();
 
-        cnt = 0;
-        // pos:neg = 1:9, that's why /10!
-        while (cnt < numOfTrain/10) {
-            int num = rand.nextInt(data.size());
-            if (!set.contains(num)) {
-                LogInfo.logs("[log] get positive sample [%s].", data.get(num).split("\t\t")[0]);
-                set.add(num);
-                cnt ++;
-                String[] spt = data.get(num).split("\t\t")[1].split("\t");
-                String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
-                //bwn.write(PosVec + " 1\n");
-                // generate negative data
-                String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
-                Set<String> negObjs = getNegObj(obj_s);
-                for (String negObj: negObjs)
-                    bwn.write(PosVec  + " " + negObj + " " + String.valueOf(num+1) + "\n");
-            }
-        }
-        LogInfo.logs("[log] training data generated.");
+        int num = -1;
+        try {
 
-        cnt = 0;
-        while (cnt < numOfTest/10) {
-            int num = rand.nextInt(data.size());
-            if (!set.contains(num)) {
-                set.add(num);
-                cnt ++;
-                String[] spt = data.get(num).split("\t\t")[1].split("\t");
-                String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3] + " " + String.valueOf(num+1);
-                bwt.write(PosVec + " 1\n");
-                // generate negative data
-                String obj_s =data.get(num).split("\t\t")[0].split("\t")[2];
-                Set<String> negObjs = getNegObj(obj_s);
-                for (String negObj: negObjs)
-                    bwt.write(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
+            cnt = 0;
+            // pos:neg = 1:9, that's why /10!
+            while (cnt < numOfTrain / 10) {
+                num = rand.nextInt(data.size());
+                if (!set.contains(num)) {
+                    LogInfo.logs("[log] get positive sample [%s].", data.get(num).split("\t\t")[0]);
+                    set.add(num);
+                    cnt++;
+                    String[] spt = data.get(num).split("\t\t")[1].split("\t");
+                    String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
+                    //bwn.write(PosVec + " 1\n");
+                    // generate negative data
+                    String obj_s = data.get(num).split("\t\t")[0].split("\t")[2];
+                    Set<String> negObjs = getNegObj(obj_s);
+                    for (String negObj : negObjs)
+                        bwn.write(PosVec + " " + negObj + " " + String.valueOf(num + 1) + "\n");
+                }
             }
+            LogInfo.logs("[log] training data generated.");
+
+            cnt = 0;
+            while (cnt < numOfTest / 10) {
+                num = rand.nextInt(data.size());
+                if (!set.contains(num)) {
+                    set.add(num);
+                    cnt++;
+                    String[] spt = data.get(num).split("\t\t")[1].split("\t");
+                    String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3] + " " + String.valueOf(num + 1);
+                    bwt.write(PosVec + " 1\n");
+                    // generate negative data
+                    String obj_s = data.get(num).split("\t\t")[0].split("\t")[2];
+                    Set<String> negObjs = getNegObj(obj_s);
+                    for (String negObj : negObjs)
+                        bwt.write(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
+                }
+            }
+            LogInfo.logs("[log] testing data generated.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            LogInfo.logs("[error] line %d in positive.full.tsv", num + 1);
         }
-        LogInfo.logs("[log] testing data generated.");
 
         //bwn.close();
         bwt.close();
@@ -176,6 +183,7 @@ public class NNDataPreparer {
         for (int i=0; i<retList.size(); i++) {
             Set<String> set = retList.get(i);
             for (String str: set) {
+                if (str.trim().length() == 0) continue;
                 if (!str.equals(obj_s) && vectors.containsKey(addMark(str)))
                     ret.add(vectors.get(addMark(str)) + " " + str.replace(" ", "_"));
                 if (ret.size() == 9) {
@@ -350,7 +358,7 @@ public class NNDataPreparer {
     public static void main(String[] args) throws IOException {
         lenOfw2v = Integer.parseInt(args[0]);
         //getCleanInfoboxFromWikipedia();
-        getFullPositiveData();
+        //getFullPositiveData();
         getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
     }
 }
