@@ -108,9 +108,9 @@ public class NNDataPreparer {
             vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
 
         BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv.full.1025"));
+                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv.full." + relSetting));
         BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full.1025"));
+                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full." + relSetting));
 
         int cnt = 0;
         LogInfo.logs("[log] sampling training/testing data.");
@@ -124,8 +124,15 @@ public class NNDataPreparer {
             // pos:neg = 1:9, that's why /10!
             while (cnt < numOfTrain / 10) {
                 num = rand.nextInt(data.size());
+                String[] part = data.get(num).split("\t\t");
                 if (!set.contains(num)) {
-                    LogInfo.logs("[log] get positive sample [%s].", data.get(num).split("\t\t")[0]);
+                    int lenOfRel = part[0].split("\t")[1].split(" ").length;
+                    if (relSetting.equals("single")) {
+                        if (lenOfRel > 1) continue;
+                    } else if (relSetting.equals("multi")) {
+                        if (lenOfRel == 1) continue;
+                    }
+                    LogInfo.logs("[log] get positive sample for training data [%s].", data.get(num).split("\t\t")[0]);
                     set.add(num);
                     cnt++;
                     String[] spt = data.get(num).split("\t\t")[1].split("\t");
@@ -143,7 +150,15 @@ public class NNDataPreparer {
             cnt = 0;
             while (cnt < numOfTest / 10) {
                 num = rand.nextInt(data.size());
+                String[] part = data.get(num).split("\t\t");
                 if (!set.contains(num)) {
+                    int lenOfRel = part[0].split("\t")[1].split(" ").length;
+                    if (relSetting.equals("single")) {
+                        if (lenOfRel > 1) continue;
+                    } else if (relSetting.equals("multi")) {
+                        if (lenOfRel == 1) continue;
+                    }
+                    LogInfo.logs("[log] get positive sample for testing data [%s].", data.get(num).split("\t\t")[0]);
                     set.add(num);
                     cnt++;
                     String[] spt = data.get(num).split("\t\t")[1].split("\t");
@@ -355,10 +370,12 @@ public class NNDataPreparer {
     }
 
     public static int lenOfw2v = 50;
+    public static String relSetting = "Normal";
     public static void main(String[] args) throws IOException {
         lenOfw2v = Integer.parseInt(args[0]);
         //getCleanInfoboxFromWikipedia();
         //getFullPositiveData();
+        relSetting = args[3];
         getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
     }
 }
