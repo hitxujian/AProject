@@ -454,10 +454,10 @@ public class NNDataPreparer implements Runnable {
     public static void main(String[] args) throws Exception {
         //getCleanInfoboxFromWikipedia();
         lenOfw2v = Integer.parseInt(args[0]);
-        getFullPositiveData();
         numOfTrain = Integer.parseInt(args[1]);
         numOfTest = Integer.parseInt(args[2]);
         setting = args[3];
+        if (args[4].equals("1")) getFullPositiveData();
         multiThreadWork();
     }
 }
