@@ -4,6 +4,8 @@ import fig.basic.LogInfo;
 import fig.basic.Pair;
 import xusheng.util.log.LogUpgrader;
 import xusheng.util.struct.FixLenRankList;
+import xusheng.util.struct.MultiThread;
+import xusheng.util.struct.MultiThreadTemplate;
 import xusheng.word2vec.VecLoader;
 import xusheng.word2vec.WordEmbedder;
 
@@ -18,10 +20,12 @@ import java.util.regex.Pattern;
  * Input: wiki_infobox data
  */
 
-public class NNDataPreparer {
+public class NNDataPreparer implements Runnable {
     public static String rootFp = "/home/xusheng";
     public static Map<String, String> vectors = null;
-    public static Map<String, Set<String>> anchorTextMap = null;
+    public static Map<String, List<String>> anchorTextMap = null;
+    public static List<String> data = new ArrayList<>();
+    public static BufferedWriter bwn, bwt;
 
     public static void getFullPositiveData() throws IOException {
         LogInfo.begin_track("Begin to get full positive data.");
@@ -48,7 +52,7 @@ public class NNDataPreparer {
                 String markedObj = addMark(spt[3]);
                 String rel_s[] = spt[1].split(" ");
                 // note that here we only focus the w2v, so change to lower case!
-                String obj_s[] = spt[2].toLowerCase().split(" ");
+                String obj_s[] = spt[3].toLowerCase().split(" "); // todo: change 3-> 2
                 // check if w2v contains these 4 elements
                 // check rel_s
                 boolean flag = true;
@@ -88,11 +92,11 @@ public class NNDataPreparer {
         LogInfo.end_track();
     }
 
-    public static void getTrainTestData(int numOfTrain, int numOfTest) throws IOException {
+    public static List<Pair<Integer, Integer>> taskList = new ArrayList<>();
+    public static void getTaskData() throws IOException {
         LogInfo.begin_track("Start to get training & testing data.");
 
         // load full positive data
-        List<String> data = new ArrayList<>();
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
                 "/nn/data/wikipedia/positive_full.tsv"));
         String line;
@@ -107,10 +111,10 @@ public class NNDataPreparer {
         if (vectors == null)
             vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
 
-        BufferedWriter bwn = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv.full." + relSetting));
-        BufferedWriter bwt = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full." + relSetting));
+        bwn = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv.full." + setting));
+        bwt = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full." + setting));
 
         int cnt = 0;
         LogInfo.logs("[log] sampling training/testing data.");
@@ -119,7 +123,6 @@ public class NNDataPreparer {
 
         int num = -1;
         try {
-
             cnt = 0;
             // pos:neg = 1:9, that's why /10!
             while (cnt < numOfTrain / 10) {
@@ -127,25 +130,17 @@ public class NNDataPreparer {
                 String[] part = data.get(num).split("\t\t");
                 if (!set.contains(num)) {
                     int lenOfRel = part[0].split("\t")[1].split(" ").length;
-                    if (relSetting.equals("single")) {
+                    if (setting.equals("single")) {
                         if (lenOfRel > 1) continue;
-                    } else if (relSetting.equals("multi")) {
+                    } else if (setting.equals("multi")) {
                         if (lenOfRel == 1) continue;
                     }
-                    LogInfo.logs("[log] get positive sample for training data [%s].", data.get(num).split("\t\t")[0]);
                     set.add(num);
                     cnt++;
-                    String[] spt = data.get(num).split("\t\t")[1].split("\t");
-                    String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
-                    //bwn.write(PosVec + " 1\n");
-                    // generate negative data
-                    String obj_s = data.get(num).split("\t\t")[0].split("\t")[2];
-                    Set<String> negObjs = getNegObj(obj_s);
-                    for (String negObj : negObjs)
-                        bwn.write(PosVec + " " + negObj + " " + String.valueOf(num + 1) + "\n");
+                    taskList.add(new Pair<>(num, 1));
                 }
             }
-            LogInfo.logs("[log] training data generated.");
+            LogInfo.logs("[log] training data add to task list.");
 
             cnt = 0;
             while (cnt < numOfTest / 10) {
@@ -153,25 +148,17 @@ public class NNDataPreparer {
                 String[] part = data.get(num).split("\t\t");
                 if (!set.contains(num)) {
                     int lenOfRel = part[0].split("\t")[1].split(" ").length;
-                    if (relSetting.equals("single")) {
+                    if (setting.equals("single")) {
                         if (lenOfRel > 1) continue;
-                    } else if (relSetting.equals("multi")) {
+                    } else if (setting.equals("multi")) {
                         if (lenOfRel == 1) continue;
                     }
-                    LogInfo.logs("[log] get positive sample for testing data [%s].", data.get(num).split("\t\t")[0]);
                     set.add(num);
                     cnt++;
-                    String[] spt = data.get(num).split("\t\t")[1].split("\t");
-                    String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3] + " " + String.valueOf(num + 1);
-                    bwt.write(PosVec + " 1\n");
-                    // generate negative data
-                    String obj_s = data.get(num).split("\t\t")[0].split("\t")[2];
-                    Set<String> negObjs = getNegObj(obj_s);
-                    for (String negObj : negObjs)
-                        bwt.write(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
+                    taskList.add(new Pair<>(num, 2));
                 }
             }
-            LogInfo.logs("[log] testing data generated.");
+            LogInfo.logs("[log] testing data add to task list.");
         } catch (Exception ex) {
             ex.printStackTrace();
             LogInfo.logs("[error] line %d in positive.full.tsv", num + 1);
@@ -182,33 +169,76 @@ public class NNDataPreparer {
         LogInfo.end_track();
     }
 
+    public static void getSingleTrainTestData(int idx) throws IOException {
+        Pair<Integer, Integer> task = taskList.get(idx);
+        int num = task.getFirst();
+        String obj_s = data.get(num).split("\t\t")[0].split("\t")[2];
+        String obj_l = data.get(num).split("\t\t")[0].split("\t")[3];
+
+        if (task.getSecond() == 1) { // training data
+            String[] spt = data.get(num).split("\t\t")[1].split("\t");
+            String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
+            LogInfo.logs("[log] positive sample generated for training data [%s].", data.get(num).split("\t\t")[0]);
+            //bwnWrite(PosVec + " 1\n");
+            // generate negative data
+            Set<String> negObjs = getNegObj(obj_s, obj_l);
+            for (String negObj : negObjs)
+                bwnWrite(PosVec + " " + negObj + " " + String.valueOf(num + 1) + "\n");
+        } else { // testing data
+            String[] spt = data.get(num).split("\t\t")[1].split("\t");
+            String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3] + " " + String.valueOf(num + 1);
+            bwtWrite(PosVec + " 1\n");
+            LogInfo.logs("[log] positive sample generated for testing data [%s].", data.get(num).split("\t\t")[0]);
+            // generate negative data
+            Set<String> negObjs = getNegObj(obj_s, obj_l);
+            for (String negObj : negObjs)
+                bwtWrite(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
+        }
+    }
+
     // get the negative object entity embeddings of one object surface form
     // todo: to use the prior file
-    public static Set<String> getNegObj(String obj_s) {
+    public static Set<String> getNegObj(String obj_s, String obj_l) {
         LogInfo.logs("[log] get negative samples for %s... [%s].", obj_s, new Date().toString());
-        FixLenRankList<Set<String>, Double> rankList = new FixLenRankList<>(30);
-        for (Map.Entry<String, Set<String>> entry: anchorTextMap.entrySet()) {
+        Set<String> ret = new HashSet<>();
+
+        // exactly match
+        if (anchorTextMap.containsKey(obj_s)) {
+            List<String> entityList = anchorTextMap.get(obj_s);
+            for (String str: entityList) {
+                if (str.trim().length() == 0) continue;
+                if (!str.equals(obj_l) && vectors.containsKey(addMark(str)))
+                    ret.add(vectors.get(addMark(str)) + " " + str.replace(" ", "_"));
+                if (ret.size() == 9) {
+                    LogInfo.logs("[log] %d negative samples generated for %s. [%s]",
+                            ret.size(), obj_s, new Date().toString());
+                    return ret;
+                }
+            }
+        }
+
+        // fuzzy match if num of negative samples are not enough
+        FixLenRankList<List<String>, Double> rankList = new FixLenRankList<>(30);
+        for (Map.Entry<String, List<String>> entry: anchorTextMap.entrySet()) {
             double score = getSimilarity(entry.getKey(), obj_s);
             rankList.insert(new Pair<>(entry.getValue(), score));
             //if (rankList.isFull() && rankList.getLastVal() > 0.0) break;
         }
-        List<Set<String>> retList = rankList.getList();
-        Set<String> ret = new HashSet<>();
-        boolean flag = true;
+        List<List<String>> retList = rankList.getList();
         for (int i=0; i<retList.size(); i++) {
-            Set<String> set = retList.get(i);
-            for (String str: set) {
+            List<String> entityList = retList.get(i);
+            for (String str: entityList) {
                 if (str.trim().length() == 0) continue;
-                if (!str.equals(obj_s) && vectors.containsKey(addMark(str)))
+                if (!str.equals(obj_l) && vectors.containsKey(addMark(str)))
                     ret.add(vectors.get(addMark(str)) + " " + str.replace(" ", "_"));
                 if (ret.size() == 9) {
-                    flag = false;
-                    break;
+                    LogInfo.logs("[log] %d negative samples generated for %s. [%s]",
+                            ret.size(), obj_s, new Date().toString());
+                    return ret;
                 }
             }
-            if (!flag) break;
         }
-        LogInfo.logs("[log] negative samples generated for %s. [%s]", obj_s, new Date().toString());
+        LogInfo.logs("[log] %d negative samples generated for %s. [%s]", ret.size(), obj_s, new Date().toString());
         return ret;
     }
 
@@ -255,6 +285,57 @@ public class NNDataPreparer {
             mark += ("_" + tmp.charAt(i));
         return String.format("[[%s]]", mark);
     }
+
+    // -------------------------------------------------------------------------
+
+    public static int curr = -1, end = -1;
+
+    public void run() {
+        while (true) {
+            try {
+                int idx = getCurr();
+                if (idx == -1) return;
+                getSingleTrainTestData(idx);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public static synchronized int getCurr() {
+        if (curr < end) {
+            int ret = curr;
+            curr ++;
+            return ret;
+        }
+        return -1;
+    }
+
+    public static synchronized void bwnWrite(String ret) throws  IOException {
+        bwn.write(ret);
+        bwn.flush();
+    }
+
+    public static synchronized void bwtWrite(String ret) throws  IOException {
+        bwt.write(ret);
+        bwt.flush();
+    }
+
+
+    public static void multiThreadWork() throws Exception{
+        getTaskData();
+        curr = 0; end = taskList.size();
+        int numOfThreads = 30;
+        // todo: re-write the work thread
+        NNDataPreparer workThread = new NNDataPreparer();
+        MultiThread multi = new MultiThread(numOfThreads, workThread);
+        LogInfo.begin_track("%d threads are running...", numOfThreads);
+        multi.runMultiThread();
+        LogInfo.end_track();
+    }
+
+
+    // -------------------------------------------------------------------------
 
     public static void getCleanInfoboxFromDbpedia() throws IOException {
         LogInfo.begin_track("Begin to get clean wiki infobox data.");
@@ -369,13 +450,15 @@ public class NNDataPreparer {
         return str.substring(j, i);
     }
 
-    public static int lenOfw2v = 50;
-    public static String relSetting = "Normal";
-    public static void main(String[] args) throws IOException {
-        lenOfw2v = Integer.parseInt(args[0]);
+    public static int lenOfw2v = 50, numOfTrain = 5000, numOfTest = 2000;
+    public static String setting = "Normal";
+    public static void main(String[] args) throws Exception {
         //getCleanInfoboxFromWikipedia();
-        //getFullPositiveData();
-        relSetting = args[3];
-        getTrainTestData(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        lenOfw2v = Integer.parseInt(args[0]);
+        getFullPositiveData();
+        numOfTrain = Integer.parseInt(args[1]);
+        numOfTest = Integer.parseInt(args[2]);
+        setting = args[3];
+        multiThreadWork();
     }
 }

@@ -6,10 +6,7 @@ import xusheng.util.log.LogUpgrader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Xusheng on 04/10/2016.
@@ -83,8 +80,8 @@ public class AnchorTextReader {
         return anchorMap;
     }
 
-    public static Map<String, Set<String>> ReadDataFromName2Ent(String cmd) throws IOException {
-        Map<String, Set<String>> anchorMap = new HashMap<>();
+    public static Map<String, List<String>> ReadDataFromName2Ent(String cmd) throws IOException {
+        Map<String, List<String>> anchorMap = new HashMap<>();
         dataFp = "/home/xusheng/nn/data/wikipedia/prior.txt";
         LogInfo.begin_track("Start to read %s from name to entity.", dataFp);
         BufferedReader br = new BufferedReader(new FileReader(dataFp));
@@ -94,7 +91,7 @@ public class AnchorTextReader {
             String[] spt = line.split("\t");
             if (spt[0].equals(" ")) continue;
             if (!anchorMap.containsKey(spt[0]))
-                anchorMap.put(spt[0], new HashSet<>());
+                anchorMap.put(spt[0], new ArrayList<>());
             anchorMap.get(spt[0]).add(spt[1]);
             cnt ++;
             LogUpgrader.showLine(cnt, 1000000);
