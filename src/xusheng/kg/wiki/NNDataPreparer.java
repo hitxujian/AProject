@@ -52,7 +52,7 @@ public class NNDataPreparer implements Runnable {
                 String markedObj = addMark(spt[3]);
                 String rel_s[] = spt[1].split(" ");
                 // note that here we only focus the w2v, so change to lower case!
-                String obj_s[] = spt[3].toLowerCase().split(" "); // todo: change 3-> 2
+                String obj_s[] = spt[2].toLowerCase().split(" "); // todo: change 3-> 2
                 // check if w2v contains these 4 elements
                 // check rel_s
                 boolean flag = true;
@@ -163,9 +163,6 @@ public class NNDataPreparer implements Runnable {
             ex.printStackTrace();
             LogInfo.logs("[error] line %d in positive.full.tsv", num + 1);
         }
-
-        //bwn.close();
-        bwt.close();
         LogInfo.end_track();
     }
 
@@ -197,7 +194,6 @@ public class NNDataPreparer implements Runnable {
     }
 
     // get the negative object entity embeddings of one object surface form
-    // todo: to use the prior file
     public static Set<String> getNegObj(String obj_s, String obj_l) {
         LogInfo.logs("[log] get negative samples for %s... [%s].", obj_s, new Date().toString());
         Set<String> ret = new HashSet<>();
@@ -207,6 +203,7 @@ public class NNDataPreparer implements Runnable {
             List<String> entityList = anchorTextMap.get(obj_s);
             for (String str: entityList) {
                 if (str.trim().length() == 0) continue;
+                // attention here we need obj_l!!!
                 if (!str.equals(obj_l) && vectors.containsKey(addMark(str)))
                     ret.add(vectors.get(addMark(str)) + " " + str.replace(" ", "_"));
                 if (ret.size() == 9) {
@@ -229,6 +226,7 @@ public class NNDataPreparer implements Runnable {
             List<String> entityList = retList.get(i);
             for (String str: entityList) {
                 if (str.trim().length() == 0) continue;
+                // attention here we need obj_l!!!
                 if (!str.equals(obj_l) && vectors.containsKey(addMark(str)))
                     ret.add(vectors.get(addMark(str)) + " " + str.replace(" ", "_"));
                 if (ret.size() == 9) {
@@ -245,6 +243,8 @@ public class NNDataPreparer implements Runnable {
     // calculate the similarity of two embedding vectors
     // todo: n-gram similarity will be better?
     public static double getSimilarity(String str1, String str2) {
+        str1 = str1.toLowerCase();
+        str2 = str2.toLowerCase();
         String[] spt1 = str1.split(" ");
         String[] spt2 = str2.split(" ");
         Set<String> set1 = new HashSet<>();
@@ -252,11 +252,10 @@ public class NNDataPreparer implements Runnable {
         Set<String> set2 = new HashSet<>();
         for (String str: spt2) set2.add(str);
         int intersect = 0;
-        int union = 0;
         for (String str: set1)
             if (set2.contains(str))
                 intersect ++;
-        union = set1.size() + set2.size() - intersect;
+        int union = set1.size() + set2.size() - intersect;
         double score = (double) intersect / union;
         return score;
     }
@@ -326,14 +325,14 @@ public class NNDataPreparer implements Runnable {
         getTaskData();
         curr = 0; end = taskList.size();
         int numOfThreads = 30;
-        // todo: re-write the work thread
         NNDataPreparer workThread = new NNDataPreparer();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
         LogInfo.begin_track("%d threads are running...", numOfThreads);
         multi.runMultiThread();
+        bwn.close();
+        bwt.close();
         LogInfo.end_track();
     }
-
 
     // -------------------------------------------------------------------------
 
