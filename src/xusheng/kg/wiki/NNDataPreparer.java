@@ -24,8 +24,8 @@ public class NNDataPreparer implements Runnable {
     public static String rootFp = "/home/xusheng";
     public static Map<String, String> vectors = null;
     public static Map<String, List<String>> anchorTextMap = null;
-    public static List<String> data = new ArrayList<>();
-    public static BufferedWriter bwn, bwt;
+    public static List<String> data = null;
+    public static Map<Integer, List<String>> trainData = null, testData = null;
 
     public static void getFullPositiveData() throws IOException {
         LogInfo.begin_track("Begin to get full positive data.");
@@ -84,7 +84,7 @@ public class NNDataPreparer implements Runnable {
                 bwp.write(line + "\t\t" + newLine + "\n");
             } catch (Exception ex) {
                 ex.printStackTrace();
-                LogInfo.logs("[error] %s", line);
+                LogInfo.logs("[error] %s", line.replace("\t", " \\t "));
             }
         }
         br.close();
@@ -100,6 +100,7 @@ public class NNDataPreparer implements Runnable {
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
                 "/nn/data/wikipedia/positive_full.tsv"));
         String line;
+        data = new ArrayList<>();
         while ((line = br.readLine()) != null)
             data.add(line);
         LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/data/wikipedia/positive_full.tsv", data.size());
@@ -111,11 +112,6 @@ public class NNDataPreparer implements Runnable {
         if (vectors == null)
             vectors = VecLoader.load(rootFp + "/word2vec/vec/wiki_link_" + String.valueOf(lenOfw2v) +".txt");
 
-        bwn = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv.full." + setting));
-        bwt = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full." + setting));
-
         int cnt = 0;
         LogInfo.logs("[log] sampling training/testing data.");
         Random rand = new Random();
@@ -125,7 +121,7 @@ public class NNDataPreparer implements Runnable {
         try {
             cnt = 0;
             // pos:neg = 1:9, that's why /10!
-            while (cnt < numOfTrain / 10) {
+            while (cnt < numOfTrain) {
                 num = rand.nextInt(data.size());
                 String[] part = data.get(num).split("\t\t");
                 if (!set.contains(num)) {
@@ -140,10 +136,10 @@ public class NNDataPreparer implements Runnable {
                     taskList.add(new Pair<>(num, 1));
                 }
             }
-            LogInfo.logs("[log] training data add to task list.");
+            LogInfo.logs("[log] %d training data add to task list.", cnt);
 
             cnt = 0;
-            while (cnt < numOfTest / 10) {
+            while (cnt < numOfTest) {
                 num = rand.nextInt(data.size());
                 String[] part = data.get(num).split("\t\t");
                 if (!set.contains(num)) {
@@ -158,7 +154,7 @@ public class NNDataPreparer implements Runnable {
                     taskList.add(new Pair<>(num, 2));
                 }
             }
-            LogInfo.logs("[log] testing data add to task list.");
+            LogInfo.logs("[log] %d testing data add to task list.", cnt);
         } catch (Exception ex) {
             ex.printStackTrace();
             LogInfo.logs("[error] line %d in positive.full.tsv", num + 1);
@@ -175,27 +171,27 @@ public class NNDataPreparer implements Runnable {
         if (task.getSecond() == 1) { // training data
             String[] spt = data.get(num).split("\t\t")[1].split("\t");
             String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3];
-            LogInfo.logs("[log] positive sample generated for training data [%s].", data.get(num).split("\t\t")[0]);
+            LogInfo.logs("[log][%d] positive sample generated for training data [%s].", idx, data.get(num).split("\t\t")[0]);
             //bwnWrite(PosVec + " 1\n");
             // generate negative data
-            Set<String> negObjs = getNegObj(obj_s, obj_l);
+            Set<String> negObjs = getNegObj(idx, obj_s, obj_l);
             for (String negObj : negObjs)
-                bwnWrite(PosVec + " " + negObj + " " + String.valueOf(num + 1) + "\n");
+                add2trainData(idx, PosVec + " " + negObj + " " + String.valueOf(num + 1) + "\n");
         } else { // testing data
             String[] spt = data.get(num).split("\t\t")[1].split("\t");
             String PosVec = spt[0] + " " + spt[1] + " " + spt[2] + " " + spt[3] + " " + String.valueOf(num + 1);
-            bwtWrite(PosVec + " 1\n");
-            LogInfo.logs("[log] positive sample generated for testing data [%s].", data.get(num).split("\t\t")[0]);
+            add2testData(idx, PosVec + " 1\n");
+            LogInfo.logs("[log][%d] positive sample generated for testing data [%s].", idx, data.get(num).split("\t\t")[0]);
             // generate negative data
-            Set<String> negObjs = getNegObj(obj_s, obj_l);
+            Set<String> negObjs = getNegObj(idx, obj_s, obj_l);
             for (String negObj : negObjs)
-                bwtWrite(spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
+                add2testData(idx, spt[0] + " " + spt[1] + " " + spt[2] + " " + negObj + " 0\n");
         }
     }
 
     // get the negative object entity embeddings of one object surface form
-    public static Set<String> getNegObj(String obj_s, String obj_l) {
-        LogInfo.logs("[log] get negative samples for %s... [%s].", obj_s, new Date().toString());
+    public static Set<String> getNegObj(int idx, String obj_s, String obj_l) {
+        LogInfo.logs("[log][%d] get negative samples for %s... [%s].", idx, obj_s, new Date().toString());
         Set<String> ret = new HashSet<>();
 
         // exactly match
@@ -207,8 +203,8 @@ public class NNDataPreparer implements Runnable {
                 if (!str.equals(obj_l) && vectors.containsKey(addMark(str)))
                     ret.add(vectors.get(addMark(str)) + " " + str.replace(" ", "_"));
                 if (ret.size() == 9) {
-                    LogInfo.logs("[log] %d negative samples generated for %s. [%s]",
-                            ret.size(), obj_s, new Date().toString());
+                    LogInfo.logs("[log][%d] %d negative samples generated for %s. [%s]",
+                            idx, ret.size(), obj_s, new Date().toString());
                     return ret;
                 }
             }
@@ -230,13 +226,14 @@ public class NNDataPreparer implements Runnable {
                 if (!str.equals(obj_l) && vectors.containsKey(addMark(str)))
                     ret.add(vectors.get(addMark(str)) + " " + str.replace(" ", "_"));
                 if (ret.size() == 9) {
-                    LogInfo.logs("[log] %d negative samples generated for %s. [%s]",
-                            ret.size(), obj_s, new Date().toString());
+                    LogInfo.logs("[log][%d] %d negative samples generated for %s. [%s]",
+                            idx, ret.size(), obj_s, new Date().toString());
                     return ret;
                 }
             }
         }
-        LogInfo.logs("[log] %d negative samples generated for %s. [%s]", ret.size(), obj_s, new Date().toString());
+        LogInfo.logs("[log][%d] %d negative samples generated for %s. [%s]",
+                idx, ret.size(), obj_s, new Date().toString());
         return ret;
     }
 
@@ -310,28 +307,46 @@ public class NNDataPreparer implements Runnable {
         return -1;
     }
 
-    public static synchronized void bwnWrite(String ret) throws  IOException {
-        bwn.write(ret);
-        bwn.flush();
+    public static synchronized void add2trainData(int idx, String line) {
+        if (!trainData.containsKey(idx))
+            trainData.put(idx, new ArrayList<>());
+        trainData.get(idx).add(line);
     }
 
-    public static synchronized void bwtWrite(String ret) throws  IOException {
-        bwt.write(ret);
-        bwt.flush();
+    public static synchronized void add2testData(int idx, String line) {
+        if (!testData.containsKey(idx))
+            testData.put(idx, new ArrayList<>());
+        testData.get(idx).add(line);
     }
-
 
     public static void multiThreadWork() throws Exception{
         getTaskData();
+        trainData = new HashMap<>();
+        testData = new HashMap<>();
         curr = 0; end = taskList.size();
         int numOfThreads = 30;
         NNDataPreparer workThread = new NNDataPreparer();
         MultiThread multi = new MultiThread(numOfThreads, workThread);
-        LogInfo.begin_track("%d threads are running...", numOfThreads);
+        LogInfo.begin_track("%d threads are running on %d tasks...", numOfThreads, taskList.size());
         multi.runMultiThread();
-        bwn.close();
-        bwt.close();
+        writeRet();
         LogInfo.end_track();
+    }
+
+    public static void writeRet() throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv.full." + setting));
+        for (int i=0; i<numOfTrain; i++)
+            for (String line : trainData.get(i))
+                bw.write(line);
+        bw.close();
+
+        bw = new BufferedWriter(new FileWriter(rootFp +
+                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full." + setting));
+        for (int i=numOfTrain; i<taskList.size(); i++)
+            for (String line : testData.get(i))
+                bw.write(line);
+        bw.close();
     }
 
     // -------------------------------------------------------------------------
