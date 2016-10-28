@@ -36,7 +36,7 @@ public class NNDataPreparer implements Runnable {
                 "/nn/data/wikipedia/wiki_info_linked.tsv"));
 
         BufferedWriter bwp = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/wikipedia/positive_full.tsv"));
+                "/nn/data/wikipedia/positive_full.tsv.special"));
 
         String line;
         int cnt = 0;
@@ -52,7 +52,7 @@ public class NNDataPreparer implements Runnable {
                 String markedObj = addMark(spt[3]);
                 String rel_s[] = spt[1].split(" ");
                 // note that here we only focus the w2v, so change to lower case!
-                String obj_s[] = spt[2].toLowerCase().split(" "); // todo: change 3-> 2
+                String obj_s[] = spt[3].toLowerCase().split(" "); // todo: change 3-> 2
                 // check if w2v contains these 4 elements
                 // check rel_s
                 boolean flag = true;
@@ -81,6 +81,8 @@ public class NNDataPreparer implements Runnable {
                         (vectors.get(markedObj)));
 
                 // format: triple\t\t\vec
+                // todo: need to modify here!
+                line = spt[0] + " " + spt[1] + " " + spt[3] + " " + spt[3];
                 bwp.write(line + "\t\t" + newLine + "\n");
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -98,12 +100,12 @@ public class NNDataPreparer implements Runnable {
 
         // load full positive data
         BufferedReader br = new BufferedReader(new FileReader(rootFp +
-                "/nn/data/wikipedia/positive_full.tsv"));
+                "/nn/data/wikipedia/positive_full.tsv.special"));
         String line;
         data = new ArrayList<>();
         while ((line = br.readLine()) != null)
             data.add(line);
-        LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/data/wikipedia/positive_full.tsv", data.size());
+        LogInfo.logs("[log] %s loaded. Size: %d.", rootFp + "/nn/data/wikipedia/positive_full.tsv.special", data.size());
 
         // load anchor text data
         if (anchorTextMap == null)
@@ -334,15 +336,16 @@ public class NNDataPreparer implements Runnable {
     }
 
     public static void writeRet() throws IOException {
+        File file = new File(rootFp + "/nn/data/margin/" + dir);
+        if (!file.exists()) file.mkdir();
         BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/training_" + String.valueOf(numOfTrain) + ".tsv.full." + setting));
+                "/nn/data/margin/" + dir + "/training_" + String.valueOf(numOfTrain) + ".tsv.full." + setting));
         for (int i=0; i<numOfTrain; i++)
             for (String line : trainData.get(i))
                 bw.write(line);
         bw.close();
-
         bw = new BufferedWriter(new FileWriter(rootFp +
-                "/nn/data/margin/testing_" + String.valueOf(numOfTest) + ".tsv.full." + setting));
+                "/nn/data/margin/" + dir + "/testing_" + String.valueOf(numOfTest) + ".tsv.full." + setting));
         for (int i=numOfTrain; i<taskList.size(); i++)
             for (String line : testData.get(i))
                 bw.write(line);
@@ -465,14 +468,15 @@ public class NNDataPreparer implements Runnable {
     }
 
     public static int lenOfw2v = 50, numOfTrain = 5000, numOfTest = 2000;
-    public static String setting = "Normal";
+    public static String setting = null, dir = null;
     public static void main(String[] args) throws Exception {
         //getCleanInfoboxFromWikipedia();
         lenOfw2v = Integer.parseInt(args[0]);
         numOfTrain = Integer.parseInt(args[1]);
         numOfTest = Integer.parseInt(args[2]);
         setting = args[3];
-        if (args[4].equals("1")) getFullPositiveData();
+        dir= args[4];
+        if (args[5].equals("1")) getFullPositiveData();
         multiThreadWork();
     }
 }
