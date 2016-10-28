@@ -82,7 +82,7 @@ public class NNDataPreparer implements Runnable {
 
                 // format: triple\t\t\vec
                 // todo: need to modify here!
-                line = spt[0] + " " + spt[1] + " " + spt[3] + " " + spt[3];
+                line = spt[0] + "\t" + spt[1] + "\t" + spt[3] + "\t" + spt[3];
                 bwp.write(line + "\t\t" + newLine + "\n");
             } catch (Exception ex) {
                 ex.printStackTrace();
