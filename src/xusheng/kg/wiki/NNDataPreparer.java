@@ -340,15 +340,25 @@ public class NNDataPreparer implements Runnable {
         if (!file.exists()) file.mkdir();
         BufferedWriter bw = new BufferedWriter(new FileWriter(rootFp +
                 "/nn/data/margin/" + dir + "/training_" + String.valueOf(numOfTrain) + ".tsv.full." + setting));
-        for (int i=0; i<numOfTrain; i++)
-            for (String line : trainData.get(i))
-                bw.write(line);
+        try {
+            for (int i=0; i<numOfTrain; i++)
+                for (String line : trainData.get(i))
+                    bw.write(line);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            LogInfo.logs("[error] ...");
+        }
         bw.close();
         bw = new BufferedWriter(new FileWriter(rootFp +
                 "/nn/data/margin/" + dir + "/testing_" + String.valueOf(numOfTest) + ".tsv.full." + setting));
-        for (int i=numOfTrain; i<taskList.size(); i++)
-            for (String line : testData.get(i))
-                bw.write(line);
+        try {
+            for (int i=numOfTrain; i<taskList.size(); i++)
+                for (String line : testData.get(i))
+                    bw.write(line);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            LogInfo.logs("[error] ...");
+        }
         bw.close();
     }
 
