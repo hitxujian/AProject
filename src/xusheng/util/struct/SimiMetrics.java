@@ -71,7 +71,7 @@ public class SimiMetrics implements Runnable {
 
     // need to rewrite this func when facing different file format
     public static void work(int fst) throws IOException {
-        LogInfo.logs("[T%d] Start to work for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
+        LogInfo.logs("[T%s] Start to work for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
         Set<String> fstSet = null, sndSet = null;
         if (idxSetMap.containsKey(fst))
             fstSet = idxSetMap.get(fst);
@@ -86,7 +86,7 @@ public class SimiMetrics implements Runnable {
                 write2Ret(idxNameMap.get(fst) + "\t" + idxNameMap.get(snd) + "\t" + String.format("%.4f", score) + "\n");
             checkProgress();
         }
-        LogInfo.logs("[T%d] Finish working for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
+        LogInfo.logs("[T%s] Finish working for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
     }
 
     public static Set<String> getSet(int idx) {
