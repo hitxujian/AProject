@@ -2,6 +2,7 @@ package xusheng.util.struct;
 
 import fig.basic.LogInfo;
 import fig.basic.Pair;
+import xusheng.util.log.LogUpgrader;
 
 import java.io.*;
 import java.util.*;
@@ -56,8 +57,20 @@ public class SimiMetrics implements Runnable {
         retList.add(ret);
     }
 
+    public static BufferedWriter bw = null;
+    public static synchronized void write2Ret(String ret) throws IOException {
+        bw.write(ret);
+    }
+
+    public static int cnt = 0;
+    public static synchronized void checkProgress() {
+        cnt ++;
+        if (cnt % 100000 == 0)
+            LogInfo.logs("[log] %d / %d done. [%s]", cnt, taskList.size(), new Date().toString());
+    }
+
     // need to rewrite this func when facing different file format
-    public static void work(int idx) {
+    public static void work(int idx) throws IOException {
         Pair<Integer, Integer> task = taskList.get(idx);
         int fst = task.getFirst();
         int snd = task.getSecond();
@@ -68,7 +81,10 @@ public class SimiMetrics implements Runnable {
         if (idxSetMap.containsKey(snd))
             sndSet = idxSetMap.get(snd);
         else sndSet = getSet(snd);
-        add2Ret(idxNameMap.get(fst) + "\t" + idxNameMap.get(snd) + "\t" + getJaccard(fstSet, sndSet) + "\n");
+        double score = getJaccard(fstSet, sndSet);
+        if (score > 0)
+            write2Ret(idxNameMap.get(fst) + "\t" + idxNameMap.get(snd) + "\t" + String.format("%.4f",score) + "\n");
+        checkProgress();
     }
 
     public static Set<String> getSet(int idx) {
@@ -121,7 +137,7 @@ public class SimiMetrics implements Runnable {
         for (int i=0; i<dataList.size(); i++)
             for (int j=i+1; j<dataList.size(); j++)
                 taskList.add(new Pair<>(i, j));
-        LogInfo.logs("[log] Task from loaded. Size: %d.", taskList.size());
+        LogInfo.logs("[log] Tasks loaded. Size: %d.", taskList.size());
     }
 
     public static void writeRet() throws IOException {
@@ -138,7 +154,11 @@ public class SimiMetrics implements Runnable {
         if (args.length != 0)
             fileName = args[0];
         readTasks();
+        String file = "/home/xusheng/yuchen/ret_" + fileName +  ".txt";
+        bw = new BufferedWriter(new FileWriter(file));
         multiThreadWork();
-        writeRet();
+        bw.close();
+        LogInfo.logs("[log] Result written into %s.", file);
+        //writeRet();
     }
 }
