@@ -65,13 +65,13 @@ public class SimiMetrics implements Runnable {
     public static int cnt = 0;
     public static synchronized void checkProgress() {
         cnt ++;
-        if (cnt % 10000000 == 0)
+        if (cnt % 1000 == 0)
             LogInfo.logs("[log] %d / %d done. [%s]", cnt, taskList.size(), new Date().toString());
     }
 
     // need to rewrite this func when facing different file format
     public static void work(int fst) throws IOException {
-        LogInfo.logs("[T%s] Start to work for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
+        //LogInfo.logs("[T%s] Start to work for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
         Set<String> fstSet = null, sndSet = null;
         if (idxSetMap.containsKey(fst))
             fstSet = idxSetMap.get(fst);
@@ -84,9 +84,9 @@ public class SimiMetrics implements Runnable {
             double score = getJaccard(fstSet, sndSet);
             if (score > 0)
                 write2Ret(idxNameMap.get(fst) + "\t" + idxNameMap.get(snd) + "\t" + String.format("%.4f", score) + "\n");
-            checkProgress();
         }
-        LogInfo.logs("[T%s] Finish working for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
+        checkProgress();
+        //LogInfo.logs("[T%s] Finish working for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
     }
 
     public static Set<String> getSet(int idx) {
