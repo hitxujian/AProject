@@ -40,18 +40,6 @@ public class SimiMetrics implements Runnable {
         return -1;
     }
 
-    public static Map<Integer, String> idxNameMap = null;
-    public static synchronized void add2IdxNameMap(int idx, String name) {
-        if (!idxNameMap.containsKey(idx))
-            idxNameMap.put(idx, name);
-    }
-
-    public static Map<Integer, Set<String>> idxSetMap = null;
-    public static synchronized void add2IdxSetMap(int idx, Set<String> set) {
-        if (!idxSetMap.containsKey(idx))
-            idxSetMap.put(idx, set);
-    }
-
     public static List<String> retList = new ArrayList<>();
     public static synchronized void add2Ret(String ret) {
         retList.add(ret);
@@ -66,39 +54,23 @@ public class SimiMetrics implements Runnable {
     public static synchronized void checkProgress() {
         cnt ++;
         if (cnt % 1000 == 0)
-            LogInfo.logs("[log] %d / %d done. [%s]", cnt, taskList.size(), new Date().toString());
+            LogInfo.logs("[log] %d / %d tasks done. [%s]", cnt, taskList.size(), new Date().toString());
     }
 
     // need to rewrite this func when facing different file format
     public static void work(int fst) throws IOException {
         //LogInfo.logs("[T%s] Start to work for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
         Set<String> fstSet = null, sndSet = null;
-        if (idxSetMap.containsKey(fst))
-            fstSet = idxSetMap.get(fst);
-        else fstSet = getSet(fst);
+        fstSet = taskList.get(fst);
 
         for (int snd=fst+1; snd<taskList.size(); snd ++) {
-            if (idxSetMap.containsKey(snd))
-                sndSet = idxSetMap.get(snd);
-            else sndSet = getSet(snd);
+            sndSet = taskList.get(snd);
             double score = getJaccard(fstSet, sndSet);
             if (score > 0)
                 write2Ret(idxNameMap.get(fst) + "\t" + idxNameMap.get(snd) + "\t" + String.format("%.4f", score) + "\n");
         }
         checkProgress();
         //LogInfo.logs("[T%s] Finish working for Task %d / %d. [%s]", Thread.currentThread().getName(), fst, taskList.size(), new Date().toString());
-    }
-
-    public static Set<String> getSet(int idx) {
-        String line = taskList.get(idx);
-        String[] spt = line.split("\t");
-        String name = spt[0];
-        add2IdxNameMap(idx, name);
-        Set<String> decs = new HashSet<>();
-        for (int i=1; i<spt.length; i++)
-            if (spt[i].startsWith("SID")) decs.add(spt[i]);
-        add2IdxSetMap(idx, decs);
-        return decs;
     }
 
     public static double getJaccard(Set<String> setA, Set<String> setB) {
@@ -120,16 +92,21 @@ public class SimiMetrics implements Runnable {
         LogInfo.end_track();
     }
 
-    public static List<String> taskList = null;
+    public static List<Set<String>> taskList = null;
+    public static List<String> idxNameMap = null;
     public static void readTasks() throws IOException {
         String file = rootFp + "/" + fileName + ".txt";
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
         taskList = new ArrayList<>();
-        idxNameMap = new HashMap<>();
-        idxSetMap = new HashMap<>();
+
         while ((line = br.readLine()) != null) {
-            taskList.add(line);
+            String[] spt = line.split("\t");
+            idxNameMap.add(spt[0]);
+            Set<String> set = new HashSet<>();
+            for (int i=1; i<spt.length; i++)
+                if (spt[i].startsWith("SID")) set.add(spt[i]);
+            taskList.add(set);
         }
         br.close();
         LogInfo.logs("[log] Data from %s loaded. Size: %d.", file, taskList.size());
