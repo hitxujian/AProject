@@ -39,7 +39,7 @@ public class VecLoader {
 
 
     public static Map<String, String> load(String fp) throws IOException {
-        LogInfo.begin_track("Begin to load %s.", fp);
+        LogInfo.begin_track("Begin to load %s", fp);
         Map<String, String> vecs = new HashMap<>();
         BufferedReader br = new BufferedReader(new FileReader(fp));
         String line;

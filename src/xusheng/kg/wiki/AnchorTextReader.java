@@ -94,7 +94,7 @@ public class AnchorTextReader {
                 anchorMap.put(spt[0], new ArrayList<>());
             anchorMap.get(spt[0]).add(spt[1]);
             cnt ++;
-            LogUpgrader.showLine(cnt, 1000000);
+            LogUpgrader.showLine(cnt, 5000000);
         }
         br.close();
         LogInfo.end_track();
