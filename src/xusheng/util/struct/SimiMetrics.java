@@ -99,7 +99,7 @@ public class SimiMetrics implements Runnable {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
         taskList = new ArrayList<>();
-
+        idxNameMap = new ArrayList<>();
         while ((line = br.readLine()) != null) {
             String[] spt = line.split("\t");
             idxNameMap.add(spt[0]);
