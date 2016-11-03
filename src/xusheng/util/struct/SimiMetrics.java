@@ -65,7 +65,7 @@ public class SimiMetrics implements Runnable {
     public static int cnt = 0;
     public static synchronized void checkProgress() {
         cnt ++;
-        if (cnt % 100000 == 0)
+        if (cnt % 10000000 == 0)
             LogInfo.logs("[log] %d / %d done. [%s]", cnt, taskList.size(), new Date().toString());
     }
 
