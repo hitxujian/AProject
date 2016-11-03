@@ -70,25 +70,27 @@ public class SimiMetrics implements Runnable {
     }
 
     // need to rewrite this func when facing different file format
-    public static void work(int idx) throws IOException {
-        Pair<Integer, Integer> task = taskList.get(idx);
-        int fst = task.getFirst();
-        int snd = task.getSecond();
+    public static void work(int fst) throws IOException {
+        LogInfo.logs("[T%d] Start to work for Task %d / %d. [%s]", fst, taskList.size(), new Date().toString());
         Set<String> fstSet = null, sndSet = null;
         if (idxSetMap.containsKey(fst))
             fstSet = idxSetMap.get(fst);
         else fstSet = getSet(fst);
-        if (idxSetMap.containsKey(snd))
-            sndSet = idxSetMap.get(snd);
-        else sndSet = getSet(snd);
-        double score = getJaccard(fstSet, sndSet);
-        if (score > 0)
-            write2Ret(idxNameMap.get(fst) + "\t" + idxNameMap.get(snd) + "\t" + String.format("%.4f",score) + "\n");
-        checkProgress();
+
+        for (int snd=fst+1; snd<taskList.size(); snd ++) {
+            if (idxSetMap.containsKey(snd))
+                sndSet = idxSetMap.get(snd);
+            else sndSet = getSet(snd);
+            double score = getJaccard(fstSet, sndSet);
+            if (score > 0)
+                write2Ret(idxNameMap.get(fst) + "\t" + idxNameMap.get(snd) + "\t" + String.format("%.4f", score) + "\n");
+            checkProgress();
+        }
+        LogInfo.logs("[T%d] Finish working for Task %d / %d. [%s]", fst, taskList.size(), new Date().toString());
     }
 
     public static Set<String> getSet(int idx) {
-        String line = dataList.get(idx);
+        String line = taskList.get(idx);
         String[] spt = line.split("\t");
         String name = spt[0];
         add2IdxNameMap(idx, name);
@@ -118,26 +120,19 @@ public class SimiMetrics implements Runnable {
         LogInfo.end_track();
     }
 
-    public static List<String> dataList = null;
-    public static List<Pair<Integer, Integer>> taskList = null;
+    public static List<String> taskList = null;
     public static void readTasks() throws IOException {
         String file = rootFp + "/" + fileName + ".txt";
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
-        dataList = new ArrayList<>();
+        taskList = new ArrayList<>();
         idxNameMap = new HashMap<>();
         idxSetMap = new HashMap<>();
         while ((line = br.readLine()) != null) {
-            dataList.add(line);
+            taskList.add(line);
         }
         br.close();
-        LogInfo.logs("[log] Data from %s loaded. Size: %d.", file, dataList.size());
-
-        taskList = new ArrayList<>();
-        for (int i=0; i<dataList.size(); i++)
-            for (int j=i+1; j<dataList.size(); j++)
-                taskList.add(new Pair<>(i, j));
-        LogInfo.logs("[log] Tasks loaded. Size: %d.", taskList.size());
+        LogInfo.logs("[log] Data from %s loaded. Size: %d.", file, taskList.size());
     }
 
     public static void writeRet() throws IOException {
