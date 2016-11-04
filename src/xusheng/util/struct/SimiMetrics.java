@@ -66,7 +66,7 @@ public class SimiMetrics implements Runnable {
         for (int snd=fst+1; snd<taskList.size(); snd ++) {
             sndSet = taskList.get(snd);
             double score = getJaccard(fstSet, sndSet);
-            if (score > 0)
+            if (score > threshold)
                 write2Ret(idxNameMap.get(fst) + "\t" + idxNameMap.get(snd) + "\t" + String.format("%.4f", score) + "\n");
         }
         checkProgress();
@@ -78,7 +78,10 @@ public class SimiMetrics implements Runnable {
         for (String str: setA)
             if (setB.contains(str))
                 intersection ++;
-        return (double) intersection / (setA.size() + setB.size() - intersection);
+        if (intersection == setA.size() || intersection == setB.size())
+            return 0;
+        else
+            return (double) intersection / (setA.size() + setB.size() - intersection);
     }
 
     public static void multiThreadWork() throws Exception {
@@ -113,7 +116,7 @@ public class SimiMetrics implements Runnable {
     }
 
     public static void writeRet() throws IOException {
-        String file = "/home/xusheng/yuchen/ret_" + fileName +  ".txt";
+        String file = String.format("/home/xusheng/yuchen/ret_%s.%f", fileName, threshold);
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
         for (String line: retList)
             bw.write(line);
@@ -122,9 +125,12 @@ public class SimiMetrics implements Runnable {
     }
 
     public static String fileName = "circleVerb";
+    public static double threshold = 0.0;
     public static void main(String[] args) throws Exception {
-        if (args.length != 0)
+        if (args.length != 0) {
             fileName = args[0];
+            threshold = Double.parseDouble(args[1]);
+        }
         readTasks();
         String file = "/home/xusheng/yuchen/ret_" + fileName +  ".txt";
         bw = new BufferedWriter(new FileWriter(file));
