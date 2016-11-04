@@ -132,7 +132,7 @@ public class SimiMetrics implements Runnable {
             threshold = Double.parseDouble(args[1]);
         }
         readTasks();
-        String file = "/home/xusheng/yuchen/ret_" + fileName +  ".txt";
+        String file = String.format("/home/xusheng/yuchen/ret_%s.%f", fileName, threshold);
         bw = new BufferedWriter(new FileWriter(file));
         multiThreadWork();
         bw.close();
